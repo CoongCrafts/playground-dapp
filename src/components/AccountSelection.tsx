@@ -1,18 +1,24 @@
-import { Box, Flex, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuGroup,
+  MenuItem,
+  MenuList,
+  Text,
+} from '@chakra-ui/react';
 import { Identicon } from '@polkadot/react-identicon';
-import { useEffect, useMemo, useState } from 'react';
-import { InjectedAccount } from '@polkadot/extension-inject/types';
-import AccountBalances from '@/components/AccountBalances';
-import CopyAddressButton from '@/components/CopyAddressButton';
-import SignRawMessageButton from '@/components/SignRawMessageButton';
-import TransferBalanceButton from '@/components/TransferBalanceButton';
+import { useEffect, useMemo } from 'react';
 import useDisplayAddress from '@/hooks/useDisplayAddress';
 import { useWalletContext } from '@/providers/WalletProvider';
-import { ChevronDownIcon, PlusSquareIcon } from '@chakra-ui/icons';
+import { shortenAddress } from '@/utils/string';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 
 export default function AccountSelection() {
-  const { accounts, injectedApi } = useWalletContext();
-  const [selectedAccount, setSelectedAccount] = useState<InjectedAccount>();
+  const { accounts, injectedApi, signOut, connectedWallet, selectedAccount, setSelectedAccount } = useWalletContext();
   const accountsUpdateAvailable = useMemo(() => !!injectedApi?.accounts?.update, [injectedApi]);
   const displayAddress = useDisplayAddress(selectedAccount?.address);
 
@@ -42,52 +48,47 @@ export default function AccountSelection() {
   return (
     <Box>
       <Menu autoSelect={false}>
-        <MenuButton
-          width='full'
-          _hover={{ backgroundColor: 'gray.100' }}
-          rounded={2}
-          border={1}
-          borderStyle='solid'
-          borderColor='gray.200'>
-          <Flex align='center' justify='space-between' gap={4} p={3} textAlign='left' cursor='pointer'>
-            <Flex align='center' gap={3}>
-              <Identicon value={address} size={36} theme='polkadot' />
-              <Flex direction='column'>
-                <Text fontWeight='bold' fontSize='lg'>
-                  {name}
-                </Text>
-                <Text>{displayAddress}</Text>
-              </Flex>
+        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+          <Flex align='center' gap={3}>
+            <Identicon value={address} size={20} theme='polkadot' />
+            <Flex gap={1} display={{ base: 'none', sm: 'flex'}}>
+              <Text fontWeight='bold'>{name}</Text>
+              <Text>({shortenAddress(displayAddress)})</Text>
             </Flex>
-            <ChevronDownIcon fontSize='4xl' />
           </Flex>
         </MenuButton>
         <MenuList>
-          {accounts.map((one) => (
-            <MenuItem
-              backgroundColor={one.address === address ? 'gray.200' : ''}
-              gap={2}
-              key={one.address}
-              onClick={() => setSelectedAccount(one)}>
-              <Identicon value={one.address} size={24} theme='polkadot' />
-              <span>{one.name}</span>
-            </MenuItem>
-          ))}
+          <Flex align='center' gap={3} flex={1} justify='center' pb={2}>
+            <img src={connectedWallet?.logo} alt={connectedWallet?.name} width={24} />
+            <Text fontWeight='600' fontSize='14'>
+              {connectedWallet?.name} - v{connectedWallet?.version}
+            </Text>
+          </Flex>
+          <MenuGroup>
+            {accounts.map((one) => (
+              <MenuItem
+                backgroundColor={one.address === address ? 'active-menu-item-bg' : ''}
+                gap={2}
+                key={one.address}
+                onClick={() => setSelectedAccount(one)}>
+                <Identicon value={one.address} size={20} theme='polkadot' />
+                <span>
+                  {one.name} ({shortenAddress(one.address)})
+                </span>
+              </MenuItem>
+            ))}
+          </MenuGroup>
+          <MenuDivider />
           {accountsUpdateAvailable && (
-            <MenuItem gap={2} onClick={updateAccounts}>
-              <PlusSquareIcon fontSize={24} />
+            <MenuItem onClick={updateAccounts}>
               <span>Add/Remove Accounts</span>
             </MenuItem>
           )}
+          <MenuItem onClick={signOut} color='red.500'>
+            Sign out
+          </MenuItem>
         </MenuList>
       </Menu>
-
-      <AccountBalances address={address} />
-      <Flex my={4} gap={4} wrap='wrap'>
-        <TransferBalanceButton fromAccount={selectedAccount} />
-        <SignRawMessageButton fromAccount={selectedAccount} />
-        <CopyAddressButton address={address} />
-      </Flex>
     </Box>
   );
 }

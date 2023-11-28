@@ -1,12 +1,17 @@
-import { Box, Container } from '@chakra-ui/react';
+import { Box, Container, Flex, Text } from '@chakra-ui/react';
 import React from 'react';
-import NetworkSelection from '@/components/shared/NetworkSelection';
+import { Link } from 'react-router-dom';
+import AccountSelection from '@/components/AccountSelection';
+import WalletSelection from '@/components/dialog/WalletSelection';
+import { useWalletContext } from '@/providers/WalletProvider';
 
 export default function MainHeader() {
+  const { injectedApi } = useWalletContext();
+
   return (
-    <Box borderBottom={1} borderStyle='solid' borderColor='gray.200'>
+    <Box borderBottom={1} borderStyle='solid' borderColor='chakra-border-color'>
       <Container
-        maxWidth='container.md'
+        maxWidth='container.lg'
         px={4}
         mx='auto'
         display='flex'
@@ -14,8 +19,14 @@ export default function MainHeader() {
         alignItems='center'
         gap={4}
         h={16}>
-        <img src='/coong-dapp-logo.svg' alt='Coong Dapp Logo' style={{ maxHeight: 32 }} />
-        <NetworkSelection />
+        <Link to='/'>
+          <Text fontSize='3xl' color='primary.300'>
+            inspace
+          </Text>
+        </Link>
+        <Flex gap={2} alignItems='center'>
+          {!!injectedApi ? <AccountSelection /> : <WalletSelection />}
+        </Flex>
       </Container>
     </Box>
   );

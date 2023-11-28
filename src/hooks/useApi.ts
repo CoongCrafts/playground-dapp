@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useAsync, useToggle } from 'react-use';
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { DelightfulApi, WsProvider } from 'delightfuldot';
 
 export default function useApi(networkEndpoint?: string) {
   const [ready, setReady] = useToggle(false);
-  const [api, setApi] = useState<ApiPromise>();
+  const [provider, setProvider] = useState<WsProvider>();
+  const [api, setApi] = useState<DelightfulApi>();
 
   useAsync(async () => {
     if (!networkEndpoint) {
@@ -18,10 +19,11 @@ export default function useApi(networkEndpoint?: string) {
     setReady(false);
 
     const wsProvider = new WsProvider(networkEndpoint);
-    setApi(await ApiPromise.create({ provider: wsProvider }));
+    setProvider(wsProvider);
+    setApi(await DelightfulApi.create({ provider: wsProvider }));
 
     setReady(true);
   }, [networkEndpoint]);
 
-  return { ready, api };
+  return { ready, api, provider };
 }

@@ -1,4 +1,4 @@
-import { Box, Flex, Link } from '@chakra-ui/react';
+import { Box, Flex, Link, Text } from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FC } from 'react';
 import { Props } from '@/types';
@@ -6,9 +6,9 @@ import { faGithub, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 const MainFooter: FC<Props> = () => {
   return (
-    <Box borderTop={1} borderStyle='solid' borderColor='gray.200'>
+    <Box borderTop={1} borderStyle='solid' borderColor='chakra-border-color'>
       <Flex
-        maxWidth='container.md'
+        maxWidth='container.lg'
         px={4}
         mx='auto'
         display='flex'
@@ -18,16 +18,18 @@ const MainFooter: FC<Props> = () => {
         gap={4}
         py={4}>
         <span>
-          Copyright &copy; 2023{' '}
-          <Link href='https://coongwallet.io' isExternal>
-            Coong Wallet
-          </Link>
+          <Text>
+            Copyright &copy; 2023 InSpace by{' '}
+            <Link href='https://coongcrafts.io' isExternal textDecoration='underline'>
+              Coong Crafts
+            </Link>
+          </Text>
         </span>
         <Flex gap={6}>
           <a href='https://twitter.com/CoongWallet' target='_blank'>
             <FontAwesomeIcon icon={faTwitter} size='xl' className='text-gray-600 hover:text-gray-800' />
           </a>
-          <a href='https://github.com/CoongCrafts/playground-dapp' target='_blank'>
+          <a href='https://github.com/CoongCrafts' target='_blank'>
             <FontAwesomeIcon icon={faGithub} size='xl' className='text-gray-600 hover:text-gray-800' />
           </a>
         </Flex>

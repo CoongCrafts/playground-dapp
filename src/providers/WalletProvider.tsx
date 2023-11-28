@@ -15,6 +15,8 @@ interface WalletContextProps {
   availableWallets: Wallet[];
   connectedWalletId?: string;
   connectedWallet?: Wallet;
+  selectedAccount?: InjectedAccount;
+  setSelectedAccount: (account: InjectedAccount) => void;
 }
 
 export const WalletContext = createContext<WalletContextProps>({
@@ -22,6 +24,7 @@ export const WalletContext = createContext<WalletContextProps>({
   enableWallet: () => {},
   signOut: () => {},
   availableWallets: [],
+  setSelectedAccount: () => {},
 });
 
 export const useWalletContext = () => {
@@ -30,6 +33,7 @@ export const useWalletContext = () => {
 
 export default function WalletProvider({ children }: Props) {
   const availableWallets = useWallets();
+  const [selectedAccount, setSelectedAccount, removeSelectedAccount] = useLocalStorage<InjectedAccount>('SELECTED_WALLET');
   const [accounts, setAccounts] = useState<InjectedAccount[]>([]);
   const [injectedApi, setInjectedApi] = useState<UpdatableInjected>();
   const [connectedWalletId, setConnectedWalletId, removeConnectedWalletId] =
@@ -72,6 +76,7 @@ export default function WalletProvider({ children }: Props) {
       toast.error(e.message);
       setConnectedWallet(undefined);
       removeConnectedWalletId();
+      removeSelectedAccount();
     }
 
     return () => unsub && unsub();
@@ -92,6 +97,8 @@ export default function WalletProvider({ children }: Props) {
 
     removeConnectedWalletId();
     setInjectedApi(undefined);
+    setSelectedAccount(undefined);
+    removeSelectedAccount();
   };
 
   return (
@@ -104,6 +111,8 @@ export default function WalletProvider({ children }: Props) {
         availableWallets,
         connectedWalletId,
         connectedWallet,
+        selectedAccount,
+        setSelectedAccount,
       }}>
       {children}
     </WalletContext.Provider>

@@ -1,45 +1,68 @@
-import { Box, Button, Flex, Menu, MenuButton, MenuItem, MenuList, Spinner, useMediaQuery } from '@chakra-ui/react';
-import { useApiContext } from '@/providers/ApiProvider';
+import {
+  Avatar,
+  Button,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuGroup,
+  MenuItem,
+  MenuList,
+  Text,
+  useMediaQuery
+} from '@chakra-ui/react';
 import { SUPPORTED_NETWORKS } from '@/utils/networks';
+import { ChainEnvironments, NetworkInfo, Props } from "@/types";
+import { useEffect, useState } from "react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 
-function NetworkStatusIndicator() {
-  const { apiReady } = useApiContext();
-
-  if (apiReady) {
-    return <Box borderRadius='50%' width={3} height={3} backgroundColor='green.500' />;
-  } else {
-    return <Spinner size='xs' />;
-  }
+interface NetworkSelectionProps extends Props {
+  onSelect: (network: NetworkInfo) => void;
+  defaultNetwork?: NetworkInfo;
 }
 
-export default function NetworkSelection() {
-  const { network, setNetwork } = useApiContext();
+export default function NetworkSelection({ onSelect, defaultNetwork }: NetworkSelectionProps) {
+  const [selectedNetwork, setSelectedNetwork] = useState<NetworkInfo>();
   const [smallest] = useMediaQuery('(max-width: 325px)');
+
+  useEffect(() => {
+    setSelectedNetwork(defaultNetwork);
+  }, [defaultNetwork]);
+
+  const doSelect = (network: NetworkInfo) => {
+    setSelectedNetwork(network);
+    onSelect(network);
+  }
 
   return (
     <Menu autoSelect={false}>
-      <MenuButton as={Button}>
+      <MenuButton as={Button} minWidth={250} rightIcon={<ChevronDownIcon />}>
         <Flex direction='row' align='center' gap={2}>
-          <img src={network.logo} alt={network.name} width={22} />
-          {!smallest && <span>{network.name}</span>}
-
-          <Box ml={2}>
-            <NetworkStatusIndicator />
-          </Box>
+          {selectedNetwork
+            ? (<>
+              <Avatar size='xs' src={selectedNetwork.logo}/>
+              {!smallest && <span>{selectedNetwork.name}</span>}
+            </>)
+            : (<Text>Select a network</Text>)
+          }
         </Flex>
       </MenuButton>
       <MenuList>
-        {Object.values(SUPPORTED_NETWORKS).map((one) => (
-          <MenuItem
-            key={one.id}
-            onClick={() => setNetwork(one)}
-            backgroundColor={one.id === network.id ? 'gray.200' : ''}>
-            <Flex direction='row' align='center' gap={2}>
-              <img src={one.logo} alt={one.name} width={18} />
-              <span>{one.name}</span>
-            </Flex>
-          </MenuItem>
-        ))}
+        {ChainEnvironments.map((env) =>
+          (<MenuGroup key={env} title={env}>
+              {SUPPORTED_NETWORKS[env].map(one => (
+                <MenuItem
+                  key={one.id}
+                  onClick={() => doSelect(one)}
+                  isDisabled={one.disabled}
+                  backgroundColor={one.id === selectedNetwork?.id ? 'active-menu-item-bg' : ''}>
+                  <Flex direction='row' align='center' gap={2}>
+                    <Avatar size='xs' src={one.logo}/>
+                    <span>{one.name}</span>
+                  </Flex>
+                </MenuItem>
+              ))}
+            </MenuGroup>
+          ))}
       </MenuList>
     </Menu>
   );

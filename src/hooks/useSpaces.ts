@@ -1,0 +1,27 @@
+import { useState } from 'react';
+import { useAsync } from 'react-use';
+import { pickDecoded } from "useink/utils";
+import { useCall } from "@/hooks/useink/useCall";
+import { useWalletContext } from "@/providers/WalletProvider";
+import useMotherContract from "@/hooks/contracts/useMotherContract";
+import { ChainId } from "useink/chains";
+import { OnChainSpace } from "@/types";
+
+export default function useSpaces(chainId: ChainId): OnChainSpace[] {
+  const { selectedAccount } = useWalletContext();
+  const [spaces, setSpaces] = useState<string[]>();
+  const motherContract = useMotherContract(chainId);
+  const memberSpacesCall = useCall<string[]>(motherContract, 'memberSpaces');
+  const memberAddress = selectedAccount?.address;
+
+  useAsync(async () => {
+    if (memberAddress && motherContract) {
+      const result = await memberSpacesCall.send([memberAddress]);
+      setSpaces(pickDecoded(result))
+    } else {
+      setSpaces(undefined)
+    }
+  }, [memberAddress, memberSpacesCall.send]);
+
+  return spaces ? spaces.map((one) => ({ address: one, chainId })): [];
+}

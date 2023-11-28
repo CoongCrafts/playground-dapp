@@ -8,6 +8,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Stack,
+  Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import { useWalletContext } from '@/providers/WalletProvider';
@@ -51,21 +52,24 @@ interface WalletSelectionProps {
   buttonProps?: ChakraProps & ThemingProps<'Button'>;
 }
 
-export default function WalletSelection({ buttonLabel = 'Connect Wallet', buttonProps }: WalletSelectionProps) {
+export default function WalletSelection({ buttonLabel = 'Sign in', buttonProps }: WalletSelectionProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { availableWallets } = useWalletContext();
 
   return (
     <>
-      <Button size='lg' colorScheme='primary' variant='solid' onClick={onOpen} {...buttonProps}>
+      <Button colorScheme='primary' variant='solid' onClick={onOpen} {...buttonProps}>
         {buttonLabel}
       </Button>
       <Modal onClose={onClose} size='sm' isOpen={isOpen}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Select Wallet to Connect</ModalHeader>
+          <ModalHeader>Sign in</ModalHeader>
           <ModalCloseButton />
           <ModalBody mb={4}>
+            <Text mb={4} fontSize='xl'>
+              Connect to your wallet to sign in
+            </Text>
             <Stack>
               {availableWallets.map((one) => (
                 <WalletButton key={one.id} walletInfo={one} afterSelectWallet={onClose} />

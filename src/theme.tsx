@@ -1,26 +1,41 @@
 import { extendTheme } from '@chakra-ui/react';
 
 const breakpoints = {
-  sm: '30em', // 480px
+  sm: '480px',
   md: '632px',
-  lg: '62em',
-  xl: '80em',
-  '2xl': '96em',
+  lg: '992px',
+  xl: '1280px',
+  '2xl': '1536px',
 };
 
 export const theme = extendTheme({
+  config: {
+    initialColorMode: 'light',
+    useSystemColorMode: true,
+  },
   colors: {
     primary: {
-      50: '#ddf6ff',
-      100: '#b5defc',
-      200: '#89c6f4',
-      300: '#5cb0ed',
-      400: '#3299e7',
-      500: '#187fcd', // main color
-      600: '#0c63a1',
-      700: '#034774',
-      800: '#002a48',
-      900: '#000f1e',
+      50: '#efeaff',
+      100: '#ccc2f3',
+      200: '#aa9ce5',
+      300: '#8874d9',
+      400: '#664ccc', // main color
+      500: '#4c33b3',
+      600: '#3b278c',
+      700: '#291b65',
+      800: '#18103f',
+      900: '#08051b',
+    },
+  },
+  semanticTokens: {
+    colors: {
+      'active-menu-item-bg': {
+        _dark: 'gray.600',
+        _light: 'gray.200',
+      },
+      'chakra-body-bg': {
+        _dark: '#2c2c2c',
+      },
     },
   },
   breakpoints,
