@@ -1,23 +1,62 @@
 import { Box, Button, Flex, Tag, Text } from "@chakra-ui/react";
 import { useSpaceContext } from "@/providers/SpaceProvider";
 import useContractState from "@/hooks/useContractState";
-import { MemberRecord, Pagination } from "@/types";
+import { MemberRecord, MemberStatus, Pagination } from "@/types";
 import { shortenAddress } from "@/utils/string";
 import { Identicon } from "@polkadot/react-identicon";
-import { AddIcon } from "@chakra-ui/icons";
+import { isAddress } from "@polkadot/util-crypto";
+import { toast } from "react-toastify";
+import { pickDecoded } from "useink/utils";
+import { useCall } from "@/hooks/useink/useCall";
+import { useTx } from "@/hooks/useink/useTx";
 
 export default function Members() {
   const {membersCount, contract, isOwner} = useSpaceContext();
   const {state: page} = useContractState<Pagination<MemberRecord>>(contract, 'listMembers', [0, 50]);
+  const memberStatusCall = useCall<MemberStatus>(contract, 'memberStatus');
+  const grantMembershipTx = useTx(contract, 'grantMembership');
+
   let {items = []} = page || {};
   // TODO add pagination
+
+  const invite = async () => {
+    const address = window.prompt('Address to invite:');
+    if (!address) {
+      return;
+    }
+
+    if (isAddress(address)) {
+      const result = await memberStatusCall.send([address]);
+      const status = pickDecoded(result);
+      if (!status) {
+        toast.error('Cannot check member status of the address');
+        return;
+      }
+
+      if (status === MemberStatus.None) {
+        grantMembershipTx.signAndSend([address, null], {}, (result) => {
+          if (result?.isInBlock) {
+            if (result.dispatchError) {
+              toast.error(result.dispatchError.toString());
+            } else {
+              toast.success('Invited');
+            }
+          }
+        });
+      } else {
+        toast.error('The address is already a member of the space!');
+      }
+    } else {
+      toast.error('Invalid address format');
+    }
+  }
 
   return (
     <Box>
       <Flex justify='space-between' align='center' mb={4} gap={2}>
         <Text fontSize='xl' fontWeight='semibold'>Members</Text>
         <Flex gap={2}>
-          {isOwner && <Button variant='outline' size='sm' colorScheme='primary' leftIcon={<AddIcon />}>Invite</Button>}
+          {isOwner && <Button variant='outline' size='sm' colorScheme='primary' onClick={invite}>Invite</Button>}
         </Flex>
       </Flex>
       <Flex wrap='wrap' gap={2}>
