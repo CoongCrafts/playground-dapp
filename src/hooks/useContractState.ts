@@ -1,6 +1,6 @@
 import { ChainContract, useBlockHeader, useCall, useWallet } from "useink";
 import { ContractPromise } from "@polkadot/api-contract";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useAsync } from "react-use";
 import { pickDecoded } from "useink/utils";
 
@@ -9,11 +9,12 @@ export default function useContractState<T>(contract: ChainContract<ContractProm
   const call = useCall<T>(contract, message);
   const blockNumber = useBlockHeader()?.blockNumber;
   const { account } = useWallet();
+  const actualArgs = useMemo(() => args, args);
 
   useAsync(async () => {
-    const result = await call.send(args, { defaultCaller });
+    const result = await call.send(actualArgs, { defaultCaller });
     setState(pickDecoded<T>(result));
-  }, [account, call.send, blockNumber])
+  }, [account, call.send, blockNumber, actualArgs])
 
   return { state };
 }
