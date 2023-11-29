@@ -50,6 +50,7 @@ function SpaceContent() {
                 Joined
               </MenuButton>
               <MenuList>
+                <MenuItem>Set Display Name</MenuItem>
                 <MenuItem color='red'>Leave</MenuItem>
               </MenuList>
             </Menu>
