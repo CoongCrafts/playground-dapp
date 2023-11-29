@@ -1,11 +1,11 @@
-import { Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
 import { Link as LinkRouter, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import { shortenAddress } from "@/utils/string";
 import SpaceProvider, { useSpaceContext } from "@/providers/SpaceProvider";
 import { ChainId } from "useink/chains";
 import SpaceAvatar from "@/components/space/SpaceAvatar";
 import { useEffectOnce } from "react-use";
-import { InfoIcon, SettingsIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, InfoIcon, SettingsIcon } from "@chakra-ui/icons";
 import React from "react";
 import pluralize from "pluralize";
 import { MemberStatus } from "@/types";
@@ -42,8 +42,18 @@ function SpaceContent() {
           </Box>
         </Flex>
         <Box mt={2}>
-          {memberStatus === MemberStatus.None && (<Button colorScheme='primary' width={100}>Join</Button>)}
-          {memberStatus === MemberStatus.Inactive && (<Button colorScheme='primary' variant='outline' width={100}>Reactive</Button>)}
+          {memberStatus === MemberStatus.None && (<Button colorScheme='primary' variant='outline' size='sm' width={100}>Join</Button>)}
+          {memberStatus === MemberStatus.Inactive && (<Button colorScheme='primary' variant='outline' size='sm' width={100}>Reactive</Button>)}
+          {memberStatus === MemberStatus.Active && (
+            <Menu>
+              <MenuButton as={Button} variant='outline' size='sm' width={100} rightIcon={<ChevronDownIcon />}>
+                Joined
+              </MenuButton>
+              <MenuList>
+                <MenuItem color='red'>Leave</MenuItem>
+              </MenuList>
+            </Menu>
+          )}
         </Box>
       </Flex>
 
