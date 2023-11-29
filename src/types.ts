@@ -76,3 +76,9 @@ export interface Pagination<Item> {
   hasNextPage: boolean,
   total: string;
 }
+
+export enum MemberStatus {
+  None = 'None',
+  Active = 'Active',
+  Inactive = 'Inactive'
+}

@@ -1,6 +1,6 @@
 import useSpace from "@/hooks/useSpace";
 import { createContext, useContext } from "react";
-import { NetworkInfo, OnChainSpace, Props, SpaceConfig, SpaceInfo } from "@/types";
+import { MemberStatus, NetworkInfo, OnChainSpace, Props, SpaceConfig, SpaceInfo } from "@/types";
 import { findNetwork } from "@/utils/networks";
 import { ApiPromise } from "@polkadot/api";
 import { ChainContract, useApi } from "useink";
@@ -15,11 +15,11 @@ interface SpaceContextProps {
   info?: SpaceInfo;
   config?: SpaceConfig;
   membersCount?: number;
-  isActiveMember?: boolean;
   codeHash?: string;
   motherContract?: ChainContract
   contract?: ChainContract,
   isOwner: boolean;
+  memberStatus?: MemberStatus;
 }
 
 export const SpaceContext = createContext<SpaceContextProps>(null!);
@@ -42,14 +42,14 @@ export default function SpaceProvider({space, children}: SpaceProviderProps) {
   const contract = useSpaceContract(space);
   const { selectedAccount } = useWalletContext();
 
-  const {info, membersCount, isActiveMember, config, codeHash, ownerId} = useSpace(space);
+  const {info, membersCount, config, codeHash, ownerId, memberStatus} = useSpace(space);
   const network = findNetwork(space.chainId);
   const {api} = useApi(space.chainId) || {};
 
   const isOwner = selectedAccount?.address === ownerId;
 
   return (
-    <SpaceContext.Provider value={{network, space, api, info, membersCount, isActiveMember, config, codeHash, motherContract, contract, isOwner}}>
+    <SpaceContext.Provider value={{network, space, api, info, membersCount, config, codeHash, motherContract, contract, isOwner, memberStatus}}>
       {children}
     </SpaceContext.Provider>
   )

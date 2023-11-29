@@ -58,7 +58,7 @@ export default function WalletSelection({ buttonLabel = 'Sign in', buttonProps }
 
   return (
     <>
-      <Button colorScheme='primary' variant='solid' onClick={onOpen} {...buttonProps}>
+      <Button colorScheme='primary' variant='outline' onClick={onOpen} {...buttonProps}>
         {buttonLabel}
       </Button>
       <Modal onClose={onClose} size='sm' isOpen={isOpen}>

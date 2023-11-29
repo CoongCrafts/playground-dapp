@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x8ff0cfae4eda6a379899da28537a8bba00392161be377e5166fd5705cc17ba85",
+    "hash": "0x148ceaf66678c76ebdae0786154edf46192aab82900ffd61e321ce955a4ff994",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.73.0-nightly",
     "build_info": {
@@ -100,13 +100,13 @@
         "displayName": [
           "ChainExtension"
         ],
-        "type": 50
+        "type": 52
       },
       "hash": {
         "displayName": [
           "Hash"
         ],
-        "type": 47
+        "type": 49
       },
       "maxEventTopics": 4,
       "timestamp": {
@@ -408,6 +408,32 @@
         "selector": "0x835051e0"
       },
       {
+        "args": [
+          {
+            "label": "who",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "member_status",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 44
+        },
+        "selector": "0x2f8bd8ef"
+      },
+      {
         "args": [],
         "default": false,
         "docs": [
@@ -421,7 +447,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 44
+          "type": 46
         },
         "selector": "0xeef02b02"
       },
@@ -439,7 +465,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 44
+          "type": 46
         },
         "selector": "0x0e200f7d"
       },
@@ -457,7 +483,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 45
+          "type": 47
         },
         "selector": "0x0190e5ac"
       },
@@ -499,7 +525,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 46
+          "type": 48
         },
         "selector": "0x70714744"
       },
@@ -537,7 +563,7 @@
               "displayName": [
                 "Hash"
               ],
-              "type": 47
+              "type": 49
             }
           }
         ],
@@ -551,7 +577,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 48
+          "type": 50
         },
         "selector": "0x1700ae80"
       },
@@ -567,7 +593,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 49
+          "type": 51
         },
         "selector": "0xbaa5b034"
       }
@@ -2270,6 +2296,76 @@
               {
                 "fields": [
                   {
+                    "type": 45
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 21
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 45
+          },
+          {
+            "name": "E",
+            "type": 21
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 45,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "index": 1,
+                "name": "Active"
+              },
+              {
+                "index": 2,
+                "name": "Inactive"
+              }
+            ]
+          }
+        },
+        "path": [
+          "space",
+          "space",
+          "MemberStatus"
+        ]
+      }
+    },
+    {
+      "id": 46,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
                     "type": 3
                   }
                 ],
@@ -2304,7 +2400,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 47,
       "type": {
         "def": {
           "variant": {
@@ -2346,7 +2442,7 @@
       }
     },
     {
-      "id": 46,
+      "id": 48,
       "type": {
         "def": {
           "variant": {
@@ -2388,7 +2484,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 49,
       "type": {
         "def": {
           "composite": {
@@ -2408,7 +2504,7 @@
       }
     },
     {
-      "id": 48,
+      "id": 50,
       "type": {
         "def": {
           "variant": {
@@ -2450,7 +2546,7 @@
       }
     },
     {
-      "id": 49,
+      "id": 51,
       "type": {
         "def": {
           "variant": {
@@ -2458,7 +2554,7 @@
               {
                 "fields": [
                   {
-                    "type": 47
+                    "type": 49
                   }
                 ],
                 "index": 0,
@@ -2479,7 +2575,7 @@
         "params": [
           {
             "name": "T",
-            "type": 47
+            "type": 49
           },
           {
             "name": "E",
@@ -2492,7 +2588,7 @@
       }
     },
     {
-      "id": 50,
+      "id": 52,
       "type": {
         "def": {
           "variant": {}

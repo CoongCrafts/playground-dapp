@@ -8,6 +8,7 @@ import { useEffectOnce } from "react-use";
 import { InfoIcon, SettingsIcon } from "@chakra-ui/icons";
 import React from "react";
 import pluralize from "pluralize";
+import { MemberStatus } from "@/types";
 
 type MenuItem = { name: string, path: string, icon: React.ReactElement };
 
@@ -19,7 +20,7 @@ const MENU_ITEMS: MenuItem[] = [
 function SpaceContent() {
   const navigate = useNavigate();
   const location = useLocation();
-  const {info, space, membersCount} = useSpaceContext();
+  const {info, space, membersCount, memberStatus} = useSpaceContext();
 
   useEffectOnce(() => {
     if (location.pathname.endsWith(space.address)) {
@@ -31,12 +32,18 @@ function SpaceContent() {
 
   return (
     <Box mt={2}>
-      <Flex gap={6}>
-        {info && <SpaceAvatar space={space} info={info}/>}
+      <Flex justify='space-between'>
+        <Flex gap={6}>
+          {info && <SpaceAvatar space={space} info={info}/>}
+          <Box mt={2}>
+            <Heading size='md' mb={1}>{info?.name}</Heading>
+            <Text as='span' fontSize='md' fontWeight='semibold' color='gray'>{(shortenAddress(space.address))}</Text> • <Text as='span' fontSize='md' color='gray'>{membersCount} {pluralize('member', membersCount)}</Text>
+            <Text fontSize='md' color='gray'>{info?.desc}</Text>
+          </Box>
+        </Flex>
         <Box mt={2}>
-          <Heading size='md' mb={1}>{info?.name}</Heading>
-          <Text as='span' fontSize='md' fontWeight='semibold' color='gray'>{(shortenAddress(space.address))}</Text> • <Text as='span' fontSize='md' color='gray'>{membersCount} {pluralize('member', membersCount)}</Text>
-          <Text fontSize='md' color='gray'>{info?.desc}</Text>
+          {memberStatus === MemberStatus.None && (<Button colorScheme='primary' width={100}>Join</Button>)}
+          {memberStatus === MemberStatus.Inactive && (<Button colorScheme='primary' variant='outline' width={100}>Reactive</Button>)}
         </Box>
       </Flex>
 
