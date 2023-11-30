@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Chain, ChainId } from "useink/chains";
+import { Chain, ChainId } from 'useink/chains';
 
 export interface Props {
   className?: string;
@@ -11,7 +11,7 @@ export interface Props {
 export enum ChainEnvironment {
   Development = 'Development',
   Testnet = 'Testnet',
-  Production = 'Production'
+  Production = 'Production',
 }
 
 export const ChainEnvironments = Object.values(ChainEnvironment);
@@ -34,25 +34,26 @@ export interface SpaceInfo {
   logo: {
     Url?: string;
     IpfsCid?: string;
-  } | null
+  } | null;
 }
 
 export enum RegistrationType {
   PayToJoin = 'PayToJoin',
-  RequestToJoin = 'RequestToJoin'
+  RequestToJoin = 'RequestToJoin',
 }
 
 export enum Pricing {
   Free = 'Free',
   OneTimePaid = 'OneTimePaid',
-  Subscription = 'Subscription'
+  Subscription = 'Subscription',
 }
 
 export interface SpaceConfig {
-  registration: RegistrationType
-  pricing: Pricing.Free
+  registration: RegistrationType;
+  pricing:
+    | Pricing.Free
     | { [Pricing.OneTimePaid]: { price: string } }
-    | { [Pricing.Subscription]: { price: string, duration: string } }
+    | { [Pricing.Subscription]: { price: string; duration: string } };
 }
 
 export interface OnChainSpace {
@@ -63,22 +64,25 @@ export interface OnChainSpace {
 export interface MemberRecord {
   index: string;
   accountId: string;
-  info: {
-    name: string | null;
-    nextRenewalAt: number | null;
-  }
+  info: MemberInfo;
 }
 
 export interface Pagination<Item> {
-  items: Array<Item>,
+  items: Array<Item>;
   from: string;
   perPage: string;
-  hasNextPage: boolean,
+  hasNextPage: boolean;
   total: string;
 }
 
 export enum MemberStatus {
   None = 'None',
   Active = 'Active',
-  Inactive = 'Inactive'
+  Inactive = 'Inactive',
+}
+
+export interface MemberInfo {
+  name: string | null;
+  nextRenewalAt: number | null;
+  joinedAt: number;
 }
