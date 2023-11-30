@@ -22,6 +22,7 @@ import { Identicon } from '@polkadot/react-identicon';
 import { FormEvent } from 'react';
 import { toast } from 'react-toastify';
 import { isAddress } from '@polkadot/util-crypto';
+import EmptySpace from '@/components/shared/EmptySpace';
 import { useCall } from '@/hooks/useink/useCall';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
@@ -30,7 +31,12 @@ import { useFormik } from 'formik';
 import { pickDecoded } from 'useink/utils';
 import * as yup from 'yup';
 
-const MILSECS_PER_DAY = 24 * 60 * 60 * 1000;
+const MILISECS_PER_DAY = 24 * 60 * 60 * 1000;
+
+function toastErrAndOut(message: string) {
+  toast.error(message);
+  return;
+}
 
 function InviteMemberButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -46,42 +52,38 @@ function InviteMemberButton() {
     }),
     onSubmit: async (values) => {
       await inviteMember(values.address, values.expire);
-      handleClose();
-      formikInviteMember.setSubmitting(false);
     },
   });
 
-  const handleClose = () => {
-    formikInviteMember.setTouched({ address: false });
-    formikInviteMember.setValues({ address: '', expire: undefined });
-    onClose();
+  const inviteMember = async (address: string, expireAfter?: number) => {
+    if (!isAddress(address)) {
+      return toastErrAndOut('Invalid address format');
+    }
+
+    const result = await memberStatusCall.send([address]);
+    const status = pickDecoded(result);
+    if (!status) {
+      return toastErrAndOut('Cannot check member status of the address');
+    }
+
+    if (status !== MemberStatus.None) {
+      return toastErrAndOut('The address is already a member of the space!');
+    }
+
+    grantMembershipTx.signAndSend([address, expireAfter ? expireAfter * MILISECS_PER_DAY : null], {}, (result) => {
+      if (result?.isInBlock) {
+        if (result.dispatchError) {
+          toast.error(result.dispatchError.toString());
+        } else {
+          toast.success('Invited');
+        }
+      }
+    });
   };
 
-  const inviteMember = async (address: string, expireAfter?: number) => {
-    if (isAddress(address)) {
-      const result = await memberStatusCall.send([address]);
-      const status = pickDecoded(result);
-      if (!status) {
-        toast.error('Cannot check member status of the address');
-        return;
-      }
-
-      if (status === MemberStatus.None) {
-        grantMembershipTx.signAndSend([address, expireAfter ? expireAfter * MILSECS_PER_DAY : null], {}, (result) => {
-          if (result?.isInBlock) {
-            if (result.dispatchError) {
-              toast.error(result.dispatchError.toString());
-            } else {
-              toast.success('Invited');
-            }
-          }
-        });
-      } else {
-        toast.error('The address is already a member of the space!');
-      }
-    } else {
-      toast.error('Invalid address format');
-    }
+  const handleClose = () => {
+    formikInviteMember.setValues({ address: '', expire: undefined });
+    onClose();
   };
 
   return (
@@ -120,7 +122,7 @@ function InviteMemberButton() {
               {!!formikInviteMember.values.address && !!formikInviteMember.errors.address ? (
                 <FormErrorMessage>{formikInviteMember.errors.address}</FormErrorMessage>
               ) : (
-                <span>&nbsp;</span>
+                <EmptySpace />
               )}
             </FormControl>
             <FormControl isInvalid={!!formikInviteMember.errors.expire} width='50%'>
@@ -149,7 +151,9 @@ function InviteMemberButton() {
             <Button
               type='submit'
               colorScheme='primary'
-              isDisabled={formikInviteMember.isSubmitting || !!Object.keys(formikInviteMember.errors).length}>
+              isDisabled={
+                grantMembershipTx.status === 'PendingSignature' || !!Object.keys(formikInviteMember.errors).length
+              }>
               Invite
             </Button>
           </ModalFooter>
