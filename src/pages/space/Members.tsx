@@ -1,87 +1,67 @@
-import { Box, Button, Flex, Tag, Text } from "@chakra-ui/react";
-import { useSpaceContext } from "@/providers/SpaceProvider";
-import useContractState from "@/hooks/useContractState";
-import { MemberRecord, MemberStatus, Pagination } from "@/types";
-import { shortenAddress } from "@/utils/string";
-import { Identicon } from "@polkadot/react-identicon";
-import { isAddress } from "@polkadot/util-crypto";
-import { toast } from "react-toastify";
-import { pickDecoded } from "useink/utils";
-import { useCall } from "@/hooks/useink/useCall";
-import { useTx } from "@/hooks/useink/useTx";
+import { Box, Flex, Tag, Text } from '@chakra-ui/react';
+import { Identicon } from '@polkadot/react-identicon';
+import useContractState from '@/hooks/useContractState';
+import InviteMemberButton from '@/pages/space/InviteMemberButton';
+import { useSpaceContext } from '@/providers/SpaceProvider';
+import { MemberRecord, Pagination } from '@/types';
+import { shortenAddress } from '@/utils/string';
 
 export default function Members() {
-  const {membersCount, contract, isOwner} = useSpaceContext();
-  const {state: page} = useContractState<Pagination<MemberRecord>>(contract, 'listMembers', [0, 50]);
-  const memberStatusCall = useCall<MemberStatus>(contract, 'memberStatus');
-  const grantMembershipTx = useTx(contract, 'grantMembership');
+  const { membersCount, contract, isOwner } = useSpaceContext();
+  const { state: page } = useContractState<Pagination<MemberRecord>>(contract, 'listMembers', [0, 50]);
 
-  let {items = []} = page || {};
+  let { items = [] } = page || {};
   // TODO add pagination
-
-  const invite = async () => {
-    const address = window.prompt('Address to invite:');
-    if (!address) {
-      return;
-    }
-
-    if (isAddress(address)) {
-      const result = await memberStatusCall.send([address]);
-      const status = pickDecoded(result);
-      if (!status) {
-        toast.error('Cannot check member status of the address');
-        return;
-      }
-
-      if (status === MemberStatus.None) {
-        grantMembershipTx.signAndSend([address, null], {}, (result) => {
-          if (result?.isInBlock) {
-            if (result.dispatchError) {
-              toast.error(result.dispatchError.toString());
-            } else {
-              toast.success('Invited');
-            }
-          }
-        });
-      } else {
-        toast.error('The address is already a member of the space!');
-      }
-    } else {
-      toast.error('Invalid address format');
-    }
-  }
 
   return (
     <Box>
       <Flex justify='space-between' align='center' mb={4} gap={2}>
-        <Text fontSize='xl' fontWeight='semibold'>Members</Text>
-        <Flex gap={2}>
-          {isOwner && <Button variant='outline' size='sm' colorScheme='primary' onClick={invite}>Invite</Button>}
-        </Flex>
+        <Text fontSize='xl' fontWeight='semibold'>
+          Members
+        </Text>
+        <Flex gap={2}>{isOwner && <InviteMemberButton />}</Flex>
       </Flex>
       <Flex wrap='wrap' gap={2}>
-        {items.map(item => {
-          const isActive = item.info.nextRenewalAt === null || item.info.nextRenewalAt > Date.now();
-
+        {items.map((item) => {
+          const isActive =
+            item.info.nextRenewalAt === null ||
+            parseInt(item.info.nextRenewalAt.toString().replaceAll(',', '')) > Date.now();
           return (
-            <Flex key={item.index} px={4} py={3} gap={2} border={1} borderStyle='solid' borderColor='chakra-border-color'>
-              <Identicon value={item.accountId} size={32} theme='polkadot'/>
+            <Flex
+              key={item.index}
+              px={4}
+              py={3}
+              gap={2}
+              border={1}
+              borderStyle='solid'
+              borderColor='chakra-border-color'>
+              <Identicon value={item.accountId} size={32} theme='polkadot' />
               <Flex direction='column' gap={1}>
-                <Text color='gray' fontWeight='semibold'>{shortenAddress(item.accountId)}</Text>
+                <Text color='gray' fontWeight='semibold'>
+                  {shortenAddress(item.accountId)}
+                </Text>
                 <Box>
-                  {isActive ? <Tag size='sm' variant='solid' colorScheme='green'>Active</Tag> :
-                    <Tag size='sm' variant='solid' colorScheme='red'>Inactive</Tag>}
+                  {isActive ? (
+                    <Tag size='sm' variant='solid' colorScheme='green'>
+                      Active
+                    </Tag>
+                  ) : (
+                    <Tag size='sm' variant='solid' colorScheme='red'>
+                      Inactive
+                    </Tag>
+                  )}
                 </Box>
               </Flex>
             </Flex>
-          )
+          );
         })}
       </Flex>
       <Flex mt={4}>
         <Flex align='center' gap={2}>
-          <Text fontSize='sm'>Total members:</Text><Tag size='sm'>{membersCount}</Tag>
+          <Text fontSize='sm'>Total members:</Text>
+          <Tag size='sm'>{membersCount}</Tag>
         </Flex>
       </Flex>
     </Box>
-  )
+  );
 }
