@@ -33,7 +33,7 @@ import * as yup from 'yup';
 
 const MILISECS_PER_DAY = 24 * 60 * 60 * 1000;
 
-function toastErrAndOut(message: string) {
+function toastErrAndReturnNothing(message: string) {
   toast.error(message);
   return;
 }
@@ -57,23 +57,23 @@ function InviteMemberButton() {
 
   const inviteMember = async (address: string, expireAfter?: number) => {
     if (!isAddress(address)) {
-      return toastErrAndOut('Invalid address format');
+      return toastErrAndReturnNothing('Invalid address format');
     }
 
     const result = await memberStatusCall.send([address]);
     const status = pickDecoded(result);
     if (!status) {
-      return toastErrAndOut('Cannot check member status of the address');
+      return toastErrAndReturnNothing('Cannot check member status of the address');
     }
 
     if (status !== MemberStatus.None) {
-      return toastErrAndOut('The address is already a member of the space!');
+      return toastErrAndReturnNothing('The address is already a member of the space!');
     }
 
     grantMembershipTx.signAndSend([address, expireAfter ? expireAfter * MILISECS_PER_DAY : null], {}, (result) => {
       if (result?.isInBlock) {
         if (result.dispatchError) {
-          toast.error(result.dispatchError.toString());
+          toastErrAndReturnNothing(result.dispatchError.toString());
         } else {
           toast.success('Invited');
         }

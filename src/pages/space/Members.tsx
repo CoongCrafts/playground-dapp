@@ -4,6 +4,7 @@ import useContractState from '@/hooks/useContractState';
 import InviteMemberButton from '@/pages/space/InviteMemberButton';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberRecord, Pagination } from '@/types';
+import { numToDecimalPointRemovedNum } from '@/utils/number';
 import { shortenAddress } from '@/utils/string';
 
 export default function Members() {
@@ -24,8 +25,7 @@ export default function Members() {
       <Flex wrap='wrap' gap={2}>
         {items.map((item) => {
           const isActive =
-            item.info.nextRenewalAt === null ||
-            parseInt(item.info.nextRenewalAt.toString().replaceAll(',', '')) > Date.now();
+            item.info.nextRenewalAt === null || numToDecimalPointRemovedNum(item.info.nextRenewalAt) > Date.now();
           return (
             <Flex
               key={item.index}
