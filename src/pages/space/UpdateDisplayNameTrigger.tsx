@@ -25,19 +25,7 @@ import * as yup from 'yup';
 function UpdateDisplayNameTrigger() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { contract, memberInfo } = useSpaceContext();
-  const setMemberInfo = useTx(contract, 'setMemberInfo');
-
-  const updateDisplayName = (displayName?: string) => {
-    setMemberInfo.signAndSend([displayName], {}, (result) => {
-      if (result?.isInBlock) {
-        if (result.dispatchError) {
-          toast.error(result.dispatchError.toString());
-        } else {
-          toast.success('Display name updated');
-        }
-      }
-    });
-  };
+  const updateMemberInfo = useTx(contract, 'updateMemberInfo');
 
   const formikSetDisplayName = useFormik({
     initialValues: { displayName: '' },
@@ -50,9 +38,22 @@ function UpdateDisplayNameTrigger() {
     }),
     onSubmit: ({ displayName }) => {
       updateDisplayName(displayName);
-      handleClose();
     },
   });
+
+  const updateDisplayName = (displayName?: string) => {
+    updateMemberInfo.signAndSend([displayName], {}, (result) => {
+      if (result?.isInBlock) {
+        if (result.dispatchError) {
+          toast.error(result.dispatchError.toString());
+        } else {
+          toast.success('Display name updated');
+        }
+      }
+
+      handleClose();
+    });
+  };
 
   const handleClose = () => {
     formikSetDisplayName.setValues({ displayName: '' });
@@ -91,8 +92,10 @@ function UpdateDisplayNameTrigger() {
             <Button
               type='submit'
               colorScheme='primary'
-              isDisabled={Object.keys(formikSetDisplayName.errors).length !== 0}>
-              Set Name
+              isDisabled={
+                updateMemberInfo.status === 'PendingSignature' || Object.keys(formikSetDisplayName.errors).length !== 0
+              }>
+              Update
             </Button>
           </ModalFooter>
         </ModalContent>
