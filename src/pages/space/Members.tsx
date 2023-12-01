@@ -1,15 +1,11 @@
-import { Button, Flex, IconButton, SimpleGrid, Tag, Text } from '@chakra-ui/react';
-import { useState } from 'react';
-import { toast } from 'react-toastify';
-import { isAddress } from '@polkadot/util-crypto';
+import { Box, Flex, Tag, Text } from '@chakra-ui/react';
+import { Identicon } from '@polkadot/react-identicon';
 import useContractState from '@/hooks/useContractState';
-import { useCall } from '@/hooks/useink/useCall';
-import { useTx } from '@/hooks/useink/useTx';
-import MemberCard from '@/pages/space/MemberCard';
+import InviteMemberButton from '@/pages/space/InviteMemberButton';
 import { useSpaceContext } from '@/providers/SpaceProvider';
-import { MemberRecord, MemberStatus, Pagination } from '@/types';
-import { AddIcon, ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import { pickDecoded } from 'useink/utils';
+import { MemberRecord, Pagination } from '@/types';
+import { numToDecimalPointRemovedNum } from '@/utils/number';
+import { shortenAddress } from '@/utils/string';
 
 const RECORD_PER_PAGE = 3 * 3;
 
@@ -20,44 +16,16 @@ export default function Members() {
     (pageIndex - 1) * RECORD_PER_PAGE,
     RECORD_PER_PAGE,
   ]);
-  const memberStatusCall = useCall<MemberStatus>(contract, 'memberStatus');
-  const grantMembershipTx = useTx(contract, 'grantMembership');
   const { items = [], total } = page || {};
   const numberOfPage = total ? Math.ceil(parseInt(total) / RECORD_PER_PAGE) : 1;
 
-  const invite = async () => {
-    const address = window.prompt('Address to invite:');
-    if (!address) {
-      return;
-    }
-
-    if (isAddress(address)) {
-      const result = await memberStatusCall.send([address]);
-      const status = pickDecoded(result);
-      if (!status) {
-        toast.error('Cannot check member status of the address');
-        return;
-      }
-
-      if (status === MemberStatus.None) {
-        grantMembershipTx.signAndSend([address, null], {}, (result) => {
-          if (result?.isInBlock) {
-            if (result.dispatchError) {
-              toast.error(result.dispatchError.toString());
-            } else {
-              toast.success('Invited');
-            }
-          }
-        });
-      } else {
-        toast.error('The address is already a member of the space!');
-      }
-    } else {
-      toast.error('Invalid address format');
-    }
-  };
-
   return (
+    <Box>
+      <Flex justify='space-between' align='center' mb={4} gap={2}>
+        <Text fontSize='xl' fontWeight='semibold'>
+          Members
+        </Text>
+        <Flex gap={2}>{isOwner && <InviteMemberButton />}</Flex>
     <Flex flexDirection='column' height={{ base: 'fit-content', md: '25rem' }}>
       <Flex justify={{ base: 'end', md: 'space-between' }} align='center' mb={4} gap={2}>
         <Text display={{ base: 'none', md: 'block' }} fontSize='xl' fontWeight='semibold'>
@@ -85,6 +53,39 @@ export default function Members() {
           )}
         </Flex>
       </Flex>
+      <Flex wrap='wrap' gap={2}>
+        {items.map((item) => {
+          const isActive =
+            item.info.nextRenewalAt === null || numToDecimalPointRemovedNum(item.info.nextRenewalAt) > Date.now();
+          return (
+            <Flex
+              key={item.index}
+              px={4}
+              py={3}
+              gap={2}
+              border={1}
+              borderStyle='solid'
+              borderColor='chakra-border-color'>
+              <Identicon value={item.accountId} size={32} theme='polkadot' />
+              <Flex direction='column' gap={1}>
+                <Text color='gray' fontWeight='semibold'>
+                  {shortenAddress(item.accountId)}
+                </Text>
+                <Box>
+                  {isActive ? (
+                    <Tag size='sm' variant='solid' colorScheme='green'>
+                      Active
+                    </Tag>
+                  ) : (
+                    <Tag size='sm' variant='solid' colorScheme='red'>
+                      Inactive
+                    </Tag>
+                  )}
+                </Box>
+              </Flex>
+            </Flex>
+          );
+        })}
       <SimpleGrid flexGrow={1} columns={{ base: 1, lg: 3 }} gap={2}>
         {items.map((item) => (
           <MemberCard key={item.index} memberRecord={item} />
