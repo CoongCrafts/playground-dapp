@@ -1,4 +1,19 @@
-import { Box, Button, Flex, Heading, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Tab,
+  TabIndicator,
+  TabList,
+  Tabs,
+  Text,
+} from '@chakra-ui/react';
 import React from 'react';
 import { Link as LinkRouter, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffectOnce } from 'react-use';
@@ -33,7 +48,7 @@ function SpaceContent() {
 
   return (
     <Box mt={2}>
-      <Flex justify='space-between'>
+      <Flex mb={4} justify='space-between' flexDir={{ base: 'column', md: 'row' }}>
         <Flex gap={6}>
           {info && <SpaceAvatar space={space} info={info} />}
           <Box mt={2}>
@@ -52,7 +67,7 @@ function SpaceContent() {
             </Text>
           </Box>
         </Flex>
-        <Box mt={2}>
+        <Box mt={2} alignSelf='end'>
           {memberStatus === MemberStatus.None && (
             <Button colorScheme='primary' variant='outline' size='sm' width={100}>
               Join
@@ -78,9 +93,9 @@ function SpaceContent() {
           )}
         </Box>
       </Flex>
-
-      <Flex gap={2} mt={6}>
-        <Flex direction='column' width={200}>
+      <Divider display={{ base: 'block', md: 'none' }} />
+      <Flex mt={{ base: 0, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
+        <Flex direction='column' width={200} display={{ base: 'none', md: 'flex' }}>
           {MENU_ITEMS.map((one) => (
             <Button
               key={one.name}
@@ -95,6 +110,25 @@ function SpaceContent() {
             </Button>
           ))}
         </Flex>
+        <Tabs
+          variant='unstyled'
+          overflowX='scroll'
+          display={{ base: 'block', md: 'none' }}
+          style={{ scrollbarWidth: 'none' }} // Hide scrollbar on Firefox
+          css={{
+            '&::-webkit-scrollbar': {
+              display: 'none', // Hide scrollbar on Chromium
+            },
+          }}>
+          <TabList>
+            {MENU_ITEMS.map((one) => (
+              <Tab key={one.name} as={LinkRouter} to={one.path}>
+                {one.name}
+              </Tab>
+            ))}
+          </TabList>
+          <TabIndicator mt='-3px' height='3px' bg='blue.500' borderRadius='2rem' />
+        </Tabs>
         <Box flex={1} borderWidth={1} borderColor='chakra-border-color' p={4}>
           <Outlet />
         </Box>

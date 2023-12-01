@@ -15,26 +15,19 @@ function MemberCard({ memberRecord }: MemberCardProps) {
 
   return (
     <Flex
-      px={2}
-      py={2}
+      p={2}
       gap={2}
       height='6rem'
       border={1}
       borderStyle='solid'
       borderColor='chakra-border-color'
       alignItems='center'>
-      <Flex direction='column' alignItems='center' flexShrink={0} width='25%' gap={2}>
+      <Flex direction='column' flexShrink={0} gap={2} alignItems='center' width='25%'>
         <Identicon value={memberRecord.accountId} size={32} theme='polkadot' />
         <Box>
-          {isActive ? (
-            <Badge fontSize='0.60rem' variant='solid' colorScheme='green'>
-              Active
-            </Badge>
-          ) : (
-            <Badge fontSize='0.60rem' variant='solid' colorScheme='red'>
-              Inactive
-            </Badge>
-          )}
+          <Badge fontSize='0.60rem' variant='solid' colorScheme={isActive ? 'green' : 'red'}>
+            {isActive ? 'Active' : 'Inactive'}
+          </Badge>
         </Box>
       </Flex>
       <Box alignSelf='start'>

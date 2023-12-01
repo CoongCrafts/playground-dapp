@@ -49,14 +49,16 @@ function UpdateDisplayNameTrigger() {
         } else {
           toast.success('Display name updated');
         }
+        handleClose();
       }
-
-      handleClose();
     });
   };
 
   const handleClose = () => {
     formikSetDisplayName.setValues({ displayName: '' });
+    // To avoid `Update` button from being frozen
+    // when the user closes the sign window by `x` button.
+    updateMemberInfo.resetState();
     onClose();
   };
   return (
@@ -64,7 +66,7 @@ function UpdateDisplayNameTrigger() {
       <Text onClick={onOpen} width='100%' textAlign='left'>
         {memberInfo?.name ? 'Change Display Name' : 'Set Display Name'}
       </Text>
-      <Modal isOpen={isOpen} onClose={handleClose}>
+      <Modal isOpen={isOpen} onClose={handleClose} size={{ base: 'full', md: 'md' }}>
         <ModalOverlay />
         <ModalContent as='form' onSubmit={(e) => formikSetDisplayName.handleSubmit(e as FormEvent<HTMLFormElement>)}>
           <ModalHeader>{memberInfo?.name ? 'Change Display Name' : 'Set Display Name'}</ModalHeader>

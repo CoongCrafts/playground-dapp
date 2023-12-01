@@ -8,7 +8,7 @@ import { useTx } from '@/hooks/useink/useTx';
 import MemberCard from '@/pages/space/MemberCard';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberRecord, MemberStatus, Pagination } from '@/types';
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { AddIcon, ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { pickDecoded } from 'useink/utils';
 
 const RECORD_PER_PAGE = 3 * 3;
@@ -58,20 +58,34 @@ export default function Members() {
   };
 
   return (
-    <Flex flexDirection='column' height='25rem'>
-      <Flex justify='space-between' align='center' mb={4} gap={2}>
-        <Text fontSize='xl' fontWeight='semibold'>
+    <Flex flexDirection='column' height={{ base: 'fit-content', md: '25rem' }}>
+      <Flex justify={{ base: 'end', md: 'space-between' }} align='center' mb={4} gap={2}>
+        <Text display={{ base: 'none', md: 'block' }} fontSize='xl' fontWeight='semibold'>
           Members
         </Text>
         <Flex gap={2}>
           {isOwner && (
-            <Button variant='outline' size='sm' colorScheme='primary' onClick={invite}>
-              Invite
-            </Button>
+            <>
+              <Button
+                display={{ base: 'none', md: 'block' }}
+                variant='outline'
+                size='sm'
+                colorScheme='primary'
+                onClick={invite}>
+                Invite
+              </Button>
+              <IconButton
+                aria-label={'Invite'}
+                size='sm'
+                onClick={invite}
+                icon={<AddIcon />}
+                display={{ base: 'block', md: 'none' }}
+              />
+            </>
           )}
         </Flex>
       </Flex>
-      <SimpleGrid flexGrow={1} columns={3} gap={2}>
+      <SimpleGrid flexGrow={1} columns={{ base: 1, lg: 3 }} gap={2}>
         {items.map((item) => (
           <MemberCard key={item.index} memberRecord={item} />
         ))}
