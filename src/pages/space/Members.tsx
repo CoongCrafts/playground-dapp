@@ -1,11 +1,11 @@
-import { Box, Flex, Tag, Text } from '@chakra-ui/react';
-import { Identicon } from '@polkadot/react-identicon';
+import { Flex, IconButton, SimpleGrid, Tag, Text } from '@chakra-ui/react';
+import { useState } from 'react';
 import useContractState from '@/hooks/useContractState';
 import InviteMemberButton from '@/pages/space/InviteMemberButton';
+import MemberCard from '@/pages/space/MemberCard';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberRecord, Pagination } from '@/types';
-import { numToDecimalPointRemovedNum } from '@/utils/number';
-import { shortenAddress } from '@/utils/string';
+import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
 const RECORD_PER_PAGE = 3 * 3;
 
@@ -20,72 +20,13 @@ export default function Members() {
   const numberOfPage = total ? Math.ceil(parseInt(total) / RECORD_PER_PAGE) : 1;
 
   return (
-    <Box>
-      <Flex justify='space-between' align='center' mb={4} gap={2}>
-        <Text fontSize='xl' fontWeight='semibold'>
-          Members
-        </Text>
-        <Flex gap={2}>{isOwner && <InviteMemberButton />}</Flex>
     <Flex flexDirection='column' height={{ base: 'fit-content', md: '25rem' }}>
-      <Flex justify={{ base: 'end', md: 'space-between' }} align='center' mb={4} gap={2}>
-        <Text display={{ base: 'none', md: 'block' }} fontSize='xl' fontWeight='semibold'>
+      <Flex align='center' mb={4} gap={2} justify={{ base: 'end', md: 'space-between' }}>
+        <Text fontSize='xl' fontWeight='semibold' display={{ base: 'none', md: 'block' }}>
           Members
         </Text>
-        <Flex gap={2}>
-          {isOwner && (
-            <>
-              <Button
-                display={{ base: 'none', md: 'block' }}
-                variant='outline'
-                size='sm'
-                colorScheme='primary'
-                onClick={invite}>
-                Invite
-              </Button>
-              <IconButton
-                aria-label={'Invite'}
-                size='sm'
-                onClick={invite}
-                icon={<AddIcon />}
-                display={{ base: 'block', md: 'none' }}
-              />
-            </>
-          )}
-        </Flex>
+        {isOwner && <InviteMemberButton />}
       </Flex>
-      <Flex wrap='wrap' gap={2}>
-        {items.map((item) => {
-          const isActive =
-            item.info.nextRenewalAt === null || numToDecimalPointRemovedNum(item.info.nextRenewalAt) > Date.now();
-          return (
-            <Flex
-              key={item.index}
-              px={4}
-              py={3}
-              gap={2}
-              border={1}
-              borderStyle='solid'
-              borderColor='chakra-border-color'>
-              <Identicon value={item.accountId} size={32} theme='polkadot' />
-              <Flex direction='column' gap={1}>
-                <Text color='gray' fontWeight='semibold'>
-                  {shortenAddress(item.accountId)}
-                </Text>
-                <Box>
-                  {isActive ? (
-                    <Tag size='sm' variant='solid' colorScheme='green'>
-                      Active
-                    </Tag>
-                  ) : (
-                    <Tag size='sm' variant='solid' colorScheme='red'>
-                      Inactive
-                    </Tag>
-                  )}
-                </Box>
-              </Flex>
-            </Flex>
-          );
-        })}
       <SimpleGrid flexGrow={1} columns={{ base: 1, lg: 3 }} gap={2}>
         {items.map((item) => (
           <MemberCard key={item.index} memberRecord={item} />

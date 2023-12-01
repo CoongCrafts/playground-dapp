@@ -17,6 +17,7 @@ import {
   InputRightAddon,
   InputLeftElement,
   Circle,
+  IconButton,
 } from '@chakra-ui/react';
 import { Identicon } from '@polkadot/react-identicon';
 import { FormEvent } from 'react';
@@ -27,6 +28,7 @@ import { useCall } from '@/hooks/useink/useCall';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberStatus } from '@/types';
+import { AddIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
 import { pickDecoded } from 'useink/utils';
 import * as yup from 'yup';
@@ -83,13 +85,24 @@ function InviteMemberButton() {
 
   const handleClose = () => {
     formikInviteMember.setValues({ address: '', expire: undefined });
+    // To avoid `Invite` button from being frozen
+    grantMembershipTx.resetState();
     onClose();
   };
 
   return (
     <>
-      <Button onClick={onOpen}>Invite</Button>
-      <Modal isOpen={isOpen} onClose={handleClose} size='xl'>
+      <Button size='sm' onClick={onOpen} display={{ base: 'none', md: 'block' }}>
+        Invite
+      </Button>
+      <IconButton
+        aria-label={'Invite'}
+        size='sm'
+        onClick={onOpen}
+        icon={<AddIcon />}
+        display={{ base: 'block', md: 'none' }}
+      />
+      <Modal isOpen={isOpen} onClose={handleClose} size={{ base: 'full', md: 'xl' }}>
         <ModalOverlay />
         <ModalContent
           as={'form'}
@@ -125,7 +138,7 @@ function InviteMemberButton() {
                 <EmptySpace />
               )}
             </FormControl>
-            <FormControl isInvalid={!!formikInviteMember.errors.expire} width='50%'>
+            <FormControl isInvalid={!!formikInviteMember.errors.expire} width={{ md: '50%' }}>
               <FormLabel>Expire after</FormLabel>
               <InputGroup>
                 <Input

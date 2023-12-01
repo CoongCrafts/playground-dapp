@@ -57,7 +57,6 @@ function UpdateDisplayNameTrigger() {
   const handleClose = () => {
     formikSetDisplayName.setValues({ displayName: '' });
     // To avoid `Update` button from being frozen
-    // when the user closes the sign window by `x` button.
     updateMemberInfo.resetState();
     onClose();
   };
