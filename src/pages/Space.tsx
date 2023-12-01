@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Divider,
   Flex,
   Heading,
   Menu,
@@ -93,7 +92,6 @@ function SpaceContent() {
           )}
         </Box>
       </Flex>
-      <Divider display={{ base: 'block', md: 'none' }} />
       <Flex mt={{ base: 0, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
         <Flex direction='column' width={200} display={{ base: 'none', md: 'flex' }}>
           {MENU_ITEMS.map((one) => (
@@ -111,6 +109,8 @@ function SpaceContent() {
           ))}
         </Flex>
         <Tabs
+          borderTop='1px solid'
+          borderColor='chakra-border-color'
           variant='unstyled'
           overflowX='scroll'
           display={{ base: 'block', md: 'none' }}
