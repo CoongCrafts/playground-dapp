@@ -4,4 +4,8 @@ export const stringToNum = (input: string | undefined): number | undefined => {
   }
 
   return parseInt(input);
-}
+};
+
+export const numToDecimalPointRemovedNum = (input: number): number => {
+  return parseInt(input.toString().replaceAll(',', ''));
+};

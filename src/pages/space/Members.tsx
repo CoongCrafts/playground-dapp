@@ -1,23 +1,29 @@
-import { Box, Button, Flex, Tag, Text } from '@chakra-ui/react';
-import { Identicon } from '@polkadot/react-identicon';
+import { Button, Flex, IconButton, SimpleGrid, Tag, Text } from '@chakra-ui/react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { isAddress } from '@polkadot/util-crypto';
 import useContractState from '@/hooks/useContractState';
 import { useCall } from '@/hooks/useink/useCall';
 import { useTx } from '@/hooks/useink/useTx';
+import MemberCard from '@/pages/space/MemberCard';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberRecord, MemberStatus, Pagination } from '@/types';
-import { shortenAddress } from '@/utils/string';
+import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { pickDecoded } from 'useink/utils';
+
+const RECORD_PER_PAGE = 3 * 3;
 
 export default function Members() {
   const { membersCount, contract, isOwner } = useSpaceContext();
-  const { state: page } = useContractState<Pagination<MemberRecord>>(contract, 'listMembers', [0, 50]);
+  const [pageIndex, setPageIndex] = useState(1);
+  const { state: page } = useContractState<Pagination<MemberRecord>>(contract, 'listMembers', [
+    (pageIndex - 1) * RECORD_PER_PAGE,
+    RECORD_PER_PAGE,
+  ]);
   const memberStatusCall = useCall<MemberStatus>(contract, 'memberStatus');
   const grantMembershipTx = useTx(contract, 'grantMembership');
-
-  let { items = [] } = page || {};
-  // TODO add pagination
+  const { items = [], total } = page || {};
+  const numberOfPage = total ? Math.ceil(parseInt(total) / RECORD_PER_PAGE) : 1;
 
   const invite = async () => {
     const address = window.prompt('Address to invite:');
@@ -52,7 +58,7 @@ export default function Members() {
   };
 
   return (
-    <Box>
+    <Flex flexDirection='column' height='25rem'>
       <Flex justify='space-between' align='center' mb={4} gap={2}>
         <Text fontSize='xl' fontWeight='semibold'>
           Members
@@ -65,46 +71,34 @@ export default function Members() {
           )}
         </Flex>
       </Flex>
-      <Flex wrap='wrap' gap={2}>
-        {items.map((item) => {
-          const isActive = item.info.nextRenewalAt === null || item.info.nextRenewalAt > Date.now();
-
-          return (
-            <Flex
-              key={item.index}
-              px={4}
-              py={3}
-              gap={2}
-              border={1}
-              borderStyle='solid'
-              borderColor='chakra-border-color'>
-              <Identicon value={item.accountId} size={32} theme='polkadot' />
-              <Flex direction='column' gap={1}>
-                <Text color='gray' fontWeight='semibold'>
-                  {item.info.name || shortenAddress(item.accountId)}
-                </Text>
-                <Box>
-                  {isActive ? (
-                    <Tag size='sm' variant='solid' colorScheme='green'>
-                      Active
-                    </Tag>
-                  ) : (
-                    <Tag size='sm' variant='solid' colorScheme='red'>
-                      Inactive
-                    </Tag>
-                  )}
-                </Box>
-              </Flex>
-            </Flex>
-          );
-        })}
-      </Flex>
-      <Flex mt={4}>
+      <SimpleGrid flexGrow={1} columns={3} gap={2}>
+        {items.map((item) => (
+          <MemberCard key={item.index} memberRecord={item} />
+        ))}
+      </SimpleGrid>
+      <Flex mt={4} justifyContent='space-between'>
         <Flex align='center' gap={2}>
           <Text fontSize='sm'>Total members:</Text>
           <Tag size='sm'>{membersCount}</Tag>
         </Flex>
+        <Flex alignItems='center' gap={2}>
+          <Text fontSize='sm'>{`Page ${pageIndex}/${numberOfPage}`}</Text>
+          <IconButton
+            onClick={() => setPageIndex((pre) => pre - 1)}
+            aria-label='Back'
+            size='sm'
+            icon={<ChevronLeftIcon fontSize='1.2rem' />}
+            isDisabled={pageIndex === 1}
+          />
+          <IconButton
+            onClick={() => setPageIndex((pre) => pre + 1)}
+            aria-label='Next'
+            size='sm'
+            icon={<ChevronRightIcon fontSize='1.2rem' />}
+            isDisabled={pageIndex === numberOfPage}
+          />
+        </Flex>
       </Flex>
-    </Box>
+    </Flex>
   );
 }

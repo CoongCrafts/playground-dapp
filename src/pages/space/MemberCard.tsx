@@ -1,0 +1,57 @@
+import { Badge, Box, Flex, Text } from '@chakra-ui/react';
+import { Identicon } from '@polkadot/react-identicon';
+import { MemberRecord, Props } from '@/types';
+import { numToDecimalPointRemovedNum } from '@/utils/number';
+import { shortenAddress } from '@/utils/string';
+import moment from 'moment';
+
+interface MemberCardProps extends Props {
+  memberRecord: MemberRecord;
+}
+
+function MemberCard({ memberRecord }: MemberCardProps) {
+  const { info } = memberRecord;
+  const isActive = memberRecord.info.nextRenewalAt === null || memberRecord.info.nextRenewalAt > Date.now();
+
+  return (
+    <Flex
+      px={2}
+      py={2}
+      gap={2}
+      height='6rem'
+      border={1}
+      borderStyle='solid'
+      borderColor='chakra-border-color'
+      alignItems='center'>
+      <Flex direction='column' alignItems='center' flexShrink={0} width='25%' gap={2}>
+        <Identicon value={memberRecord.accountId} size={32} theme='polkadot' />
+        <Box>
+          {isActive ? (
+            <Badge fontSize='0.60rem' variant='solid' colorScheme='green'>
+              Active
+            </Badge>
+          ) : (
+            <Badge fontSize='0.60rem' variant='solid' colorScheme='red'>
+              Inactive
+            </Badge>
+          )}
+        </Box>
+      </Flex>
+      <Box alignSelf='start'>
+        <Text fontSize='0.8rem' color='dimgray' fontWeight='semibold' wordBreak='break-word'>
+          {info.name || shortenAddress(memberRecord.accountId)}
+        </Text>
+        <Box color='darkgray' fontSize='0.75rem'>
+          <Text>{info.name && shortenAddress(memberRecord.accountId)}</Text>
+          <Text>
+            {`Joined ${moment(new Date(numToDecimalPointRemovedNum(info.joinedAt)))
+              .fromNow()
+              .toString()}`}
+          </Text>
+        </Box>
+      </Box>
+    </Flex>
+  );
+}
+
+export default MemberCard;
