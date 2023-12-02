@@ -7,8 +7,8 @@ import '@polkadot/api-augment/polkadot';
 import WalletProvider from '@/providers/WalletProvider';
 import router from '@/router';
 import { theme } from '@/theme';
-import { Development, RococoContractsTestnet } from "useink/chains";
-import { UseInkProvider } from "useink";
+import { UseInkProvider } from 'useink';
+import { Development, RococoContractsTestnet } from 'useink/chains';
 
 const DEFAULT_CALLER = '5FWgDBZM7KNnUrDZpxr8Dij7isrXny2NNzGsovxBDFdWZYSZ';
 
@@ -18,13 +18,12 @@ root.render(
     config={{
       dappName: 'InSpace',
       chains: [Development, RococoContractsTestnet],
-      caller: {default: DEFAULT_CALLER},
+      caller: { default: DEFAULT_CALLER },
     }}>
-
-    <ColorModeScript initialColorMode={theme.config.initialColorMode}/>
+    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <ChakraProvider theme={theme}>
       <WalletProvider>
-        <RouterProvider router={router}/>
+        <RouterProvider router={router} />
         <ToastContainer
           position='top-right'
           closeOnClick
@@ -36,6 +35,5 @@ root.render(
         />
       </WalletProvider>
     </ChakraProvider>
-  </UseInkProvider>
-  ,
+  </UseInkProvider>,
 );

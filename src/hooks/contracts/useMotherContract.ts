@@ -1,7 +1,7 @@
-import { useContract } from "useink";
 import motherspace from '@/metadata/motherspace.json';
-import { ChainId } from "useink/chains";
-import { findNetwork } from "@/utils/networks";
+import { findNetwork } from '@/utils/networks';
+import { useContract } from 'useink';
+import { ChainId } from 'useink/chains';
 
 export default function useMotherContract(chainId: ChainId) {
   const { motherAddress } = findNetwork(chainId);

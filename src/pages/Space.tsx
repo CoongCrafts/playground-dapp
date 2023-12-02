@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { Link as LinkRouter, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useEffectOnce } from 'react-use';
+import { useEffect } from 'react-use';
 import SpaceAvatar from '@/components/space/SpaceAvatar';
 import UpdateDisplayNameTrigger from '@/pages/space/UpdateDisplayNameTrigger';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
@@ -25,25 +25,41 @@ import { ChevronDownIcon, InfoIcon, SettingsIcon } from '@chakra-ui/icons';
 import pluralize from 'pluralize';
 import { ChainId } from 'useink/chains';
 
-type MenuItem = { name: string; path: string; icon: React.ReactElement };
+type MenuItem = { name: string, path: string, icon: React.ReactElement };
 
 const MENU_ITEMS: MenuItem[] = [
   { name: 'Members', path: 'members', icon: <InfoIcon /> },
   { name: 'Settings', path: 'settings', icon: <SettingsIcon /> },
 ];
 
+const PLUGIN_MENU_ITEMS: Record<string, MenuItem> = {
+  [PLUGIN_POSTS]: { name: 'Posts', path: 'posts', icon: <CalendarIcon /> },
+};
+
 function SpaceContent() {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>();
   const navigate = useNavigate();
   const location = useLocation();
-  const { info, space, membersCount, memberStatus } = useSpaceContext();
+  const { info, space, membersCount, memberStatus, plugins } = useSpaceContext();
 
-  useEffectOnce(() => {
+  useEffect(() => {
+    if (!plugins) return;
+
+    const pluginMenuItems = plugins.map(({ id }) => PLUGIN_MENU_ITEMS[id]).filter((x) => x);
+    const menuItems = [...pluginMenuItems, ...MENU_ITEMS];
+
     if (location.pathname.endsWith(space.address)) {
-      navigate(MENU_ITEMS[0].path);
+      navigate(menuItems[0].path);
     }
-  });
 
-  const activePath = MENU_ITEMS.find((one) => location.pathname.endsWith(one.path))?.path;
+    setMenuItems(menuItems);
+  }, [plugins]);
+
+  if (!plugins) {
+    return null;
+  }
+
+  const activePath = menuItems?.find((one) => location.pathname.endsWith(one.path))?.path;
 
   return (
     <Box mt={2}>
@@ -97,7 +113,7 @@ function SpaceContent() {
           direction='column'
           width={200}
           display={{ base: 'none', md: 'flex' }}>
-          {MENU_ITEMS.map((one) => (
+          {menuItems?.map((one) => (
             <Button
               key={one.name}
               size='sm'
@@ -124,7 +140,7 @@ function SpaceContent() {
             },
           }}>
           <TabList>
-            {MENU_ITEMS.map((one) => (
+            {menuItems?.map((one) => (
               <Tab key={one.name} as={LinkRouter} to={one.path} _selected={{ boxShadow: 'none' }}>
                 {one.name}
               </Tab>
@@ -137,15 +153,15 @@ function SpaceContent() {
         </Box>
       </Flex>
     </Box>
-  );
+  )
 }
 
 export default function Space() {
-  const { chainId, spaceAddress } = useParams();
+  const {chainId, spaceAddress} = useParams();
 
   return (
-    <SpaceProvider space={{ address: spaceAddress!, chainId: chainId as ChainId }}>
-      <SpaceContent />
+    <SpaceProvider space={{address: spaceAddress!, chainId: chainId as ChainId}}>
+      <SpaceContent/>
     </SpaceProvider>
-  );
+  )
 }

@@ -1,5 +1,5 @@
 import { ChainEnvironment, NetworkInfo } from '@/types';
-import { Aleph, Astar, ChainId, Development, RococoContractsTestnet } from "useink/chains";
+import { Aleph, Astar, ChainId, Development, RococoContractsTestnet } from 'useink/chains';
 
 const LOGO_FOLDER =
   'https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/master/packages/chain-list/src/logo';
@@ -64,8 +64,8 @@ export const SUPPORTED_NETWORKS: Record<ChainEnvironment, NetworkInfo[]> = {
       symbol: 'UNIT',
       decimals: 12,
       chain: Development,
-      motherAddress: '5CNbkqNxscoPLUNh6em3fo8PM7u1zUMFu3DqxNLD3zH6L92D'
-    }
+      motherAddress: '5CVgz1RmVpfwBacNkNoXqzzVt7uedFYimzeuxJNrRRrH7DHB',
+    },
   ],
   [ChainEnvironment.Testnet]: [
     {
@@ -76,7 +76,7 @@ export const SUPPORTED_NETWORKS: Record<ChainEnvironment, NetworkInfo[]> = {
       symbol: 'ROC',
       decimals: 12,
       chain: RococoContractsTestnet,
-      motherAddress: '5H3mZvSAXMwYpfhBsRgGMnW5LRoQEfhKLz78ZGUACPKmozNb'
+      motherAddress: '5H3mZvSAXMwYpfhBsRgGMnW5LRoQEfhKLz78ZGUACPKmozNb',
     },
   ],
   [ChainEnvironment.Production]: [
@@ -89,7 +89,7 @@ export const SUPPORTED_NETWORKS: Record<ChainEnvironment, NetworkInfo[]> = {
       decimals: 18,
       chain: Aleph,
       motherAddress: '---TO UPDATE---',
-      disabled: true
+      disabled: true,
     },
     {
       id: Aleph.id,
@@ -100,16 +100,18 @@ export const SUPPORTED_NETWORKS: Record<ChainEnvironment, NetworkInfo[]> = {
       decimals: 12,
       chain: Aleph,
       motherAddress: '---TO UPDATE---',
-      disabled: true
+      disabled: true,
     },
   ],
 };
 
 export const findNetwork = (chainId: ChainId): NetworkInfo => {
-  const network = Object.values(SUPPORTED_NETWORKS).flat().find((one) => one.id === chainId);
+  const network = Object.values(SUPPORTED_NETWORKS)
+    .flat()
+    .find((one) => one.id === chainId);
   if (!network) {
     throw new Error('Network not found!');
   }
 
   return network;
-}
+};

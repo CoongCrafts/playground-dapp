@@ -1,4 +1,7 @@
 import { useMemo, useState } from 'react';
+import { useDryRun } from '@/hooks/useink/useDryRun';
+import { useWalletContext } from '@/providers/WalletProvider';
+import { ChainContract, useTxEvents } from 'useink';
 import {
   ApiBase,
   ContractSubmittableResult,
@@ -7,9 +10,6 @@ import {
   toContractOptions,
   TransactionStatus,
 } from 'useink/core';
-import { ChainContract, useTxEvents } from 'useink';
-import { useWalletContext } from "@/providers/WalletProvider";
-import { useDryRun } from "@/hooks/useink/useDryRun";
 
 export type ContractSubmittableResultCallback = (
   result?: ContractSubmittableResult,
@@ -17,11 +17,7 @@ export type ContractSubmittableResultCallback = (
   error?: unknown,
 ) => void;
 
-export type SignAndSend = (
-  args?: unknown[],
-  o?: LazyContractOptions,
-  cb?: ContractSubmittableResultCallback,
-) => void;
+export type SignAndSend = (args?: unknown[], o?: LazyContractOptions, cb?: ContractSubmittableResultCallback) => void;
 
 export interface Tx<_T> {
   signAndSend: SignAndSend;
@@ -31,10 +27,7 @@ export interface Tx<_T> {
   events: EventRecord[];
 }
 
-export function useTx<T>(
-  chainContract: ChainContract | undefined,
-  message: string,
-): Tx<T> {
+export function useTx<T>(chainContract: ChainContract | undefined, message: string): Tx<T> {
   const { selectedAccount, injectedApi } = useWalletContext();
   const [status, setStatus] = useState<TransactionStatus>('None');
   const [result, setResult] = useState<ContractSubmittableResult>();
@@ -58,18 +51,11 @@ export function useTx<T>(
           const tx = chainContract?.contract.tx[message];
 
           if (!tx) {
-            cb?.(
-              undefined,
-              chainContract.contract.api,
-              `'${message}' not found on contract instance`,
-            );
+            cb?.(undefined, chainContract.contract.api, `'${message}' not found on contract instance`);
             return;
           }
 
-          tx(
-            { gasLimit: gasRequired, ...toContractOptions(options) },
-            ...(params || []),
-          )
+          tx({ gasLimit: gasRequired, ...toContractOptions(options) }, ...(params || []))
             .signAndSend(
               selectedAccount.address,
               { signer: injectedApi.signer },

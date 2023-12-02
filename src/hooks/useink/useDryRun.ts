@@ -1,14 +1,11 @@
 import { useMemo, useState } from 'react';
-import { call, DecodedTxResult, LazyCallOptions, toContractOptions, } from 'useink/core';
+import { useWalletContext } from '@/providers/WalletProvider';
 import { ChainContract, useAbiMessage, useDefaultCaller } from 'useink';
-import { useWalletContext } from "@/providers/WalletProvider";
+import { call, DecodedTxResult, LazyCallOptions, toContractOptions } from 'useink/core';
 
 export type DryRunResult<T> = DecodedTxResult<T>;
 
-export type Send<T> = (
-  args?: unknown[],
-  o?: LazyCallOptions,
-) => Promise<DryRunResult<T> | undefined>;
+export type Send<T> = (args?: unknown[], o?: LazyCallOptions) => Promise<DryRunResult<T> | undefined>;
 
 export interface DryRun<T> {
   send: Send<T>;
@@ -18,10 +15,7 @@ export interface DryRun<T> {
   resetState: () => void;
 }
 
-export function useDryRun<T>(
-  chainContract: ChainContract | undefined,
-  message: string,
-): DryRun<T> {
+export function useDryRun<T>(chainContract: ChainContract | undefined, message: string): DryRun<T> {
   const { selectedAccount } = useWalletContext();
   const defaultCaller = useDefaultCaller(chainContract?.chainId);
   const [result, setResult] = useState<DecodedTxResult<T>>();
@@ -34,8 +28,8 @@ export function useDryRun<T>(
       const caller = selectedAccount?.address
         ? selectedAccount.address
         : options?.defaultCaller
-          ? defaultCaller
-          : undefined;
+        ? defaultCaller
+        : undefined;
 
       if (!caller || !chainContract?.contract || !abiMessage || !tx) {
         return;
@@ -44,13 +38,7 @@ export function useDryRun<T>(
       setIsSubmitting(true);
 
       try {
-        const resp = await call<T>(
-          chainContract.contract,
-          abiMessage,
-          caller,
-          params,
-          options,
-        );
+        const resp = await call<T>(chainContract.contract, abiMessage, caller, params, options);
 
         if (!resp || !resp.ok) return;
 
@@ -58,8 +46,8 @@ export function useDryRun<T>(
 
         const requiresNoArguments = tx.meta.args.length === 0;
         const { partialFee } = await (requiresNoArguments
-            ? tx(toContractOptions(options))
-            : tx(toContractOptions(options), ...(params || []))
+          ? tx(toContractOptions(options))
+          : tx(toContractOptions(options), ...(params || []))
         ).paymentInfo(caller);
 
         const r = {
