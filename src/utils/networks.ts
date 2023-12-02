@@ -64,7 +64,7 @@ export const SUPPORTED_NETWORKS: Record<ChainEnvironment, NetworkInfo[]> = {
       symbol: 'UNIT',
       decimals: 12,
       chain: Development,
-      motherAddress: '5CNbkqNxscoPLUNh6em3fo8PM7u1zUMFu3DqxNLD3zH6L92D'
+      motherAddress: '5CVgz1RmVpfwBacNkNoXqzzVt7uedFYimzeuxJNrRRrH7DHB'
     }
   ],
   [ChainEnvironment.Testnet]: [

@@ -48,6 +48,8 @@ import WebsiteWallet from "@/wallets/WebsiteWallet";
 import { toast } from "react-toastify";
 import SpaceAvatar from "@/components/space/SpaceAvatar";
 import NetworkLabel from "@/components/space/NetworkLabel";
+import useContractState from "@/hooks/useContractState";
+import { findPlugin } from "@/utils/plugins";
 
 const DEFAULT_LOGO = 'https://ipfs.filebase.io/ipfs/QmQXLfTiSakezeLtoAQvgYBXnQ3tbvVfNXk6sUhjZAg1iK';
 
@@ -86,6 +88,7 @@ export default function SpaceLauncher() {
   const [step, setStep] = useState<STEP>(0);
   const [network, setNetwork] = useState<NetworkInfo>()
   const contract = useMotherlandContract(network?.id || Development.id);
+  const {state: pluginLaunchers} = useContractState<[string, string][]>(contract, 'pluginLaunchers');
   const launchNewLand = useTx(contract, 'deployNewSpace');
   const navigate = useNavigate();
   const {selectedAccount, connectedWallet} = useWalletContext();
@@ -110,7 +113,7 @@ export default function SpaceLauncher() {
       logoUrl: '',
     },
     validationSchema: step1Schema,
-    onSubmit: () => setStep(STEP.Second),
+    onSubmit: async () => setStep(STEP.Second),
   });
 
   const formikStep2 = useFormik({
@@ -118,20 +121,20 @@ export default function SpaceLauncher() {
       registrationType: RegistrationType.PayToJoin,
       pricing: Pricing.Free,
       price: '',
-      duration: '' // subscription duration
+      duration: '', // subscription duration
+      plugins: [] as string[]
     },
     validationSchema: step2Schema,
-    onSubmit: () => setStep(STEP.Last)
+    onSubmit: async () => setStep(STEP.Last)
   });
 
   const formikStep3 = useFormik({
     initialValues: {},
     onSubmit: async (_values, formikHelpers) => {
-      console.log('formikStep3 submit!')
       formikHelpers.setSubmitting(true);
 
       const {name, desc, logoUrl} = formikStep1.values;
-      const {registrationType, pricing, price, duration} = formikStep2.values;
+      const {registrationType, pricing, price, duration, plugins} = formikStep2.values;
 
       if (connectedWallet instanceof WebsiteWallet) {
         await connectedWallet.sdk?.newWaitingWalletInstance();
@@ -139,9 +142,9 @@ export default function SpaceLauncher() {
 
       let spacePricing: any = pricing;
       if (pricing === Pricing.OneTimePaid) {
-        spacePricing = { [pricing]: { price: parseInt(price) } }
+        spacePricing = {[pricing]: {price: parseInt(price)}}
       } else if (pricing === Pricing.Subscription) {
-        spacePricing = { [pricing]: { price: parseInt(price), duration: parseInt(duration) } }
+        spacePricing = {[pricing]: {price: parseInt(price), duration: parseInt(duration)}}
       }
 
       const spaceInfo = {name, desc, logo: {Url: logoUrl || DEFAULT_LOGO}};
@@ -149,9 +152,9 @@ export default function SpaceLauncher() {
         registration: registrationType,
         pricing: spacePricing
       };
-      const spaceOwner = null; // default to caller
+      const spaceOwner = null; // default
 
-      launchNewLand.signAndSend([spaceInfo, spaceConfig, spaceOwner], {}, (result) => {
+      launchNewLand.signAndSend([spaceInfo, spaceConfig, spaceOwner, plugins], {}, (result) => {
         if (!result) {
           return;
         }
@@ -299,7 +302,7 @@ export default function SpaceLauncher() {
               <RadioGroup colorScheme='primary' name='registrationType'
                           defaultValue={RegistrationType.PayToJoin}>
                 <Stack spacing={1}>
-                  <Radio  value={RegistrationType.PayToJoin} onChange={formikStep2.handleChange}>
+                  <Radio value={RegistrationType.PayToJoin} onChange={formikStep2.handleChange}>
                     Pay To Join
                   </Radio>
                   <Radio value={RegistrationType.RequestToJoin} onChange={formikStep2.handleChange}>
@@ -314,7 +317,7 @@ export default function SpaceLauncher() {
               <RadioGroup colorScheme='primary' name='pricing'
                           defaultValue={formikStep2.values.pricing || Pricing.Free}>
                 <Stack spacing={1}>
-                  <Radio  value={Pricing.Free} onChange={formikStep2.handleChange}>
+                  <Radio value={Pricing.Free} onChange={formikStep2.handleChange}>
                     Free
                   </Radio>
                   <Radio value={Pricing.OneTimePaid} onChange={formikStep2.handleChange}>
@@ -344,7 +347,7 @@ export default function SpaceLauncher() {
                 </InputGroup>
                 {formikStep2.touched.price && !!formikStep2.errors.price
                   ? (<FormErrorMessage>{formikStep2.errors.price}</FormErrorMessage>)
-                  : (<FormHelperText />)}
+                  : (<FormHelperText/>)}
               </FormControl>
             )}
 
@@ -365,7 +368,7 @@ export default function SpaceLauncher() {
                 </InputGroup>
                 {formikStep2.touched.duration && !!formikStep2.errors.duration
                   ? (<FormErrorMessage>{formikStep2.errors.duration}</FormErrorMessage>)
-                  : (<FormHelperText />)}
+                  : (<FormHelperText/>)}
               </FormControl>
             )}
 
@@ -373,16 +376,37 @@ export default function SpaceLauncher() {
               <Text fontSize='xl' fontWeight='semibold'>
                 Plugins
               </Text>
-              <Text color='gray.500' fontSize='sm'>Add functionalities to your space, you can add, remove and configure plugins later after deployment as needed</Text>
+              <Text color='gray.500' fontSize='sm'>Add functionalities to your space, you can add, remove and configure
+                plugins later after deployment as needed</Text>
             </Box>
 
             <Flex direction='column' gap={2}>
-              <FormControl display='flex' alignItems='center'>
-                <FormLabel htmlFor='plugin01' mb='0'>
-                  Posts
-                </FormLabel>
-                <Switch id='plugin01' name='plugin01' disabled/>
-              </FormControl>
+              {pluginLaunchers?.map((one, index) => {
+                const pluginInfo = findPlugin(one[0]);
+
+                if (!pluginInfo) return null;
+
+                return (
+                  <FormControl key={index} display='flex' alignItems='center'>
+                    <FormLabel mb='0'>
+                      {pluginInfo.name}
+                    </FormLabel>
+                    <Switch
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        const plugins = formikStep2.values.plugins.filter(one => one !== pluginInfo.id);
+                        if (checked) {
+                          plugins.push(pluginInfo.id)
+                        }
+
+                        formikStep2.setFieldValue('plugins', plugins);
+                      }}
+                      isChecked={formikStep2.values.plugins.includes(pluginInfo.id)}
+                    />
+                  </FormControl>
+                )
+              })}
+
               <FormControl display='flex' alignItems='center'>
                 <FormLabel htmlFor='email-alerts' mb='0'>
                   Discussions
@@ -435,7 +459,7 @@ export default function SpaceLauncher() {
             <Flex gap={6} borderColor='chakra-border-color' borderWidth='1px' py={6} px={4}>
               {network && (
                 <SpaceAvatar space={{address: '', chainId: network.id}}
-                             info={{ name: formikStep1.values.name, desc: '', logo: { Url: formikStep1.values.logoUrl}}} />
+                             info={{name: formikStep1.values.name, desc: '', logo: {Url: formikStep1.values.logoUrl}}}/>
               )}
 
               <Box>
@@ -445,16 +469,29 @@ export default function SpaceLauncher() {
             </Flex>
 
             <Box mt={4}>
-              {network && <Text fontWeight='semibold'>Deploy to <NetworkLabel chainId={network.id}/> <Tag>{network.name}</Tag></Text>}
+              {network && <Text fontWeight='semibold'>Deploy to <NetworkLabel chainId={network.id}/>
+                  <Tag>{network.name}</Tag></Text>}
               <Box mt={3}>
                 <Text fontWeight='semibold'>Membership</Text>
                 <Box ml={4}>
-                  <Text mt={3}>Registration type <Tag variant='solid' colorScheme='blue'>{formikStep2.values.registrationType}</Tag></Text>
-                  <Text mt={3}>Pricing <Tag variant='solid' colorScheme='green'>{formikStep2.values.pricing}</Tag></Text>
+                  <Text mt={3}>Registration type <Tag variant='solid'
+                                                      colorScheme='blue'>{formikStep2.values.registrationType}</Tag></Text>
+                  <Text mt={3}>Pricing <Tag variant='solid'
+                                            colorScheme='green'>{formikStep2.values.pricing}</Tag></Text>
                   {(formikStep2.values.pricing === Pricing.OneTimePaid || formikStep2.values.pricing === Pricing.Subscription) && (
                     <Text mt={3}>Price <Tag>{formikStep2.values.price} {network?.symbol}</Tag></Text>
                   )}
-                  {formikStep2.values.pricing === Pricing.Subscription && <Text mt={3}>Duration <Tag variant='solid' colorScheme='gray'>{formikStep2.values.duration} days</Tag></Text>}
+                  {formikStep2.values.pricing === Pricing.Subscription && <Text mt={3}>Duration <Tag variant='solid'
+                                                                                                     colorScheme='gray'>{formikStep2.values.duration} days</Tag></Text>}
+                </Box>
+              </Box>
+              <Box mt={3}>
+                <Text fontWeight='semibold'>Plugins</Text>
+                <Box ml={4} mt={3}>
+                  {formikStep2.values.plugins.length === 0 && <Text fontStyle='italic' color='gray.500'>No plugins</Text>}
+                  <Box>
+                    {formikStep2.values.plugins.map(one => <Tag key={one}>{findPlugin(one)?.name}</Tag>)}
+                  </Box>
                 </Box>
               </Box>
             </Box>
