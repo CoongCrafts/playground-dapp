@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
-import { call, DecodedContractResult, LazyCallOptions, } from 'useink/core';
-import { ChainContract, useAbiMessage, useDefaultCaller } from "useink";
-import { useWalletContext } from "@/providers/WalletProvider";
+import { useWalletContext } from '@/providers/WalletProvider';
+import { ChainContract, useAbiMessage, useDefaultCaller } from 'useink';
+import { call, DecodedContractResult, LazyCallOptions } from 'useink/core';
 
 export type CallSend<T> = (
   args?: unknown[],
@@ -24,10 +24,7 @@ export interface Call<T> extends UseCall<T> {
 }
 
 // Original: https://github.com/paritytech/useink/blob/main/packages/useink/src/react/hooks/contracts/useCall.ts
-export function useCall<T>(
-  chainContract: ChainContract | undefined,
-  message: string,
-): Call<T> {
+export function useCall<T>(chainContract: ChainContract | undefined, message: string): Call<T> {
   const [result, setResult] = useState<DecodedContractResult<T>>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const abiMessage = useAbiMessage(chainContract?.contract, message);
@@ -42,20 +39,14 @@ export function useCall<T>(
       const caller = selectedAccount?.address
         ? selectedAccount.address
         : options?.defaultCaller
-          ? defaultCaller
-          : undefined;
+        ? defaultCaller
+        : undefined;
 
       if (!abiMessage || !chainContract?.contract || !caller) return;
 
       try {
         setIsSubmitting(true);
-        const callResult = await call<T>(
-          chainContract.contract,
-          abiMessage,
-          caller,
-          args,
-          options,
-        );
+        const callResult = await call<T>(chainContract.contract, abiMessage, caller, args, options);
         setResult(callResult);
         setIsSubmitting(false);
 

@@ -1,5 +1,5 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
-import UploadCode from "@/components/contracts/UploadCode";
+import { Box, Flex, Text } from '@chakra-ui/react';
+import UploadCode from '@/components/contracts/UploadCode';
 
 export default function UploadContracts() {
   return (

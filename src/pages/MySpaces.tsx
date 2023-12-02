@@ -1,14 +1,14 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useSpaces from "@/hooks/useSpaces";
-import { useWalletContext } from "@/providers/WalletProvider";
-import SpaceCard from "@/components/space/SpaceCard";
-import { Development, RococoContractsTestnet } from "useink/chains";
+import SpaceCard from '@/components/space/SpaceCard';
+import useSpaces from '@/hooks/useSpaces';
+import { useWalletContext } from '@/providers/WalletProvider';
+import { Development, RococoContractsTestnet } from 'useink/chains';
 
 export default function MySpaces() {
   const navigate = useNavigate();
-  const {selectedAccount} = useWalletContext();
+  const { selectedAccount } = useWalletContext();
   const devSpaces = useSpaces(Development.id);
   const rococoSpaces = useSpaces(RococoContractsTestnet.id);
 
@@ -30,7 +30,11 @@ export default function MySpaces() {
       </Flex>
       <Flex gap={4} flexWrap='wrap'>
         {spaces?.map((space) => (
-          <SpaceCard w={{base: '100%', md: 'calc((100% - 2rem)/3)', lg: 'calc((100% - 3rem)/4)'}} space={space} key={space.address}/>
+          <SpaceCard
+            w={{ base: '100%', md: 'calc((100% - 2rem)/3)', lg: 'calc((100% - 3rem)/4)' }}
+            space={space}
+            key={space.address}
+          />
         ))}
       </Flex>
     </Box>

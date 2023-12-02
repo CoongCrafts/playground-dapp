@@ -4,4 +4,4 @@ export const stringToNum = (input: string | undefined): number | undefined => {
   }
 
   return parseInt(input);
-}
+};

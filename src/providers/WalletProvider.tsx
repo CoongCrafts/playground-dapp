@@ -33,7 +33,8 @@ export const useWalletContext = () => {
 
 export default function WalletProvider({ children }: Props) {
   const availableWallets = useWallets();
-  const [selectedAccount, setSelectedAccount, removeSelectedAccount] = useLocalStorage<InjectedAccount>('SELECTED_WALLET');
+  const [selectedAccount, setSelectedAccount, removeSelectedAccount] =
+    useLocalStorage<InjectedAccount>('SELECTED_WALLET');
   const [accounts, setAccounts] = useState<InjectedAccount[]>([]);
   const [injectedApi, setInjectedApi] = useState<UpdatableInjected>();
   const [connectedWalletId, setConnectedWalletId, removeConnectedWalletId] =

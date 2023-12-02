@@ -51,7 +51,7 @@ export default function AccountSelection() {
         <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
           <Flex align='center' gap={3}>
             <Identicon value={address} size={20} theme='polkadot' />
-            <Flex gap={1} display={{ base: 'none', sm: 'flex'}}>
+            <Flex gap={1} display={{ base: 'none', sm: 'flex' }}>
               <Text fontWeight='bold'>{name}</Text>
               <Text>({shortenAddress(displayAddress)})</Text>
             </Flex>

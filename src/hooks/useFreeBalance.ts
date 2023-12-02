@@ -1,6 +1,6 @@
-import { useBalance } from "useink";
-import { formatBalance } from "@polkadot/util";
-import { NetworkInfo } from "@/types";
+import { formatBalance } from '@polkadot/util';
+import { NetworkInfo } from '@/types';
+import { useBalance } from 'useink';
 
 export default function useFreeBalance(account?: { address: string | undefined }, network?: NetworkInfo): string {
   const balance = useBalance(account, network?.id);
@@ -8,12 +8,9 @@ export default function useFreeBalance(account?: { address: string | undefined }
     return '0';
   }
 
-  return formatBalance(
-    balance.freeBalance.toBigInt(),
-    {
-      decimals: network.decimals,
-      withUnit: false,
-      forceUnit: network.symbol
-    }
-  );
+  return formatBalance(balance.freeBalance.toBigInt(), {
+    decimals: network.decimals,
+    withUnit: false,
+    forceUnit: network.symbol,
+  });
 }

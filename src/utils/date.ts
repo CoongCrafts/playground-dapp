@@ -1,5 +1,5 @@
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 dayjs.extend(relativeTime);
 
@@ -9,4 +9,4 @@ export const fromNow = (timestamp: string | number) => {
   }
 
   return dayjs(timestamp).fromNow();
-}
+};
