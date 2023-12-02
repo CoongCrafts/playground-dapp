@@ -7,6 +7,9 @@ import { ChainContract, useApi } from "useink";
 import useMotherContract from "@/hooks/contracts/useMotherContract";
 import useSpaceContract from "@/hooks/contracts/useSpaceContract";
 import { useWalletContext } from "@/providers/WalletProvider";
+import { PluginInfo } from "@/types";
+import useContractState from "@/hooks/useContractState";
+import { findPlugin } from "@/utils/plugins";
 
 interface SpaceContextProps {
   network: NetworkInfo;
@@ -20,6 +23,7 @@ interface SpaceContextProps {
   contract?: ChainContract,
   isOwner: boolean;
   memberStatus?: MemberStatus;
+  plugins?: PluginInfo[]
 }
 
 export const SpaceContext = createContext<SpaceContextProps>(null!);
@@ -43,13 +47,19 @@ export default function SpaceProvider({space, children}: SpaceProviderProps) {
   const { selectedAccount } = useWalletContext();
 
   const {info, membersCount, config, codeHash, ownerId, memberStatus} = useSpace(space);
+  const {state: installedPlugins} = useContractState<[string, string][]>(contract, 'plugins');
   const network = findNetwork(space.chainId);
   const {api} = useApi(space.chainId) || {};
 
   const isOwner = selectedAccount?.address === ownerId;
+  const plugins = installedPlugins?.map(([pluginId, address]) => ({
+    ...findPlugin(pluginId)!, // TODO filter-out unsupported plugins
+    address,
+    chainId: space.chainId
+  }));
 
   return (
-    <SpaceContext.Provider value={{network, space, api, info, membersCount, config, codeHash, motherContract, contract, isOwner, memberStatus}}>
+    <SpaceContext.Provider value={{network, space, api, info, membersCount, config, codeHash, motherContract, contract, isOwner, memberStatus, plugins}}>
       {children}
     </SpaceContext.Provider>
   )

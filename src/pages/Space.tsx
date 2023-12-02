@@ -4,11 +4,11 @@ import { shortenAddress } from "@/utils/string";
 import SpaceProvider, { useSpaceContext } from "@/providers/SpaceProvider";
 import { ChainId } from "useink/chains";
 import SpaceAvatar from "@/components/space/SpaceAvatar";
-import { useEffectOnce } from "react-use";
-import { ChevronDownIcon, InfoIcon, SettingsIcon } from "@chakra-ui/icons";
-import React from "react";
+import { CalendarIcon, ChevronDownIcon, InfoIcon, SettingsIcon } from "@chakra-ui/icons";
+import React, { useEffect, useState } from "react";
 import pluralize from "pluralize";
 import { MemberStatus } from "@/types";
+import { PLUGIN_POSTS } from "@/utils/plugins";
 
 type MenuItem = { name: string, path: string, icon: React.ReactElement };
 
@@ -17,18 +17,35 @@ const MENU_ITEMS: MenuItem[] = [
   {name: 'Settings', path: 'settings', icon: <SettingsIcon />},
 ]
 
+const PLUGIN_MENU_ITEMS: Record<string, MenuItem> = {
+  [PLUGIN_POSTS]: {name: 'Posts', path: 'posts', icon: <CalendarIcon />},
+}
+
 function SpaceContent() {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>()
   const navigate = useNavigate();
   const location = useLocation();
-  const {info, space, membersCount, memberStatus} = useSpaceContext();
+  const {info, space, membersCount, memberStatus, plugins} = useSpaceContext();
 
-  useEffectOnce(() => {
+  useEffect(() => {
+    if (!plugins) return;
+
+    const pluginMenuItems = plugins.map(({id}) => PLUGIN_MENU_ITEMS[id]).filter(x => x);
+    const menuItems = [...pluginMenuItems, ...MENU_ITEMS];
+
     if (location.pathname.endsWith(space.address)) {
-      navigate(MENU_ITEMS[0].path)
+      navigate(menuItems[0].path)
     }
-  });
 
-  const activePath = MENU_ITEMS.find((one) => location.pathname.endsWith(one.path))?.path;
+    setMenuItems(menuItems);
+  }, [plugins]);
+
+
+  if (!plugins) {
+    return null;
+  }
+
+  const activePath = menuItems?.find((one) => location.pathname.endsWith(one.path))?.path;
 
   return (
     <Box mt={2}>
@@ -60,11 +77,11 @@ function SpaceContent() {
 
       <Flex gap={2} mt={6}>
         <Flex  direction='column' width={200}>
-          {MENU_ITEMS.map(one => (
-            <Button key={one.name} size='sm' leftIcon={one.icon} as={LinkRouter} variant={activePath == one.path ? 'solid' : 'outline'} colorScheme={activePath == one.path ? 'blackAlpha' : 'gray'} borderRadius={0} to={one.path}>{one.name}</Button>
+          {menuItems?.map(one => (
+            <Button justifyContent='start' px={4} key={one.name} size='sm' leftIcon={one.icon} as={LinkRouter} variant={activePath == one.path ? 'solid' : 'outline'} colorScheme={activePath == one.path ? 'blackAlpha' : 'gray'} borderRadius={0} to={one.path}>{one.name}</Button>
           ))}
         </Flex>
-        <Box flex={1} borderWidth={1} borderColor='chakra-border-color' p={4}>
+        <Box flex={1} borderLeftWidth={1} borderColor='chakra-border-color' ml={2} pl={4}>
           <Outlet/>
         </Box>
       </Flex>

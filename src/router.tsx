@@ -7,6 +7,7 @@ import Space from "@/pages/Space";
 import SpaceLauncher from "@/pages/SpaceLauncher";
 import Members from "@/pages/space/Members";
 import Settings from "@/pages/space/Settings";
+import Posts from "@/pages/plugins/Posts";
 
 export default createBrowserRouter(
   createRoutesFromElements([
@@ -14,6 +15,7 @@ export default createBrowserRouter(
       <Route index element={<Homepage />} />
       <Route path='/spaces' element={<MySpaces />} />,
       <Route path='/:chainId/spaces/:spaceAddress' element={<Space />}>
+        <Route path='posts' element={<Posts />} />,
         <Route path='members' element={<Members />} />,
         <Route path='settings' element={<Settings />} />,
       </Route>,

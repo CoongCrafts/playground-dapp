@@ -82,3 +82,24 @@ export enum MemberStatus {
   Active = 'Active',
   Inactive = 'Inactive'
 }
+
+export interface Plugin {
+  id: string;
+  name: string;
+}
+
+export interface PluginInfo extends Plugin {
+  address: string;
+  chainId: ChainId;
+}
+
+export interface Post {
+  id: number;
+  author: string;
+  content: {
+    Raw?: string;
+    IpfsCid?: string
+  },
+  createdAt: number;
+  updatedAt: number | null
+}

@@ -3777,6 +3777,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dayjs@npm:^1.11.10":
+  version: 1.11.10
+  resolution: "dayjs@npm:1.11.10"
+  checksum: a6b5a3813b8884f5cd557e2e6b7fa569f4c5d0c97aca9558e38534af4f2d60daafd3ff8c2000fed3435cfcec9e805bcebd99f90130c6d1c5ef524084ced588c4
+  languageName: node
+  linkType: hard
+
 "debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.4":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
@@ -4466,6 +4473,7 @@ __metadata:
     "@types/react": ^18.2.15
     "@types/react-dom": ^18.2.7
     "@vitejs/plugin-react": ^3.0.0
+    dayjs: ^1.11.10
     delightfuldot: ^0.0.1-alpha.6
     formik: ^2.4.5
     framer-motion: ^10.12.8

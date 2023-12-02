@@ -1,13 +1,10 @@
-const POSTS_ID = 'POST';
+import { Plugin } from '@/types';
 
-export interface Plugin {
-  id: string;
-  name: string;
-}
+export const PLUGIN_POSTS = 'POST';
 
 const REGISTERED_PLUGINS: Plugin[] = [
   {
-    id: POSTS_ID,
+    id: PLUGIN_POSTS,
     name: 'Posts'
   }
 ]
