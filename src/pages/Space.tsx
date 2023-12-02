@@ -93,7 +93,10 @@ function SpaceContent() {
         </Box>
       </Flex>
       <Flex mt={{ base: 0, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
-        <Flex direction='column' width={200} display={{ base: 'none', md: 'flex' }}>
+        <Flex // Navigation bar for large screen
+          direction='column'
+          width={200}
+          display={{ base: 'none', md: 'flex' }}>
           {MENU_ITEMS.map((one) => (
             <Button
               key={one.name}
@@ -108,10 +111,10 @@ function SpaceContent() {
             </Button>
           ))}
         </Flex>
-        <Tabs
+        <Tabs // Navigation bar for small screen
+          variant='unstyled'
           borderTop='1px solid'
           borderColor='chakra-border-color'
-          variant='unstyled'
           overflowX='scroll'
           display={{ base: 'block', md: 'none' }}
           style={{ scrollbarWidth: 'none' }} // Hide scrollbar on Firefox
@@ -122,7 +125,7 @@ function SpaceContent() {
           }}>
           <TabList>
             {MENU_ITEMS.map((one) => (
-              <Tab key={one.name} as={LinkRouter} to={one.path}>
+              <Tab key={one.name} as={LinkRouter} to={one.path} _selected={{ boxShadow: 'none' }}>
                 {one.name}
               </Tab>
             ))}

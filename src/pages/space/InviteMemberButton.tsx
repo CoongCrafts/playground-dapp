@@ -33,7 +33,7 @@ import { useFormik } from 'formik';
 import { pickDecoded } from 'useink/utils';
 import * as yup from 'yup';
 
-const MILISECS_PER_DAY = 24 * 60 * 60 * 1000;
+const MILLISECS_PER_DAY = 24 * 60 * 60 * 1000;
 
 function toastErrAndReturnNothing(message: string) {
   toast.error(message);
@@ -49,7 +49,7 @@ function InviteMemberButton() {
   const formikInviteMember = useFormik({
     initialValues: { address: '', expire: undefined },
     validationSchema: yup.object().shape({
-      address: yup.string().test('is-address', 'Invalid address', (value) => isAddress(value)),
+      address: yup.string().test('is_valid_address', 'Invalid address', (value) => isAddress(value)),
       expire: yup.number().positive('Invalid expire time').integer('Invalid expire time'),
     }),
     onSubmit: async (values) => {
@@ -72,7 +72,7 @@ function InviteMemberButton() {
       return toastErrAndReturnNothing('The address is already a member of the space!');
     }
 
-    grantMembershipTx.signAndSend([address, expireAfter ? expireAfter * MILISECS_PER_DAY : null], {}, (result) => {
+    grantMembershipTx.signAndSend([address, expireAfter ? expireAfter * MILLISECS_PER_DAY : null], {}, (result) => {
       if (result?.isInBlock) {
         if (result.dispatchError) {
           toastErrAndReturnNothing(result.dispatchError.toString());
