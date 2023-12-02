@@ -1,6 +1,7 @@
 import {
   Button,
   FormControl,
+  IconButton,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,6 +16,7 @@ import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useTx } from '@/hooks/useink/useTx';
 import { usePostsContext } from '@/pages/plugins/Posts/PostsProvider';
+import { AddIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
 import { shouldDisable } from 'useink/utils';
 
@@ -60,11 +62,18 @@ export default function NewPostButton() {
 
   return (
     <>
-      <Button size='sm' colorScheme='primary' variant='outline' onClick={onOpen}>
+      <Button size='sm' onClick={onOpen} display={{ base: 'none', md: 'block' }}>
         New
       </Button>
+      <IconButton
+        aria-label={'New post'}
+        size='sm'
+        onClick={onOpen}
+        icon={<AddIcon />}
+        display={{ base: 'block', md: 'none' }}
+      />
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size={{ base: 'full', md: 'xl' }}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>New post</ModalHeader>
@@ -82,7 +91,6 @@ export default function NewPostButton() {
                 />
               </FormControl>
             </ModalBody>
-
             <ModalFooter>
               <Button size='sm' variant='ghost' mr={2} onClick={onClose} isDisabled={processing}>
                 Close
