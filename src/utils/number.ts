@@ -5,7 +5,3 @@ export const stringToNum = (input: string | undefined): number | undefined => {
 
   return parseInt(input);
 };
-
-export const timestampToNum = (input: number): number => {
-  return parseInt(input.toString().replaceAll(',', ''));
-};

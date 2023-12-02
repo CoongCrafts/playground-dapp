@@ -13,19 +13,19 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as LinkRouter, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useEffect } from 'react-use';
 import SpaceAvatar from '@/components/space/SpaceAvatar';
 import UpdateDisplayNameTrigger from '@/pages/space/UpdateDisplayNameTrigger';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberStatus } from '@/types';
+import { PLUGIN_POSTS } from '@/utils/plugins';
 import { shortenAddress } from '@/utils/string';
-import { ChevronDownIcon, InfoIcon, SettingsIcon } from '@chakra-ui/icons';
+import { CalendarIcon, ChevronDownIcon, InfoIcon, SettingsIcon } from '@chakra-ui/icons';
 import pluralize from 'pluralize';
 import { ChainId } from 'useink/chains';
 
-type MenuItem = { name: string, path: string, icon: React.ReactElement };
+type MenuItem = { name: string; path: string; icon: React.ReactElement };
 
 const MENU_ITEMS: MenuItem[] = [
   { name: 'Members', path: 'members', icon: <InfoIcon /> },
@@ -37,7 +37,7 @@ const PLUGIN_MENU_ITEMS: Record<string, MenuItem> = {
 };
 
 function SpaceContent() {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>();
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(MENU_ITEMS);
   const navigate = useNavigate();
   const location = useLocation();
   const { info, space, membersCount, memberStatus, plugins } = useSpaceContext();
@@ -128,6 +128,7 @@ function SpaceContent() {
           ))}
         </Flex>
         <Tabs // Navigation bar for small screen
+          position='relative'
           variant='unstyled'
           borderTop='1px solid'
           borderColor='chakra-border-color'
@@ -153,15 +154,15 @@ function SpaceContent() {
         </Box>
       </Flex>
     </Box>
-  )
+  );
 }
 
 export default function Space() {
-  const {chainId, spaceAddress} = useParams();
+  const { chainId, spaceAddress } = useParams();
 
   return (
-    <SpaceProvider space={{address: spaceAddress!, chainId: chainId as ChainId}}>
-      <SpaceContent/>
+    <SpaceProvider space={{ address: spaceAddress!, chainId: chainId as ChainId }}>
+      <SpaceContent />
     </SpaceProvider>
-  )
+  );
 }

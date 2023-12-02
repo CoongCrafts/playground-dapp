@@ -1,9 +1,8 @@
 import { Badge, Box, Flex, Text } from '@chakra-ui/react';
 import { Identicon } from '@polkadot/react-identicon';
 import { MemberRecord, Props } from '@/types';
-import { timestampToNum } from '@/utils/number';
+import { fromNow, now, timestampToDate } from '@/utils/date';
 import { shortenAddress } from '@/utils/string';
-import moment from 'moment';
 
 interface MemberCardProps extends Props {
   memberRecord: MemberRecord;
@@ -11,7 +10,7 @@ interface MemberCardProps extends Props {
 
 function MemberCard({ memberRecord }: MemberCardProps) {
   const { info } = memberRecord;
-  const isActive = info.nextRenewalAt === null || timestampToNum(info.nextRenewalAt) > Date.now();
+  const isActive = info.nextRenewalAt === null || timestampToDate(info.nextRenewalAt.toString()) > now();
 
   return (
     <Flex
@@ -34,11 +33,7 @@ function MemberCard({ memberRecord }: MemberCardProps) {
         </Text>
         <Box color='darkgray' fontSize='0.75rem'>
           <Text>{info.name && shortenAddress(memberRecord.accountId)}</Text>
-          <Text>
-            {`Joined ${moment(new Date(timestampToNum(info.joinedAt)))
-              .fromNow()
-              .toString()}`}
-          </Text>
+          <Text>{`Joined ${fromNow(info.joinedAt.toString())}`}</Text>
         </Box>
       </Box>
     </Flex>

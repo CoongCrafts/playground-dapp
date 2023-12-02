@@ -1,6 +1,5 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import AccountSelection from '@/components/AccountSelection';
-import WelcomeBoard from '@/components/WelcomeBoard';
 import WalletSelection from '@/components/dialog/WalletSelection';
 import { useWalletContext } from '@/providers/WalletProvider';
 
@@ -36,7 +35,7 @@ function WalletPlayground() {
           <AccountSelection />
         </Box>
       ) : (
-        <WelcomeBoard />
+        <></>
       )}
     </>
   );

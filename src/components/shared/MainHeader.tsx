@@ -1,5 +1,4 @@
 import { Box, Container, Flex, Text } from '@chakra-ui/react';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import AccountSelection from '@/components/AccountSelection';
 import WalletSelection from '@/components/dialog/WalletSelection';
