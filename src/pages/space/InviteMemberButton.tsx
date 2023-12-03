@@ -20,7 +20,7 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { Identicon } from '@polkadot/react-identicon';
-import { FormEvent } from 'react';
+import { FormEvent, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { isAddress } from '@polkadot/util-crypto';
 import { useCall } from '@/hooks/useink/useCall';
@@ -77,18 +77,18 @@ function InviteMemberButton() {
           toastErrAndReturnNothing(result.dispatchError.toString());
         } else {
           toast.success('Member invited');
-          onClose();
         }
+
+        onClose();
       }
     });
   };
 
-  const handleClose = () => {
+  useEffect(() => {
     formikInviteMember.resetForm();
     // To avoid `Invite` button from being frozen
     grantMembershipTx.resetState();
-    onClose();
-  };
+  }, [isOpen]);
 
   return (
     <>
@@ -102,7 +102,7 @@ function InviteMemberButton() {
         icon={<AddIcon />}
         display={{ base: 'block', md: 'none' }}
       />
-      <Modal isOpen={isOpen} onClose={handleClose} size={{ base: 'full', md: 'xl' }}>
+      <Modal isOpen={isOpen} onClose={onClose} size={{ base: 'full', md: 'xl' }}>
         <ModalOverlay />
         <ModalContent
           as={'form'}
@@ -156,7 +156,7 @@ function InviteMemberButton() {
             </FormControl>
           </ModalBody>
           <ModalFooter gap='0.5rem'>
-            <Button variant='outline' onClick={handleClose}>
+            <Button variant='outline' onClick={onClose}>
               Cancel
             </Button>
             <Button

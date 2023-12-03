@@ -15,7 +15,7 @@ import {
   Text,
   FormErrorMessage,
 } from '@chakra-ui/react';
-import { FormEvent } from 'react';
+import { FormEvent, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
@@ -32,9 +32,11 @@ function UpdateDisplayNameTrigger() {
     validationSchema: yup.object().shape({
       displayName: yup
         .string()
+        .matches(/^[A-Za-z0-9_\-\s]*$/, {
+          message: 'Display name should only contains letters, numbers, white spaces, - and _',
+        })
         .min(3, 'Display name must be at least 3 characters')
-        .max(30, 'Display name must be at most 30 characters')
-        .matches(/^[A-Za-z0-9_\-\s]*$/, { message: 'Invalid display name' }),
+        .max(30, 'Display name must be at most 30 characters'),
     }),
     onSubmit: ({ displayName }) => {
       updateDisplayName(displayName);
@@ -49,23 +51,24 @@ function UpdateDisplayNameTrigger() {
         } else {
           toast.success('Display name updated');
         }
-        handleClose();
+
+        onClose();
       }
     });
   };
 
-  const handleClose = () => {
+  useEffect(() => {
     formikSetDisplayName.setValues({ displayName: '' });
     // To avoid `Update` button from being frozen
     updateMemberInfo.resetState();
-    onClose();
-  };
+  }, [isOpen]);
+
   return (
     <>
       <Text onClick={onOpen} width='100%' textAlign='left'>
         {memberInfo?.name ? 'Change Display Name' : 'Set Display Name'}
       </Text>
-      <Modal isOpen={isOpen} onClose={handleClose} size={{ base: 'full', md: 'md' }}>
+      <Modal isOpen={isOpen} onClose={onClose} size={{ base: 'full', md: 'md' }}>
         <ModalOverlay />
         <ModalContent as='form' onSubmit={(e) => formikSetDisplayName.handleSubmit(e as FormEvent<HTMLFormElement>)}>
           <ModalHeader>{memberInfo?.name ? 'Change Display Name' : 'Set Display Name'}</ModalHeader>
@@ -82,12 +85,12 @@ function UpdateDisplayNameTrigger() {
               {!!formikSetDisplayName.errors.displayName ? (
                 <FormErrorMessage>{formikSetDisplayName.errors.displayName}</FormErrorMessage>
               ) : (
-                <FormHelperText>Leave empty to reset name</FormHelperText>
+                <FormHelperText>Leave empty to clear name</FormHelperText>
               )}
             </FormControl>
           </ModalBody>
           <ModalFooter gap='0.5rem'>
-            <Button variant='outline' onClick={handleClose}>
+            <Button variant='outline' onClick={onClose}>
               Cancel
             </Button>
             <Button
