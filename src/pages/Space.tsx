@@ -121,23 +121,26 @@ function SpaceContent() {
           direction='column'
           width={200}
           display={{ base: 'none', md: 'flex' }}>
-          {menuItems.map((one, index) => (
-            <Button
-              key={one.name}
-              leftIcon={one.icon}
-              justifyContent={'start'}
-              fontSize='sm'
-              gap={2}
-              as={LinkRouter}
-              variant='outline'
-              colorScheme={activeIndex == index ? 'primary' : 'gray'}
-              _active={{ background: 'transparent' }}
-              _hover={{ background: 'transparent' }}
-              borderRadius={0}
-              to={one.path}>
-              {one.name}
-            </Button>
-          ))}
+          <Box position='sticky' top={4}>
+            {menuItems.map((one, index) => (
+              <Button
+                key={one.name}
+                leftIcon={one.icon}
+                justifyContent={'start'}
+                fontSize='sm'
+                width='100%'
+                gap={2}
+                as={LinkRouter}
+                variant='outline'
+                colorScheme={activeIndex == index ? 'primary' : 'gray'}
+                _active={{ background: 'transparent' }}
+                _hover={{ background: 'transparent' }}
+                borderRadius={0}
+                to={one.path}>
+                {one.name}
+              </Button>
+            ))}
+          </Box>
         </Flex>
         <Tabs // Navigation bar for small screen
           index={activeIndex}
