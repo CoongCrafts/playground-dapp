@@ -1,4 +1,4 @@
-import { Flex, IconButton, SimpleGrid, Tag, Text } from '@chakra-ui/react';
+import { Box, Flex, IconButton, SimpleGrid, Tag, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import useContractState from '@/hooks/useContractState';
 import InviteMemberButton from '@/pages/space/InviteMemberButton';
@@ -20,25 +20,26 @@ export default function Members() {
   const numberOfPage = total ? Math.ceil(parseInt(total) / RECORD_PER_PAGE) : 1;
 
   return (
-    <Flex flexDirection='column' height={{ base: 'fit-content', md: '25rem' }}>
-      <Flex align='center' mb={4} gap={2} justify={{ base: 'end', md: 'space-between' }}>
-        <Text fontSize='xl' fontWeight='semibold' display={{ base: 'none', md: 'block' }}>
-          Members
-        </Text>
+    <Flex flexDirection='column'>
+      <Flex align='center' mb={4} gap={2} justify={'space-between'}>
+        <Flex gap={2} align='center'>
+          <Text fontSize='xl' fontWeight='semibold'>
+            Members
+          </Text>
+          <Box>
+            <Tag>{membersCount}</Tag>
+          </Box>
+        </Flex>
         {isOwner && <InviteMemberButton />}
       </Flex>
-      <SimpleGrid flexGrow={1} columns={{ base: 1, lg: 3 }} gap={2}>
+      <SimpleGrid flexGrow={1} columns={{ base: 1, lg: 2 }} gap={2}>
         {items.map((item) => (
           <MemberCard key={item.index} memberRecord={item} />
         ))}
       </SimpleGrid>
-      <Flex mt={4} justifyContent='space-between'>
-        <Flex align='center' gap={2}>
-          <Text fontSize='sm'>Total members:</Text>
-          <Tag size='sm'>{membersCount}</Tag>
-        </Flex>
+      <Flex mt={4} justifyContent='space-between' align='center'>
+        <Text fontSize='sm'>{`Page ${pageIndex} / ${numberOfPage}`}</Text>
         <Flex alignItems='center' gap={2}>
-          <Text fontSize='sm'>{`Page ${pageIndex}/${numberOfPage}`}</Text>
           <IconButton
             onClick={() => setPageIndex((pre) => pre - 1)}
             aria-label='Back'

@@ -13,28 +13,30 @@ function MemberCard({ memberRecord }: MemberCardProps) {
   const isActive = info.nextRenewalAt === null || timestampToDate(info.nextRenewalAt.toString()) > now();
 
   return (
-    <Flex
-      p={2}
-      gap={2}
-      height='6rem'
-      border={1}
-      borderStyle='solid'
-      borderColor='chakra-border-color'
-      alignItems='center'>
-      <Flex direction='column' flexShrink={0} gap={2} alignItems='center' width='25%'>
-        <Identicon value={memberRecord.accountId} size={32} theme='polkadot' />
-        <Badge fontSize='0.60rem' variant='solid' colorScheme={isActive ? 'green' : 'red'}>
-          {isActive ? 'Active' : 'Inactive'}
-        </Badge>
+    <Flex p={2} gap={2} border={1} borderStyle='solid' borderColor='chakra-border-color' alignItems='center'>
+      <Flex px={2} gap={2} alignItems='center'>
+        <Identicon value={memberRecord.accountId} size={30} theme='polkadot' />
       </Flex>
-      <Box alignSelf='start'>
-        <Text fontSize='0.8rem' color='dimgray' fontWeight='semibold' wordBreak='break-word'>
-          {info.name || shortenAddress(memberRecord.accountId)}
-        </Text>
-        <Box color='darkgray' fontSize='0.75rem'>
-          <Text>{info.name && shortenAddress(memberRecord.accountId)}</Text>
+      <Box>
+        <Flex align='center' gap={2}>
+          <Text noOfLines={1} fontSize='1rem' color='dimgray' fontWeight='semibold' wordBreak='break-word'>
+            {info.name || shortenAddress(memberRecord.accountId)}
+          </Text>
+          <Box>
+            <Badge fontSize='0.60rem' mb={1} variant='solid' colorScheme={isActive ? 'green' : 'red'}>
+              {isActive ? 'Active' : 'Inactive'}
+            </Badge>
+          </Box>
+        </Flex>
+        <Flex gap={2} color='darkgray' fontSize='xs'>
+          {info.name && (
+            <>
+              <Text fontWeight='semibold'>{shortenAddress(memberRecord.accountId)}</Text>
+              <Text>•</Text>
+            </>
+          )}
           <Text>{`Joined ${fromNow(info.joinedAt.toString())}`}</Text>
-        </Box>
+        </Flex>
       </Box>
     </Flex>
   );

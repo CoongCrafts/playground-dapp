@@ -23,7 +23,6 @@ import { Identicon } from '@polkadot/react-identicon';
 import { FormEvent } from 'react';
 import { toast } from 'react-toastify';
 import { isAddress } from '@polkadot/util-crypto';
-import EmptySpace from '@/components/shared/EmptySpace';
 import { useCall } from '@/hooks/useink/useCall';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
@@ -49,7 +48,7 @@ function InviteMemberButton() {
   const formikInviteMember = useFormik({
     initialValues: { address: '', expire: undefined },
     validationSchema: yup.object().shape({
-      address: yup.string().test('is_valid_address', 'Invalid address', (value) => isAddress(value)),
+      address: yup.string().test('is_valid_address', 'Invalid address format', (value) => isAddress(value)),
       expire: yup.number().positive('Invalid expire time').integer('Invalid expire time'),
     }),
     onSubmit: async (values) => {
@@ -77,14 +76,15 @@ function InviteMemberButton() {
         if (result.dispatchError) {
           toastErrAndReturnNothing(result.dispatchError.toString());
         } else {
-          toast.success('Invited');
+          toast.success('Member invited');
+          onClose();
         }
       }
     });
   };
 
   const handleClose = () => {
-    formikInviteMember.setValues({ address: '', expire: undefined });
+    formikInviteMember.resetForm();
     // To avoid `Invite` button from being frozen
     grantMembershipTx.resetState();
     onClose();
@@ -113,16 +113,16 @@ function InviteMemberButton() {
           <ModalCloseButton />
           <ModalBody>
             <FormControl
-              mb='0.5rem'
+              mb={4}
               isRequired
               isInvalid={!!formikInviteMember.values.address && !!formikInviteMember.errors.address}>
               <FormLabel>Address</FormLabel>
               <InputGroup>
                 <InputLeftElement px='auto'>
                   {!!formikInviteMember.values.address && !formikInviteMember.errors.address ? (
-                    <Identicon value={formikInviteMember.values.address} theme='polkadot' size={30} />
+                    <Identicon value={formikInviteMember.values.address} theme='polkadot' size={24} />
                   ) : (
-                    <Circle bg='#ddd' size={30}></Circle>
+                    <Circle bg='#ddd' size={6}></Circle>
                   )}
                 </InputLeftElement>
                 <Input
@@ -132,23 +132,21 @@ function InviteMemberButton() {
                   name='address'
                 />
               </InputGroup>
-              {!!formikInviteMember.values.address && !!formikInviteMember.errors.address ? (
+              {!!formikInviteMember.values.address && !!formikInviteMember.errors.address && (
                 <FormErrorMessage>{formikInviteMember.errors.address}</FormErrorMessage>
-              ) : (
-                <EmptySpace />
               )}
             </FormControl>
-            <FormControl isInvalid={!!formikInviteMember.errors.expire} width={{ md: '50%' }}>
+            <FormControl isInvalid={!!formikInviteMember.errors.expire}>
               <FormLabel>Expire after</FormLabel>
-              <InputGroup>
+              <InputGroup width={{ md: '50%' }}>
                 <Input
                   type='number'
                   value={formikInviteMember.values.expire}
                   onChange={formikInviteMember.handleChange}
-                  placeholder='365'
+                  placeholder='e.g: 365'
                   name='expire'
                 />
-                <InputRightAddon children={'Days'} />
+                <InputRightAddon children={'days'} />
               </InputGroup>
               {!!formikInviteMember.errors.expire ? (
                 <FormErrorMessage>{formikInviteMember.errors.expire}</FormErrorMessage>
