@@ -50,6 +50,14 @@ export const theme = extendTheme({
       a: {
         textUnderlineOffset: '2px',
       },
+      '.post-content': {
+        a: {
+          color: 'primary.500',
+          _hover: {
+            textDecoration: 'underline',
+          },
+        },
+      },
     },
   },
 });
