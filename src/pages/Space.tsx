@@ -1,7 +1,22 @@
-import { Box, Button, Flex, Heading, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Tab,
+  TabIndicator,
+  TabList,
+  Tabs,
+  Text,
+} from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { Link as LinkRouter, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import SpaceAvatar from '@/components/space/SpaceAvatar';
+import UpdateDisplayNameTrigger from '@/pages/space/UpdateDisplayNameTrigger';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberStatus } from '@/types';
 import { PLUGIN_POSTS } from '@/utils/plugins';
@@ -40,77 +55,121 @@ function SpaceContent() {
     setMenuItems(menuItems);
   }, [plugins]);
 
-  if (!plugins) {
+  if (!plugins || !menuItems) {
     return null;
   }
 
-  const activePath = menuItems?.find((one) => location.pathname.endsWith(one.path))?.path;
+  const activeIndex = menuItems.findIndex((one) => location.pathname.endsWith(one.path));
 
   return (
     <Box mt={2}>
-      <Flex justify='space-between'>
-        <Flex gap={6}>
+      <Flex mb={4} justify='space-between'>
+        <Flex gap={{ base: 4, sm: 6 }} flexDir={{ base: 'column', sm: 'row' }}>
           {info && <SpaceAvatar space={space} info={info} />}
-          <Box mt={2}>
-            <Heading size='md' mb={1}>
-              {info?.name}
-            </Heading>
-            <Text as='span' fontSize='md' fontWeight='semibold' color='gray'>
-              {shortenAddress(space.address)}
-            </Text>{' '}
-            •{' '}
-            <Text as='span' fontSize='md' color='gray'>
-              {membersCount} {pluralize('member', membersCount)}
-            </Text>
-            <Text fontSize='md' color='gray'>
-              {info?.desc}
-            </Text>
-          </Box>
+          <Flex gap={{ base: 4, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
+            <Box>
+              <Heading size='md' mb={1}>
+                {info?.name}
+              </Heading>
+              <Text as='span' fontSize='md' fontWeight='semibold' color='gray'>
+                {shortenAddress(space.address)}
+              </Text>{' '}
+              •{' '}
+              <Text as='span' fontSize='md' color='gray'>
+                {membersCount} {pluralize('member', membersCount)}
+              </Text>
+              <Text fontSize='md' color='gray' mt={2}>
+                {info?.desc}
+              </Text>
+            </Box>
+            <Box>
+              {memberStatus === MemberStatus.None && (
+                <Button colorScheme='primary' size='sm' width={100}>
+                  Join
+                </Button>
+              )}
+              {memberStatus === MemberStatus.Inactive && (
+                <Button colorScheme='primary' variant='outline' size='sm' width={100}>
+                  Reactive
+                </Button>
+              )}
+              {memberStatus === MemberStatus.Active && (
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    colorScheme='primary'
+                    variant='outline'
+                    size='sm'
+                    width={100}
+                    rightIcon={<ChevronDownIcon />}>
+                    Joined
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem>
+                      <UpdateDisplayNameTrigger />
+                    </MenuItem>
+                    <MenuItem color='red'>Leave</MenuItem>
+                  </MenuList>
+                </Menu>
+              )}
+            </Box>
+          </Flex>
         </Flex>
-        <Box mt={2}>
-          {memberStatus === MemberStatus.None && (
-            <Button colorScheme='primary' variant='outline' size='sm' width={100}>
-              Join
-            </Button>
-          )}
-          {memberStatus === MemberStatus.Inactive && (
-            <Button colorScheme='primary' variant='outline' size='sm' width={100}>
-              Reactive
-            </Button>
-          )}
-          {memberStatus === MemberStatus.Active && (
-            <Menu>
-              <MenuButton as={Button} variant='outline' size='sm' width={100} rightIcon={<ChevronDownIcon />}>
-                Joined
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Set Display Name</MenuItem>
-                <MenuItem color='red'>Leave</MenuItem>
-              </MenuList>
-            </Menu>
-          )}
-        </Box>
       </Flex>
-
-      <Flex gap={2} mt={6}>
-        <Flex direction='column' width={200}>
-          {menuItems?.map((one) => (
+      <Flex mt={{ base: 0, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
+        <Flex // Navigation bar for large screen
+          direction='column'
+          width={200}
+          display={{ base: 'none', md: 'flex' }}>
+          {menuItems.map((one, index) => (
             <Button
-              justifyContent='start'
-              px={4}
               key={one.name}
-              size='sm'
               leftIcon={one.icon}
+              justifyContent={'start'}
+              fontSize='sm'
+              gap={2}
               as={LinkRouter}
-              variant={activePath == one.path ? 'solid' : 'outline'}
-              colorScheme={activePath == one.path ? 'blackAlpha' : 'gray'}
+              variant='outline'
+              colorScheme={activeIndex == index ? 'primary' : 'gray'}
+              _active={{ background: 'transparent' }}
+              _hover={{ background: 'transparent' }}
               borderRadius={0}
               to={one.path}>
               {one.name}
             </Button>
           ))}
         </Flex>
-        <Box flex={1} borderLeftWidth={1} borderColor='chakra-border-color' ml={2} pl={4}>
+        <Tabs // Navigation bar for small screen
+          index={activeIndex}
+          position='relative'
+          variant='unstyled'
+          borderTop='1px solid'
+          borderColor='chakra-border-color'
+          overflowX='scroll'
+          display={{ base: 'block', md: 'none' }}
+          style={{ scrollbarWidth: 'none' }} // Hide scrollbar on Firefox
+          css={{
+            '&::-webkit-scrollbar': {
+              display: 'none', // Hide scrollbar on Chromium
+            },
+          }}>
+          <TabList>
+            {menuItems.map((one) => (
+              <Tab key={one.name} as={LinkRouter} to={one.path} _selected={{ boxShadow: 'none' }}>
+                {one.name}
+              </Tab>
+            ))}
+          </TabList>
+          <TabIndicator mt='-3px' height='3px' bg='primary.500' borderRadius='2rem' />
+        </Tabs>
+        <Box
+          flex={1}
+          borderLeftWidth={{ base: 0, md: 1 }}
+          borderTopWidth={{ base: 1, md: 0 }}
+          borderColor='chakra-border-color'
+          ml={{ base: 0, md: 3 }}
+          pl={{ base: 0, md: 3 }}
+          pt={{ base: 4, md: 1 }}>
           <Outlet />
         </Box>
       </Flex>

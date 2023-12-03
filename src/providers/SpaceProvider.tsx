@@ -5,7 +5,7 @@ import useSpaceContract from '@/hooks/contracts/useSpaceContract';
 import useContractState from '@/hooks/useContractState';
 import useSpace from '@/hooks/useSpace';
 import { useWalletContext } from '@/providers/WalletProvider';
-import { MemberStatus, NetworkInfo, OnChainSpace, Props, SpaceConfig, SpaceInfo } from '@/types';
+import { MemberInfo, MemberStatus, NetworkInfo, OnChainSpace, Props, SpaceConfig, SpaceInfo } from '@/types';
 import { PluginInfo } from '@/types';
 import { findNetwork } from '@/utils/networks';
 import { findPlugin } from '@/utils/plugins';
@@ -24,6 +24,7 @@ interface SpaceContextProps {
   isOwner: boolean;
   memberStatus?: MemberStatus;
   plugins?: PluginInfo[];
+  memberInfo?: MemberInfo;
 }
 
 export const SpaceContext = createContext<SpaceContextProps>(null!);
@@ -46,8 +47,8 @@ export default function SpaceProvider({ space, children }: SpaceProviderProps) {
   const contract = useSpaceContract(space);
   const { selectedAccount } = useWalletContext();
 
-  const { info, membersCount, config, codeHash, ownerId, memberStatus } = useSpace(space);
   const { state: installedPlugins } = useContractState<[string, string][]>(contract, 'plugins');
+  const { info, membersCount, config, codeHash, ownerId, memberStatus, memberInfo } = useSpace(space);
   const network = findNetwork(space.chainId);
   const { api } = useApi(space.chainId) || {};
 
@@ -73,8 +74,10 @@ export default function SpaceProvider({ space, children }: SpaceProviderProps) {
         isOwner,
         memberStatus,
         plugins,
+        memberInfo,
       }}>
       {children}
     </SpaceContext.Provider>
-  );
+  )
 }
+
