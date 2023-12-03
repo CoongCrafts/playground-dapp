@@ -1,6 +1,8 @@
 import {
   Button,
   FormControl,
+  FormErrorMessage,
+  FormHelperText,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -17,6 +19,7 @@ import { useTx } from '@/hooks/useink/useTx';
 import { usePostsContext } from '@/pages/plugins/Posts/PostsProvider';
 import { useFormik } from 'formik';
 import { shouldDisable } from 'useink/utils';
+import * as yup from 'yup';
 
 export default function NewPostButton() {
   const { contract } = usePostsContext();
@@ -27,6 +30,9 @@ export default function NewPostButton() {
     initialValues: {
       content: '',
     },
+    validationSchema: yup.object().shape({
+      content: yup.string().required().max(200),
+    }),
     onSubmit: (values, formikHelpers) => {
       const { content } = values;
       const postContent = { Raw: content };
@@ -71,7 +77,7 @@ export default function NewPostButton() {
           <ModalCloseButton />
           <form onSubmit={formik.handleSubmit}>
             <ModalBody>
-              <FormControl>
+              <FormControl isInvalid={formik.touched.content && !!formik.errors.content}>
                 <Textarea
                   id='content'
                   name='content'
@@ -80,6 +86,11 @@ export default function NewPostButton() {
                   autoFocus
                   onChange={formik.handleChange}
                 />
+                {formik.touched.content && !!formik.errors.content ? (
+                  <FormErrorMessage>{formik.errors.content}</FormErrorMessage>
+                ) : (
+                  <FormHelperText>Markdown supported, maximum 200 characters</FormHelperText>
+                )}
               </FormControl>
             </ModalBody>
 
