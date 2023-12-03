@@ -50,6 +50,35 @@ export const theme = extendTheme({
       a: {
         textUnderlineOffset: '2px',
       },
+      '.post-content': {
+        a: {
+          color: 'primary.500',
+          _hover: {
+            textDecoration: 'underline',
+          },
+        },
+        'ul, ol': {
+          marginLeft: '1rem',
+        },
+        hr: {
+          margin: '0.5rem 0',
+        },
+        'h1, h2, h3, h4, h5, h6': {
+          fontWeight: 'semibold',
+        },
+        h1: {
+          fontSize: '1.5rem',
+        },
+        h2: {
+          fontSize: '1.3rem',
+        },
+        h3: {
+          fontSize: '1.2rem',
+        },
+        'h4, h5, h6': {
+          fontSize: '1.1rem',
+        },
+      },
     },
   },
 });

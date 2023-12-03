@@ -171,7 +171,7 @@ export default function SpaceLauncher() {
             const deployedEvent = result.events.find(
               (record) =>
                 isContractInstantiatedEvent(record) &&
-                asContractInstantiatedEvent(record).deployer === network?.motherAddress,
+                asContractInstantiatedEvent(record)!.deployer === network?.motherAddress,
             );
             toast.success('The space has successfully deployed to ...!');
             if (deployedEvent) {

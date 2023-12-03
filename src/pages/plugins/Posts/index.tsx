@@ -5,6 +5,7 @@ import PostsProvider, { usePostsContext } from '@/pages/plugins/Posts/PostsProvi
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberStatus } from '@/types';
 import { fromNow } from '@/utils/date';
+import { renderMd } from '@/utils/mdrenderer';
 import { PLUGIN_POSTS } from '@/utils/plugins';
 import { shortenAddress } from '@/utils/string';
 
@@ -40,7 +41,10 @@ function PostsContent() {
               </Text>
             </Flex>
 
-            <Text mt={3}>{post.content.Raw || ''}</Text>
+            <Box
+              className='post-content'
+              mt={3}
+              dangerouslySetInnerHTML={{ __html: renderMd(post.content.Raw || '') }}></Box>
           </Box>
         ))}
       </Box>
