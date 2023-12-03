@@ -37,7 +37,7 @@ const PLUGIN_MENU_ITEMS: Record<string, MenuItem> = {
 };
 
 function SpaceContent() {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(MENU_ITEMS);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>();
   const navigate = useNavigate();
   const location = useLocation();
   const { info, space, membersCount, memberStatus, plugins } = useSpaceContext();
@@ -55,7 +55,7 @@ function SpaceContent() {
     setMenuItems(menuItems);
   }, [plugins]);
 
-  if (!plugins) {
+  if (!plugins || !menuItems) {
     return null;
   }
 
