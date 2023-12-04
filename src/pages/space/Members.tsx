@@ -1,23 +1,14 @@
 import { Box, Flex, IconButton, SimpleGrid, Tag, Text } from '@chakra-ui/react';
-import { useState } from 'react';
-import useContractState from '@/hooks/useContractState';
+import usePagination from '@/hooks/usePagination';
 import MemberCard from '@/pages/space/MemberCard';
 import InviteMemberButton from '@/pages/space/actions/InviteMemberButton';
 import { useSpaceContext } from '@/providers/SpaceProvider';
-import { MemberRecord, Pagination } from '@/types';
+import { MemberRecord } from '@/types';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
-const RECORD_PER_PAGE = 3 * 3;
-
 export default function Members() {
-  const { membersCount, contract, isOwner } = useSpaceContext();
-  const [pageIndex, setPageIndex] = useState(1);
-  const { state: page } = useContractState<Pagination<MemberRecord>>(contract, 'listMembers', [
-    (pageIndex - 1) * RECORD_PER_PAGE,
-    RECORD_PER_PAGE,
-  ]);
-  const { items = [], total } = page || {};
-  const numberOfPage = total ? Math.ceil(parseInt(total) / RECORD_PER_PAGE) : 1;
+  const { membersCount, isOwner } = useSpaceContext();
+  const { pageIndex, setPageIndex, numberOfPage, items } = usePagination<MemberRecord>('listMembers', 9);
 
   return (
     <Flex flexDirection='column'>

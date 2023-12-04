@@ -2,29 +2,23 @@ import { Flex, Tag, Text, IconButton, Button } from '@chakra-ui/react';
 import { Identicon } from '@polkadot/react-identicon';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import useContractState from '@/hooks/useContractState';
+import usePagination from '@/hooks/usePagination';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
-import { MembershipRequest, Pagination, RequestApproval } from '@/types';
+import { MembershipRequest, RequestApproval } from '@/types';
 import { fromNow } from '@/utils/date';
-import { stringToNum } from '@/utils/number';
 import { shortenAddress } from '@/utils/string';
 import { CheckIcon, ChevronLeftIcon, ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
-
-const REQUEST_PER_PAGE = 3 * 3;
+import { shouldDisable } from 'useink/utils';
 
 export default function PendingMembers() {
   const { contract } = useSpaceContext();
   const submitRequestApprovalsTx = useTx(contract, 'submitRequestApprovals');
   const [requestApprovals, setRequestApprovals] = useState<RequestApproval[]>([]);
-  const [pageIndex, setPageIndex] = useState(1);
-  const { state: pendingRequestsCount } = useContractState<number>(contract, 'pendingRequestsCount');
-  const { state: page } = useContractState<Pagination<MembershipRequest>>(contract, 'pendingRequests', [
-    (pageIndex - 1) * REQUEST_PER_PAGE,
-    REQUEST_PER_PAGE,
-  ]);
-  const { items = [], total } = page || {};
-  const numberOfPage = stringToNum(total) ? Math.ceil(parseInt(total!) / REQUEST_PER_PAGE) : 1;
+  const { pageIndex, setPageIndex, numberOfPage, items, total } = usePagination<MembershipRequest>(
+    'pendingRequests',
+    9,
+  );
 
   const submitApprovals = (requestApprovals: RequestApproval[]) => {
     if (requestApprovals.length === 0) {
@@ -65,12 +59,12 @@ export default function PendingMembers() {
           <Text fontSize={{ md: 'xl' }} fontWeight='semibold'>
             Pending Membership Request
           </Text>
-          <Tag size='sm'>{pendingRequestsCount}</Tag>
+          <Tag size='sm'>{total}</Tag>
         </Flex>
         <Button
           onClick={() => submitApprovals(requestApprovals)}
           flexGrow={1}
-          isDisabled={requestApprovals.length === 0 || submitRequestApprovalsTx.status === 'PendingSignature'}>
+          isDisabled={requestApprovals.length === 0 || shouldDisable(submitRequestApprovalsTx)}>
           Submit Approval
         </Button>
       </Flex>

@@ -63,8 +63,6 @@ function SpaceContent() {
     return null;
   }
 
-  console.log(pendingRequest);
-
   const activeIndex = menuItems.findIndex((one) => location.pathname.split('/').at(-1) === one.path);
 
   return (
