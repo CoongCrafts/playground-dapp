@@ -142,9 +142,14 @@ export default function SpaceLauncher() {
 
       let spacePricing: any = pricing;
       if (pricing === Pricing.OneTimePaid) {
-        spacePricing = { [pricing]: { price: parseInt(price) } };
+        spacePricing = { [pricing]: { price: parseInt(price) * Math.pow(10, network!.decimals) } };
       } else if (pricing === Pricing.Subscription) {
-        spacePricing = { [pricing]: { price: parseInt(price), duration: parseInt(duration) } };
+        spacePricing = {
+          [pricing]: {
+            price: parseInt(price) * Math.pow(10, network!.decimals),
+            duration: parseInt(duration),
+          },
+        };
       }
 
       const spaceInfo = { name, desc, logo: { Url: logoUrl || DEFAULT_LOGO } };
@@ -171,7 +176,7 @@ export default function SpaceLauncher() {
             const deployedEvent = result.events.find(
               (record) =>
                 isContractInstantiatedEvent(record) &&
-                asContractInstantiatedEvent(record)!.deployer === network?.motherAddress,
+                asContractInstantiatedEvent(record).deployer === network?.motherAddress,
             );
             toast.success('The space has successfully deployed to ...!');
             if (deployedEvent) {

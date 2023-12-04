@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Chain, ChainId } from 'useink/chains';
+import { Chain, ChainId } from "useink/chains";
 
 export interface Props {
   className?: string;
@@ -11,7 +11,7 @@ export interface Props {
 export enum ChainEnvironment {
   Development = 'Development',
   Testnet = 'Testnet',
-  Production = 'Production',
+  Production = 'Production'
 }
 
 export const ChainEnvironments = Object.values(ChainEnvironment);
@@ -34,26 +34,25 @@ export interface SpaceInfo {
   logo: {
     Url?: string;
     IpfsCid?: string;
-  } | null;
+  } | null
 }
 
 export enum RegistrationType {
   PayToJoin = 'PayToJoin',
-  RequestToJoin = 'RequestToJoin',
+  RequestToJoin = 'RequestToJoin'
 }
 
 export enum Pricing {
   Free = 'Free',
   OneTimePaid = 'OneTimePaid',
-  Subscription = 'Subscription',
+  Subscription = 'Subscription'
 }
 
 export interface SpaceConfig {
-  registration: RegistrationType;
-  pricing:
-    | Pricing.Free
+  registration: RegistrationType
+  pricing: Pricing.Free
     | { [Pricing.OneTimePaid]: { price: string } }
-    | { [Pricing.Subscription]: { price: string; duration: string } };
+    | { [Pricing.Subscription]: { price: string, duration: string } }
 }
 
 export interface OnChainSpace {
@@ -68,10 +67,10 @@ export interface MemberRecord {
 }
 
 export interface Pagination<Item> {
-  items: Array<Item>;
+  items: Array<Item>,
   from: string;
   perPage: string;
-  hasNextPage: boolean;
+  hasNextPage: boolean,
   total: string;
 }
 
@@ -108,3 +107,12 @@ export interface Post {
   createdAt: number;
   updatedAt: number | null;
 }
+
+export interface MembershipRequest {
+  who: string;
+  paid: number;
+  requestedAt: number;
+  approved?: boolean;
+}
+
+export type RequestApproval = [string, boolean];

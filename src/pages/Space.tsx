@@ -16,20 +16,23 @@ import {
 import React, { useEffect, useState } from 'react';
 import { Link as LinkRouter, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import SpaceAvatar from '@/components/space/SpaceAvatar';
+import CancelRequestButton from '@/pages/space/actions/CancelRequestButton';
+import JoinButton from '@/pages/space/actions/JoinButton';
 import LeaveSpaceButton from '@/pages/space/actions/LeaveSpaceButton';
 import UpdateDisplayNameButton from '@/pages/space/actions/UpdateDisplayNameButton';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberStatus } from '@/types';
 import { PLUGIN_POSTS } from '@/utils/plugins';
 import { shortenAddress } from '@/utils/string';
-import { CalendarIcon, ChevronDownIcon, InfoIcon, SettingsIcon } from '@chakra-ui/icons';
+import { CalendarIcon, ChevronDownIcon, InfoIcon, SettingsIcon, HamburgerIcon } from '@chakra-ui/icons';
 import pluralize from 'pluralize';
 import { ChainId } from 'useink/chains';
 
-type MenuItem = { name: string; path: string; icon: React.ReactElement };
+type MenuItem = { name: string; path: string; icon: React.ReactElement; ownerOnly?: boolean };
 
 const MENU_ITEMS: MenuItem[] = [
   { name: 'Members', path: 'members', icon: <InfoIcon /> },
+  { name: 'Pending Members', path: 'pending-members', icon: <HamburgerIcon />, ownerOnly: true },
   { name: 'Settings', path: 'settings', icon: <SettingsIcon /> },
 ];
 
@@ -41,7 +44,7 @@ function SpaceContent() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>();
   const navigate = useNavigate();
   const location = useLocation();
-  const { info, space, membersCount, memberStatus, plugins, isOwner } = useSpaceContext();
+  const { info, space, membersCount, memberStatus, isOwner, plugins, pendingRequest } = useSpaceContext();
 
   useEffect(() => {
     if (!plugins) return;
@@ -60,7 +63,9 @@ function SpaceContent() {
     return null;
   }
 
-  const activeIndex = menuItems.findIndex((one) => location.pathname.endsWith(one.path));
+  console.log(pendingRequest);
+
+  const activeIndex = menuItems.findIndex((one) => location.pathname.split('/').at(-1) === one.path);
 
   return (
     <Box mt={2}>
@@ -84,11 +89,8 @@ function SpaceContent() {
               </Text>
             </Box>
             <Box>
-              {(memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) && (
-                <Button colorScheme='primary' size='sm' width={100}>
-                  Join
-                </Button>
-              )}
+              {(memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) &&
+                (!pendingRequest ? <JoinButton /> : <CancelRequestButton />)}
               {memberStatus === MemberStatus.Inactive && (
                 <Button colorScheme='primary' variant='outline' size='sm' width={100}>
                   Reactive
@@ -129,6 +131,7 @@ function SpaceContent() {
           <Box position='sticky' top={4}>
             {menuItems.map((one, index) => (
               <Button
+                display={one.ownerOnly && !isOwner ? 'none' : 'flex-item'}
                 key={one.name}
                 leftIcon={one.icon}
                 justifyContent={'start'}
@@ -163,7 +166,12 @@ function SpaceContent() {
           }}>
           <TabList>
             {menuItems.map((one) => (
-              <Tab key={one.name} as={LinkRouter} to={one.path} _selected={{ boxShadow: 'none' }}>
+              <Tab
+                key={one.name}
+                as={LinkRouter}
+                to={one.path}
+                _selected={{ boxShadow: 'none' }}
+                display={one.ownerOnly && !isOwner ? 'none' : 'block'}>
                 {one.name}
               </Tab>
             ))}
