@@ -4,7 +4,7 @@ import useContractState from '@/hooks/useContractState';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { Pricing } from '@/types';
-import { balanceToReadable, shortenAddress } from '@/utils/string';
+import { formatBalance, shortenAddress } from '@/utils/string';
 import { shouldDisable } from 'useink/utils';
 
 export default function Settings() {
@@ -68,7 +68,7 @@ export default function Settings() {
             </Text>
             {(pricing === Pricing.OneTimePaid || pricing === Pricing.Subscription) && (
               <Text mt={3}>
-                Price <Tag>{balanceToReadable(pricingInfo.price, network)}</Tag>
+                Price <Tag>{formatBalance(pricingInfo.price, network, true)}</Tag>
               </Text>
             )}
             {pricing === Pricing.Subscription && (

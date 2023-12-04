@@ -11,6 +11,7 @@ import {
   TabIndicator,
   TabList,
   Tabs,
+  Tag,
   Text,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
@@ -21,18 +22,19 @@ import JoinButton from '@/pages/space/actions/JoinButton';
 import LeaveSpaceButton from '@/pages/space/actions/LeaveSpaceButton';
 import UpdateDisplayNameButton from '@/pages/space/actions/UpdateDisplayNameButton';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
-import { MemberStatus } from '@/types';
+import { MemberStatus, RegistrationType } from '@/types';
 import { PLUGIN_POSTS } from '@/utils/plugins';
 import { shortenAddress } from '@/utils/string';
-import { CalendarIcon, ChevronDownIcon, InfoIcon, SettingsIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { CalendarIcon, ChevronDownIcon, HamburgerIcon, InfoIcon, SettingsIcon } from '@chakra-ui/icons';
+import clsx from 'clsx';
 import pluralize from 'pluralize';
 import { ChainId } from 'useink/chains';
 
-type MenuItem = { name: string; path: string; icon: React.ReactElement; ownerOnly?: boolean };
+type MenuItem = { name: string; path: string; icon: React.ReactElement };
 
 const MENU_ITEMS: MenuItem[] = [
   { name: 'Members', path: 'members', icon: <InfoIcon /> },
-  { name: 'Pending Members', path: 'pending-members', icon: <HamburgerIcon />, ownerOnly: true },
+  { name: 'Pending Members', path: 'pending-members', icon: <HamburgerIcon /> },
   { name: 'Settings', path: 'settings', icon: <SettingsIcon /> },
 ];
 
@@ -44,7 +46,8 @@ function SpaceContent() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>();
   const navigate = useNavigate();
   const location = useLocation();
-  const { info, space, membersCount, memberStatus, isOwner, plugins, pendingRequest } = useSpaceContext();
+  const { info, config, space, membersCount, pendingRequestsCount, memberStatus, isOwner, plugins, pendingRequest } =
+    useSpaceContext();
 
   useEffect(() => {
     if (!plugins) return;
@@ -64,6 +67,7 @@ function SpaceContent() {
   }
 
   const activeIndex = menuItems.findIndex((one) => location.pathname.split('/').at(-1) === one.path);
+  const hasPendingMembersTab = config?.registration === RegistrationType.RequestToJoin;
 
   return (
     <Box mt={2}>
@@ -124,12 +128,19 @@ function SpaceContent() {
       <Flex mt={{ base: 0, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
         <Flex // Navigation bar for large screen
           direction='column'
-          width={200}
+          width={220}
           display={{ base: 'none', md: 'flex' }}>
           <Box position='sticky' top={4}>
             {menuItems.map((one, index) => (
               <Button
-                display={one.ownerOnly && !isOwner ? 'none' : 'flex-item'}
+                display={clsx(
+                  one.path === 'pending-members'
+                    ? {
+                        'inline-flex': hasPendingMembersTab,
+                        none: !hasPendingMembersTab,
+                      }
+                    : 'inline-flex',
+                )}
                 key={one.name}
                 leftIcon={one.icon}
                 justifyContent={'start'}
@@ -143,7 +154,7 @@ function SpaceContent() {
                 _hover={{ background: 'transparent' }}
                 borderRadius={0}
                 to={one.path}>
-                {one.name}
+                {one.name} {one.path === 'pending-members' && <Tag size='sm'>{pendingRequestsCount}</Tag>}
               </Button>
             ))}
           </Box>
@@ -169,8 +180,15 @@ function SpaceContent() {
                 as={LinkRouter}
                 to={one.path}
                 _selected={{ boxShadow: 'none' }}
-                display={one.ownerOnly && !isOwner ? 'none' : 'block'}>
-                {one.name}
+                display={clsx(
+                  one.path === 'pending-members'
+                    ? {
+                        'flex-item': hasPendingMembersTab,
+                        none: !hasPendingMembersTab,
+                      }
+                    : 'flex-item',
+                )}>
+                {one.name} {one.path === 'pending-members' && <Tag size='sm'>{pendingRequestsCount}</Tag>}
               </Tab>
             ))}
           </TabList>

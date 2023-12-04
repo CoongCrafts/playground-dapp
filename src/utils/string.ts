@@ -18,15 +18,12 @@ export const shortenAddress = (address?: string): string => {
   return `${address.substring(0, 4)}...${address.substring(length - 4, length)}`;
 };
 
-export function balanceToReadable(balance: string, network: NetworkInfo) {
+export function formatBalance(balance: string, network: NetworkInfo, withUnit = true, withZero = false) {
   balance = balance.replaceAll(',', '');
 
-  return `${balance.substring(0, balance.length - network.decimals)} ${network.symbol}`;
-}
-
-export function formatBalance(balance: string, network: NetworkInfo, withUnit?: boolean) {
   return formatBalancePolka(balance, {
     decimals: network.decimals,
+    withZero,
     withUnit,
   });
 }

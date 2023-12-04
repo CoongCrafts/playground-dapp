@@ -20,6 +20,7 @@ export default function useSpace(space: OnChainSpace) {
   const { state: pendingRequest } = useContractState<MembershipRequest>(spaceContract, 'pendingRequestFor', [
     selectedAccount?.address,
   ]);
+  const { state: pendingRequestsCountStr } = useContractState<string>(spaceContract, 'pendingRequestsCount');
 
   return {
     info,
@@ -30,5 +31,6 @@ export default function useSpace(space: OnChainSpace) {
     memberStatus,
     memberInfo,
     pendingRequest,
+    pendingRequestsCount: stringToNum(pendingRequestsCountStr),
   };
 }

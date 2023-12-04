@@ -35,6 +35,7 @@ interface SpaceContextProps {
   plugins?: PluginInfo[];
   memberInfo?: MemberInfo;
   pendingRequest?: MembershipRequest;
+  pendingRequestsCount?: number;
 }
 
 export const SpaceContext = createContext<SpaceContextProps>(null!);
@@ -58,7 +59,17 @@ export default function SpaceProvider({ space, children }: SpaceProviderProps) {
   const { selectedAccount } = useWalletContext();
 
   const { state: installedPlugins } = useContractState<[string, string][]>(contract, 'plugins');
-  const { info, membersCount, pendingRequest, config, codeHash, ownerId, memberStatus, memberInfo } = useSpace(space);
+  const {
+    info,
+    membersCount,
+    pendingRequest,
+    config,
+    codeHash,
+    ownerId,
+    memberStatus,
+    memberInfo,
+    pendingRequestsCount,
+  } = useSpace(space);
   const network = findNetwork(space.chainId);
   const { api } = useApi(space.chainId) || {};
 
@@ -86,6 +97,7 @@ export default function SpaceProvider({ space, children }: SpaceProviderProps) {
         plugins,
         memberInfo,
         pendingRequest,
+        pendingRequestsCount,
       }}>
       {children}
     </SpaceContext.Provider>

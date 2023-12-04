@@ -18,7 +18,7 @@ import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { useWalletContext } from '@/providers/WalletProvider';
 import { Pricing, RegistrationType } from '@/types';
-import { shortenAddress, balanceToReadable, formatBalance } from '@/utils/string';
+import { shortenAddress, formatBalance } from '@/utils/string';
 import pluralize from 'pluralize';
 import { ContractSubmittableResult } from 'useink/core';
 import { shouldDisable } from 'useink/utils';
@@ -56,7 +56,7 @@ export default function JoinButton() {
 
     if (
       freeBalance === '0' ||
-      (priceValue !== undefined && parseInt(formatBalance(priceValue, network)) > parseInt(freeBalance))
+      (priceValue !== undefined && parseInt(formatBalance(priceValue, network, false, true)) > parseInt(freeBalance))
     ) {
       toast.error(`Your account balance is not enough to make transaction, current balance: ${freeBalance}`);
       return;
@@ -98,7 +98,7 @@ export default function JoinButton() {
                 <Text>
                   Membership price:{' '}
                   <Text as='span' color='dimgray' fontWeight='semibold'>
-                    {pricing === Pricing.Free ? 'Free' : `${balanceToReadable(pricingInfo.price, network)}`}
+                    {pricing === Pricing.Free ? 'Free' : `${formatBalance(pricingInfo.price, network)}`}
                     {pricing === Pricing.Subscription &&
                       ` / ${pricingInfo.duration} ${pluralize('day', pricingInfo.duration)}`}
                   </Text>
@@ -113,16 +113,14 @@ export default function JoinButton() {
                 isDisabled={shouldDisable(payToJoinTx) || shouldDisable(registerMembershipTx)}>
                 {config.registration === RegistrationType.PayToJoin
                   ? (pricing === Pricing.Free && 'Join') ||
-                    (pricing === Pricing.OneTimePaid &&
-                      `Pay ${balanceToReadable(pricingInfo.price, network)} & Join`) ||
-                    (pricing === Pricing.Subscription &&
-                      `Pay ${balanceToReadable(pricingInfo.price, network)} & Subscribe`)
+                    (pricing === Pricing.OneTimePaid && `Pay ${formatBalance(pricingInfo.price, network)} & Join`) ||
+                    (pricing === Pricing.Subscription && `Pay ${formatBalance(pricingInfo.price, network)} & Subscribe`)
                   : // RegistrationType.RequestToJoin
                     (pricing === Pricing.Free && 'Request to Join') ||
                     (pricing === Pricing.OneTimePaid &&
-                      `Pay ${balanceToReadable(pricingInfo.price, network)} & Request to Join`) ||
+                      `Pay ${formatBalance(pricingInfo.price, network)} & Request to Join`) ||
                     (pricing === Pricing.Subscription &&
-                      `Pay ${balanceToReadable(pricingInfo.price, network)} & Request Subcription`)}
+                      `Pay ${formatBalance(pricingInfo.price, network)} & Request Subcription`)}
               </Button>
             </ModalFooter>
           </ModalContent>

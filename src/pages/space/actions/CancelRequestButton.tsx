@@ -16,7 +16,7 @@ import useFreeBalance from '@/hooks/useFreeBalance';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { useWalletContext } from '@/providers/WalletProvider';
-import { balanceToReadable } from '@/utils/string';
+import { formatBalance } from '@/utils/string';
 import { shouldDisable } from 'useink/utils';
 
 export default function CancelRequestButton() {
@@ -62,7 +62,7 @@ export default function CancelRequestButton() {
           <ModalBody>
             The payment of{' '}
             <Text as={'span'} fontWeight='semibold'>
-              {balanceToReadable(pendingRequest!.paid.toString(), network)}{' '}
+              {formatBalance(pendingRequest!.paid.toString(), network, true)}{' '}
             </Text>{' '}
             will be refunded to your account
           </ModalBody>

@@ -6,9 +6,11 @@ import { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberRecord } from '@/types';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
+const RECORD_PER_PAGE = 8;
+
 export default function Members() {
   const { membersCount, isOwner } = useSpaceContext();
-  const { pageIndex, setPageIndex, numberOfPage, items } = usePagination<MemberRecord>('listMembers', 9);
+  const { pageIndex, setPageIndex, numberOfPage, items } = usePagination<MemberRecord>('listMembers', RECORD_PER_PAGE);
 
   return (
     <Flex flexDirection='column'>

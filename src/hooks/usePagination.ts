@@ -15,5 +15,5 @@ export default function usePagination<T>(paginationMessage: string, recordPerPag
   const { items = [], total } = page || {};
   const numberOfPage = stringToNum(total) ? Math.ceil(parseInt(total!) / recordPerPage) : 1;
 
-  return { pageIndex, setPageIndex, numberOfPage, items, total: stringToNum(total) };
+  return { pageIndex, setPageIndex, numberOfPage, items };
 }
