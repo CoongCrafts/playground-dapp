@@ -64,61 +64,59 @@ function SpaceContent() {
 
   return (
     <Box mt={2}>
-      <Flex mb={4} justify='space-between'>
-        <Flex gap={{ base: 4, sm: 6 }} flexDir={{ base: 'column', sm: 'row' }}>
-          {info && <SpaceAvatar space={space} info={info} />}
-          <Flex gap={{ base: 4, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
-            <Box>
-              <Heading size='md' mb={1}>
-                {info?.name}
-              </Heading>
-              <Text as='span' fontSize='md' fontWeight='semibold' color='gray'>
-                {shortenAddress(space.address)}
-              </Text>{' '}
-              •{' '}
-              <Text as='span' fontSize='md' color='gray'>
-                {membersCount} {pluralize('member', membersCount)}
-              </Text>
-              <Text fontSize='md' color='gray' mt={2}>
-                {info?.desc}
-              </Text>
-            </Box>
-            <Box>
-              {(memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) && (
-                <Button colorScheme='primary' size='sm' width={100}>
-                  Join
-                </Button>
-              )}
-              {memberStatus === MemberStatus.Inactive && (
-                <Button colorScheme='primary' variant='outline' size='sm' width={100}>
-                  Reactive
-                </Button>
-              )}
-              {memberStatus === MemberStatus.Active && (
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    colorScheme='primary'
-                    variant='outline'
-                    size='sm'
-                    width={100}
-                    rightIcon={<ChevronDownIcon />}>
-                    Joined
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem>
-                      <UpdateDisplayNameButton />
+      <Flex mb={4} gap={{ base: 4, sm: 6 }} flexDir={{ base: 'column', sm: 'row' }}>
+        <Box>{info && <SpaceAvatar space={space} info={info} />}</Box>
+        <Flex flex={1} justify='space-between' gap={{ base: 4, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
+          <Box>
+            <Heading size='md' mb={1}>
+              {info?.name}
+            </Heading>
+            <Text as='span' fontSize='md' fontWeight='semibold' color='gray'>
+              {shortenAddress(space.address)}
+            </Text>{' '}
+            •{' '}
+            <Text as='span' fontSize='md' color='gray'>
+              {membersCount} {pluralize('member', membersCount)}
+            </Text>
+            <Text fontSize='md' color='gray' mt={2}>
+              {info?.desc}
+            </Text>
+          </Box>
+          <Box>
+            {(memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) && (
+              <Button colorScheme='primary' size='sm' width={100}>
+                Join
+              </Button>
+            )}
+            {memberStatus === MemberStatus.Inactive && (
+              <Button colorScheme='primary' variant='outline' size='sm' width={100}>
+                Reactive
+              </Button>
+            )}
+            {memberStatus === MemberStatus.Active && (
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  colorScheme='primary'
+                  variant='outline'
+                  size='sm'
+                  width={100}
+                  rightIcon={<ChevronDownIcon />}>
+                  Joined
+                </MenuButton>
+                <MenuList>
+                  <MenuItem>
+                    <UpdateDisplayNameButton />
+                  </MenuItem>
+                  {!isOwner && (
+                    <MenuItem color='red'>
+                      <LeaveSpaceButton />
                     </MenuItem>
-                    {!isOwner && (
-                      <MenuItem color='red'>
-                        <LeaveSpaceButton />
-                      </MenuItem>
-                    )}
-                  </MenuList>
-                </Menu>
-              )}
-            </Box>
-          </Flex>
+                  )}
+                </MenuList>
+              </Menu>
+            )}
+          </Box>
         </Flex>
       </Flex>
       <Flex mt={{ base: 0, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
