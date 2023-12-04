@@ -22,7 +22,7 @@ import { useSpaceContext } from '@/providers/SpaceProvider';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
-function UpdateDisplayNameTrigger() {
+function UpdateDisplayNameButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { contract, memberInfo } = useSpaceContext();
   const updateMemberInfo = useTx(contract, 'updateMemberInfo');
@@ -108,4 +108,4 @@ function UpdateDisplayNameTrigger() {
   );
 }
 
-export default UpdateDisplayNameTrigger;
+export default UpdateDisplayNameButton;

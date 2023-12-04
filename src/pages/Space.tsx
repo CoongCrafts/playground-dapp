@@ -16,8 +16,8 @@ import {
 import React, { useEffect, useState } from 'react';
 import { Link as LinkRouter, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import SpaceAvatar from '@/components/space/SpaceAvatar';
-import LeaveSpaceButton from '@/pages/space/LeaveSpaceButton';
-import UpdateDisplayNameTrigger from '@/pages/space/UpdateDisplayNameTrigger';
+import LeaveSpaceButton from '@/pages/space/actions/LeaveSpaceButton';
+import UpdateDisplayNameButton from '@/pages/space/actions/UpdateDisplayNameButton';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberStatus } from '@/types';
 import { PLUGIN_POSTS } from '@/utils/plugins';
@@ -107,7 +107,7 @@ function SpaceContent() {
                   </MenuButton>
                   <MenuList>
                     <MenuItem>
-                      <UpdateDisplayNameTrigger />
+                      <UpdateDisplayNameButton />
                     </MenuItem>
                     {!isOwner && (
                       <MenuItem color='red'>

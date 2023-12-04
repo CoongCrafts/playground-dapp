@@ -1,8 +1,8 @@
 import { Box, Flex, IconButton, SimpleGrid, Tag, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import useContractState from '@/hooks/useContractState';
-import InviteMemberButton from '@/pages/space/InviteMemberButton';
 import MemberCard from '@/pages/space/MemberCard';
+import InviteMemberButton from '@/pages/space/actions/InviteMemberButton';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberRecord, Pagination } from '@/types';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
