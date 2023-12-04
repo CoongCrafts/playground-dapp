@@ -2,6 +2,7 @@ import { createContext, useContext, useMemo } from 'react';
 import usePostsContract from '@/hooks/contracts/plugins/usePostsContract';
 import useContractState from '@/hooks/useContractState';
 import { PluginInfo, Post, Props } from '@/types';
+import { stringToNum } from '@/utils/number';
 import { ChainContract } from 'useink';
 
 interface PostsContextProps {
@@ -38,8 +39,8 @@ export default function PostsProvider({ info, children }: PostsProviderProps) {
     .map(([idStr, rawPost]) => {
       const newPost = { ...rawPost };
       const id = parseInt(idStr);
-      newPost.createdAt = newPost.createdAt && parseInt(newPost.createdAt.replaceAll(',', ''));
-      newPost.updatedAt = newPost.updatedAt && parseInt(newPost.updatedAt.replaceAll(',', ''));
+      newPost.createdAt = newPost.createdAt && stringToNum(newPost.createdAt);
+      newPost.updatedAt = newPost.updatedAt && stringToNum(newPost.updatedAt);
 
       return {
         id,

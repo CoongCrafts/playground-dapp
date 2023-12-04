@@ -1,3 +1,4 @@
+import { stringToNum } from '@/utils/number';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -9,7 +10,7 @@ export const fromNow = (timestamp: string | number) => {
 
 export const timestampToDate = (timestamp: string | number) => {
   if (typeof timestamp === 'string') {
-    timestamp = parseInt(timestamp.replaceAll(',', ''));
+    timestamp = stringToNum(timestamp) as number;
   }
 
   return new Date(timestamp);

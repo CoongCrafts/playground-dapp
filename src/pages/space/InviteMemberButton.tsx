@@ -67,8 +67,8 @@ function InviteMemberButton() {
       return toastErrAndReturnNothing('Cannot check member status of the address');
     }
 
-    if (status !== MemberStatus.None) {
-      return toastErrAndReturnNothing('The address is already a member of the space!');
+    if (status === MemberStatus.Active) {
+      return toastErrAndReturnNothing('The address is already an active member of the space!');
     }
 
     grantMembershipTx.signAndSend([address, expireAfter ? expireAfter * MILLISECS_PER_DAY : null], {}, (result) => {

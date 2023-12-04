@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x696140413abbb4766d43ae4e1b68ef6dd79ed7d28a8fdac9e3ba236850c17c84",
+    "hash": "0x107c77347f549afaed13e0542996cca1326eb872b7b1d708931cd6cae12e342f",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.73.0-nightly",
     "build_info": {
@@ -478,6 +478,27 @@
           "type": 49
         },
         "selector": "0x2f8bd8ef"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Active member to leave space",
+          " For now, only the member himself can call this",
+          " Later we can consider allow owner to do this",
+          " or a voting mechanism to force a member to leave"
+        ],
+        "label": "leave",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 19
+        },
+        "selector": "0x7f24c8bb"
       },
       {
         "args": [],
@@ -1701,6 +1722,10 @@
               {
                 "index": 5,
                 "name": "NotActiveMember"
+              },
+              {
+                "index": 6,
+                "name": "MemberNotFound"
               }
             ]
           }
@@ -2580,6 +2605,10 @@
               {
                 "index": 2,
                 "name": "Inactive"
+              },
+              {
+                "index": 3,
+                "name": "Left"
               }
             ]
           }

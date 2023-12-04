@@ -1,8 +1,10 @@
 import { Badge, Box, Flex, Text } from '@chakra-ui/react';
 import { Identicon } from '@polkadot/react-identicon';
-import { MemberRecord, Props } from '@/types';
-import { fromNow, now, timestampToDate } from '@/utils/date';
+import { MemberRecord, MemberStatus, Props } from '@/types';
+import { fromNow } from '@/utils/date';
+import { toMemberStatus } from '@/utils/members';
 import { shortenAddress } from '@/utils/string';
+import clsx from 'clsx';
 
 interface MemberCardProps extends Props {
   memberRecord: MemberRecord;
@@ -10,7 +12,7 @@ interface MemberCardProps extends Props {
 
 function MemberCard({ memberRecord }: MemberCardProps) {
   const { info } = memberRecord;
-  const isActive = info.nextRenewalAt === null || timestampToDate(info.nextRenewalAt.toString()) > now();
+  const memberStatus = toMemberStatus(info.nextRenewalAt);
 
   return (
     <Flex p={2} gap={2} border={1} borderStyle='solid' borderColor='chakra-border-color' alignItems='center'>
@@ -23,8 +25,16 @@ function MemberCard({ memberRecord }: MemberCardProps) {
             {info.name || shortenAddress(memberRecord.accountId)}
           </Text>
           <Box>
-            <Badge fontSize='0.60rem' mb={1} variant='solid' colorScheme={isActive ? 'green' : 'red'}>
-              {isActive ? 'Active' : 'Inactive'}
+            <Badge
+              fontSize='0.60rem'
+              mb={1}
+              variant='solid'
+              colorScheme={clsx({
+                green: memberStatus == MemberStatus.Active,
+                red: memberStatus == MemberStatus.Inactive,
+                gray: memberStatus == MemberStatus.Left,
+              })}>
+              {memberStatus}
             </Badge>
           </Box>
         </Flex>

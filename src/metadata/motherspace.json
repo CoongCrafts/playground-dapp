@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x094121e5fd84c1f115b0e37a26399af649eec29b2f415ab030cd241dd2a8b1dd",
+    "hash": "0x77f12bdb1d744ffe1713bf68bf9fa7837fa7757f50ad19138037448dd86b509e",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.73.0-nightly",
     "build_info": {
@@ -255,6 +255,32 @@
           "type": 9
         },
         "selector": "0x71a26402"
+      },
+      {
+        "args": [
+          {
+            "label": "who",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "remove_space_member",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 9
+        },
+        "selector": "0xd474e856"
       },
       {
         "args": [],

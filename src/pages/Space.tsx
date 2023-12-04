@@ -16,6 +16,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { Link as LinkRouter, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import SpaceAvatar from '@/components/space/SpaceAvatar';
+import LeaveSpaceButton from '@/pages/space/LeaveSpaceButton';
 import UpdateDisplayNameTrigger from '@/pages/space/UpdateDisplayNameTrigger';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberStatus } from '@/types';
@@ -40,7 +41,7 @@ function SpaceContent() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>();
   const navigate = useNavigate();
   const location = useLocation();
-  const { info, space, membersCount, memberStatus, plugins } = useSpaceContext();
+  const { info, space, membersCount, memberStatus, plugins, isOwner } = useSpaceContext();
 
   useEffect(() => {
     if (!plugins) return;
@@ -83,7 +84,7 @@ function SpaceContent() {
               </Text>
             </Box>
             <Box>
-              {memberStatus === MemberStatus.None && (
+              {(memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) && (
                 <Button colorScheme='primary' size='sm' width={100}>
                   Join
                 </Button>
@@ -108,7 +109,11 @@ function SpaceContent() {
                     <MenuItem>
                       <UpdateDisplayNameTrigger />
                     </MenuItem>
-                    <MenuItem color='red'>Leave</MenuItem>
+                    {!isOwner && (
+                      <MenuItem color='red'>
+                        <LeaveSpaceButton />
+                      </MenuItem>
+                    )}
                   </MenuList>
                 </Menu>
               )}
