@@ -33,7 +33,7 @@ export default function NewPostButton() {
       content: '',
     },
     validationSchema: yup.object().shape({
-      content: yup.string().required().max(200),
+      content: yup.string().required().max(500),
     }),
     onSubmit: (values, formikHelpers) => {
       const { content } = values;
@@ -98,7 +98,7 @@ export default function NewPostButton() {
                 {formik.touched.content && !!formik.errors.content ? (
                   <FormErrorMessage>{formik.errors.content}</FormErrorMessage>
                 ) : (
-                  <FormHelperText>Markdown supported, maximum 200 characters</FormHelperText>
+                  <FormHelperText>Markdown supported, maximum 500 characters</FormHelperText>
                 )}
               </FormControl>
             </ModalBody>
