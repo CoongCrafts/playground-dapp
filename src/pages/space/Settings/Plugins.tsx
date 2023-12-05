@@ -2,6 +2,7 @@ import { Badge, Box, Button, Divider, Flex, Text } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 import useCurrentFreeBalance from '@/hooks/space/useCurrentFreeBalance';
 import { useTx } from '@/hooks/useink/useTx';
+import InstallPluginsButton from '@/pages/space/actions/InstallPluginsButton';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { messages } from '@/utils/messages';
 
@@ -53,13 +54,7 @@ export default function Plugins() {
     <Box mt={3} borderWidth={1} borderColor='chakra-border-color' p={4} borderRadius={4} mb={4}>
       <Flex justify='space-between' align='center'>
         <Text fontWeight='semibold'>Plugins</Text>
-        <Box>
-          {isOwner && (
-            <Button variant='outline' size='xs' isDisabled={true}>
-              Install plugins
-            </Button>
-          )}
-        </Box>
+        <Box>{isOwner && <InstallPluginsButton />}</Box>
       </Flex>
       <Box>
         {plugins?.map((one, index) => (
