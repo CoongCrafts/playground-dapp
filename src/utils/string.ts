@@ -24,6 +24,6 @@ export function formatBalance(balance: string, network: NetworkInfo, withUnit = 
   return formatBalancePolka(balance, {
     decimals: network.decimals,
     withZero,
-    withUnit,
+    withUnit: withUnit && network.symbol,
   });
 }

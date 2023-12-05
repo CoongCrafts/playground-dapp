@@ -26,7 +26,6 @@ import { MemberStatus, RegistrationType } from '@/types';
 import { PLUGIN_FLIPPER, PLUGIN_POSTS } from '@/utils/plugins';
 import { shortenAddress } from '@/utils/string';
 import { CalendarIcon, ChevronDownIcon, HamburgerIcon, InfoIcon, SettingsIcon, StarIcon } from '@chakra-ui/icons';
-import clsx from 'clsx';
 import pluralize from 'pluralize';
 import { ChainId } from 'useink/chains';
 
@@ -54,6 +53,8 @@ function SpaceContent() {
   const { info, config, space, membersCount, pendingRequestsCount, memberStatus, isOwner, plugins, pendingRequest } =
     useSpaceContext();
 
+  const showPendingMembers = config?.registration === RegistrationType.RequestToJoin && isOwner;
+
   useEffect(() => {
     if (!plugins) return;
 
@@ -61,7 +62,10 @@ function SpaceContent() {
       .filter(({ disabled }) => !disabled)
       .map(({ id }) => PLUGIN_MENU_ITEMS[id])
       .filter((x) => x);
-    const menuItems = [...pluginMenuItems, ...MENU_ITEMS];
+    let menuItems = [...pluginMenuItems, ...MENU_ITEMS];
+    if (!showPendingMembers) {
+      menuItems = menuItems.filter((x) => x.path !== 'pending-members');
+    }
 
     if (location.pathname.endsWith(space.address)) {
       navigate(menuItems[0].path);
@@ -75,7 +79,7 @@ function SpaceContent() {
   }
 
   const activeIndex = menuItems.findIndex((one) => location.pathname.split('/').at(-1) === one.path);
-  const hasPendingMembersTab = config?.registration === RegistrationType.RequestToJoin && isOwner;
+  const showJoinBtn = config?.registration !== RegistrationType.InviteOnly;
 
   return (
     <Box mt={2}>
@@ -98,8 +102,9 @@ function SpaceContent() {
             </Text>
           </Box>
           <Box>
-            {(memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) &&
-              (!pendingRequest ? <JoinButton /> : <CancelRequestButton />)}
+            {showJoinBtn &&
+              (memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) &&
+              (pendingRequest ? <CancelRequestButton /> : <JoinButton />)}
             {memberStatus === MemberStatus.Inactive && (
               <Button colorScheme='primary' variant='outline' size='sm' width={100}>
                 Reactive
@@ -139,14 +144,6 @@ function SpaceContent() {
           <Box position='sticky' top={4}>
             {menuItems.map((one, index) => (
               <Button
-                display={clsx(
-                  one.path === 'pending-members'
-                    ? {
-                        'inline-flex': hasPendingMembersTab,
-                        none: !hasPendingMembersTab,
-                      }
-                    : 'inline-flex',
-                )}
                 key={one.name}
                 leftIcon={one.icon}
                 justifyContent={'start'}
@@ -160,7 +157,12 @@ function SpaceContent() {
                 _hover={{ background: 'transparent' }}
                 borderRadius={0}
                 to={one.path}>
-                {one.name} {one.path === 'pending-members' && <Tag size='sm'>{pendingRequestsCount}</Tag>}
+                {one.name}
+                {one.path === 'pending-members' && !!pendingRequestsCount && (
+                  <Tag size='sm' colorScheme='red' variant='solid'>
+                    {pendingRequestsCount}
+                  </Tag>
+                )}
               </Button>
             ))}
           </Box>
@@ -181,21 +183,13 @@ function SpaceContent() {
           }}>
           <TabList>
             {menuItems.map((one) => (
-              <Tab
-                key={one.name}
-                as={LinkRouter}
-                to={one.path}
-                _selected={{ boxShadow: 'none' }}
-                whiteSpace='nowrap'
-                display={clsx(
-                  one.path === 'pending-members'
-                    ? {
-                        'flex-item': hasPendingMembersTab,
-                        none: !hasPendingMembersTab,
-                      }
-                    : 'flex-item',
-                )}>
-                {one.name} {one.path === 'pending-members' && <Tag size='sm'>{pendingRequestsCount}</Tag>}
+              <Tab key={one.name} as={LinkRouter} to={one.path} _selected={{ boxShadow: 'none' }} whiteSpace='nowrap'>
+                {one.name}
+                {one.path === 'pending-members' && !!pendingRequestsCount && (
+                  <Tag ml={2} size='sm' colorScheme='red' variant='solid'>
+                    {pendingRequestsCount}
+                  </Tag>
+                )}
               </Tab>
             ))}
           </TabList>

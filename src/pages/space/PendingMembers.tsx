@@ -8,6 +8,7 @@ import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { MembershipRequest, RequestApproval } from '@/types';
 import { fromNow } from '@/utils/date';
+import { messages } from '@/utils/messages';
 import { shortenAddress } from '@/utils/string';
 import { AddIcon, CheckIcon, ChevronLeftIcon, ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
 import { shouldDisable } from 'useink/utils';
@@ -28,8 +29,9 @@ export default function PendingMembers() {
     if (requestApprovals.length === 0) {
       return;
     }
+
     if (freeBalance === 0) {
-      toast.error(`Your account balance is not enough to make transaction, current balance: ${freeBalance}`);
+      toast.error(messages.insufficientBalance);
       return;
     }
 
@@ -69,6 +71,9 @@ export default function PendingMembers() {
           <Tag size='sm'>{pendingRequestsCount}</Tag>
         </Flex>
         <Button
+          variant='outline'
+          colorScheme='primary'
+          size='sm'
           onClick={() => submitApprovals(requestApprovals)}
           isDisabled={requestApprovals.length === 0 || shouldDisable(submitRequestApprovalsTx)}
           display={{ base: 'none', md: 'block' }}>

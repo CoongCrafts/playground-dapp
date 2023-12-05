@@ -43,7 +43,7 @@ export function useTx<T>(chainContract: ChainContract | undefined, message: stri
       dryRun
         .send(params, options)
         .then((response) => {
-          console.log('response', params, options);
+          console.log('dryRun response', params, options, response);
           if (!response || !response.ok) return;
           setStatus('PendingSignature');
 

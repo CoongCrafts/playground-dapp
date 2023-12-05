@@ -9,7 +9,7 @@ import { shortenAddress } from '@/utils/string';
 import { shouldDisable } from 'useink/utils';
 
 export default function UpgradeVersion() {
-  const { motherContract, codeHash, contract } = useSpaceContext();
+  const { motherContract, codeHash, contract, isOwner } = useSpaceContext();
   const { state: latestSpaceCode } = useContractState<string>(motherContract, 'latestSpaceCode');
   const freeBalance = useCurrentFreeBalance();
 
@@ -54,7 +54,7 @@ export default function UpgradeVersion() {
           </Tag>
         </Text>
 
-        {hasNewVersion && (
+        {isOwner && hasNewVersion && (
           <>
             <Text mt={3}>
               New version is available to upgrade:{' '}

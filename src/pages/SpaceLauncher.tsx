@@ -396,7 +396,7 @@ export default function SpaceLauncher() {
                 <InputGroup>
                   <Input
                     type='number'
-                    placeholder='10'
+                    placeholder='e.g: 10'
                     width={200}
                     value={formikStep2.values.price}
                     onChange={formikStep2.handleChange}
@@ -418,7 +418,7 @@ export default function SpaceLauncher() {
                 <InputGroup>
                   <Input
                     type='number'
-                    placeholder='30'
+                    placeholder='e.g: 30'
                     width={200}
                     value={formikStep2.values.duration}
                     onChange={formikStep2.handleChange}

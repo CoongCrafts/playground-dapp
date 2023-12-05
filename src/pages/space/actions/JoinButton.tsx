@@ -17,7 +17,9 @@ import useCurrentFreeBalance from '@/hooks/space/useCurrentFreeBalance';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { Pricing, RegistrationType } from '@/types';
-import { shortenAddress, formatBalance } from '@/utils/string';
+import { messages } from '@/utils/messages';
+import { stringToNum } from '@/utils/number';
+import { formatBalance, shortenAddress } from '@/utils/string';
 import pluralize from 'pluralize';
 import { ContractSubmittableResult } from 'useink/core';
 import { shouldDisable } from 'useink/utils';
@@ -39,8 +41,8 @@ export default function JoinButton() {
 
   const handleRequest = () => {
     const priceValue = pricingInfo?.price.replaceAll(',', '');
-    if (freeBalance === 0 || (priceValue && parseInt(formatBalance(priceValue, network, false, true)) > freeBalance)) {
-      toast.error(`Your account balance is not enough to make transaction, current balance: ${freeBalance}`);
+    if (freeBalance === 0 || (priceValue && parseInt(formatBalance(priceValue, network, false, true)) >= freeBalance)) {
+      toast.error(`${messages.insufficientBalance}, current balance: ${freeBalance}`);
       return;
     }
 
@@ -56,10 +58,14 @@ export default function JoinButton() {
       }
     };
 
+    const value = priceValue ? stringToNum(priceValue) : undefined;
     if (config?.registration === RegistrationType.PayToJoin) {
-      payToJoinTx.signAndSend([null], { value: priceValue }, (result) => handleResponse(result, 'Joined'));
+      payToJoinTx.signAndSend([null], { value }, (result) => handleResponse(result, `Joined ${info?.name}`));
     } else if (config?.registration === RegistrationType.RequestToJoin) {
-      registerMembershipTx.signAndSend([null], { value: priceValue }, (result) => handleResponse(result, 'Requested'));
+      registerMembershipTx.signAndSend([null], { value }, (result, _, error) => {
+        console.log(error);
+        handleResponse(result, 'Your membership request has been submitted');
+      });
     }
   };
 
@@ -67,6 +73,12 @@ export default function JoinButton() {
     payToJoinTx.resetState();
     registerMembershipTx.resetState();
   }, [isOpen]);
+
+  const price = formatBalance(pricingInfo.price, network);
+
+  if (!config) {
+    return null;
+  }
 
   return (
     <>
@@ -78,21 +90,23 @@ export default function JoinButton() {
         {config && (
           <ModalContent>
             <ModalCloseButton />
-            <ModalBody mt={4} display='flex' flexDirection='column' alignItems='center'>
+            <ModalBody mt={4} display='flex' flexDirection='column' textAlign='center' alignItems='center'>
               <SpaceAvatar space={space} info={info!} />
               <Text mt={2} fontWeight='semibold' fontSize='1.25rem'>
                 {info?.name}
               </Text>
-              <Flex textAlign='center' gap={1} flexDir='column'>
-                <Text color='dimgray'>{info?.desc}</Text>
+              <Flex gap={1} flexDir='column' mt={2}>
+                <Text color='dimgray' noOfLines={3}>
+                  {info?.desc}
+                </Text>
                 <Text color='dimgray'>{`${shortenAddress(space.address)} • ${membersCount} ${pluralize(
                   'member',
                   membersCount,
                 )}`}</Text>
-                <Text>
+                <Text mt={2}>
                   Membership price:{' '}
-                  <Text as='span' color='dimgray' fontWeight='semibold'>
-                    {pricing === Pricing.Free ? 'Free' : `${formatBalance(pricingInfo.price, network)}`}
+                  <Text as='span' color='primary.500' fontWeight='semibold'>
+                    {pricing === Pricing.Free ? 'Free' : `${price}`}
                     {pricing === Pricing.Subscription &&
                       ` / ${pricingInfo.duration} ${pluralize('day', pricingInfo.duration)}`}
                   </Text>
@@ -107,14 +121,12 @@ export default function JoinButton() {
                 isDisabled={shouldDisable(payToJoinTx) || shouldDisable(registerMembershipTx)}>
                 {config.registration === RegistrationType.PayToJoin
                   ? (pricing === Pricing.Free && 'Join') ||
-                    (pricing === Pricing.OneTimePaid && `Pay ${formatBalance(pricingInfo.price, network)} & Join`) ||
-                    (pricing === Pricing.Subscription && `Pay ${formatBalance(pricingInfo.price, network)} & Subscribe`)
+                    (pricing === Pricing.OneTimePaid && `Pay ${price} & Join`) ||
+                    (pricing === Pricing.Subscription && `Pay ${price} & Subscribe`)
                   : // RegistrationType.RequestToJoin
                     (pricing === Pricing.Free && 'Request to Join') ||
-                    (pricing === Pricing.OneTimePaid &&
-                      `Pay ${formatBalance(pricingInfo.price, network)} & Request to Join`) ||
-                    (pricing === Pricing.Subscription &&
-                      `Pay ${formatBalance(pricingInfo.price, network)} & Request Subcription`)}
+                    (pricing === Pricing.OneTimePaid && `Pay ${price} & Request to Join`) ||
+                    (pricing === Pricing.Subscription && `Pay ${price} & Request Subscription`)}
               </Button>
             </ModalFooter>
           </ModalContent>
