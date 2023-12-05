@@ -91,11 +91,19 @@ export interface MemberInfo {
 export interface Plugin {
   id: string;
   name: string;
+  description?: string;
 }
 
 export interface PluginInfo extends Plugin {
   address: string;
   chainId: ChainId;
+  disabled: boolean;
+}
+
+export interface OnChainPluginInfo {
+  id: string;
+  address: string;
+  disabled: boolean;
 }
 
 export interface Post {

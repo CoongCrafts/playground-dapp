@@ -46,7 +46,10 @@ function SpaceContent() {
   useEffect(() => {
     if (!plugins) return;
 
-    const pluginMenuItems = plugins.map(({ id }) => PLUGIN_MENU_ITEMS[id]).filter((x) => x);
+    const pluginMenuItems = plugins
+      .filter(({ disabled }) => !disabled)
+      .map(({ id }) => PLUGIN_MENU_ITEMS[id])
+      .filter((x) => x);
     const menuItems = [...pluginMenuItems, ...MENU_ITEMS];
 
     if (location.pathname.endsWith(space.address)) {

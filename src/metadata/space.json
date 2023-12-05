@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x107c77347f549afaed13e0542996cca1326eb872b7b1d708931cd6cae12e342f",
+    "hash": "0x77ac9e59e175e117c42a0a8d6d0e80a261325982e8b9514cfced00f99b79c269",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.73.0-nightly",
     "build_info": {
@@ -100,13 +100,13 @@
         "displayName": [
           "ChainExtension"
         ],
-        "type": 59
+        "type": 61
       },
       "hash": {
         "displayName": [
           "Hash"
         ],
-        "type": 56
+        "type": 58
       },
       "maxEventTopics": 4,
       "timestamp": {
@@ -170,6 +170,58 @@
         "selector": "0x38b688ca"
       },
       {
+        "args": [
+          {
+            "label": "plugin_id",
+            "type": {
+              "displayName": [
+                "PluginId"
+              ],
+              "type": 10
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "enable_plugin",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 19
+        },
+        "selector": "0xddc67708"
+      },
+      {
+        "args": [
+          {
+            "label": "plugin_id",
+            "type": {
+              "displayName": [
+                "PluginId"
+              ],
+              "type": 10
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "disable_plugin",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 19
+        },
+        "selector": "0x41809267"
+      },
+      {
         "args": [],
         "default": false,
         "docs": [
@@ -183,7 +235,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 27
+          "type": 29
         },
         "selector": "0x1c1881d6"
       },
@@ -218,7 +270,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 28
+          "type": 30
         },
         "selector": "0xe9208009"
       },
@@ -239,7 +291,7 @@
               "displayName": [
                 "Option"
               ],
-              "type": 32
+              "type": 34
             }
           }
         ],
@@ -265,7 +317,7 @@
               "displayName": [
                 "Option"
               ],
-              "type": 34
+              "type": 36
             }
           }
         ],
@@ -293,7 +345,7 @@
               "displayName": [
                 "Option"
               ],
-              "type": 34
+              "type": 36
             }
           }
         ],
@@ -327,7 +379,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 35
+          "type": 37
         },
         "selector": "0xccbb806f"
       },
@@ -339,7 +391,7 @@
               "displayName": [
                 "Option"
               ],
-              "type": 34
+              "type": 36
             }
           }
         ],
@@ -356,7 +408,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 36
+          "type": 38
         },
         "selector": "0xbeabaa89"
       },
@@ -393,7 +445,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 40
+          "type": 42
         },
         "selector": "0xb2704be2"
       },
@@ -405,7 +457,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 43
+              "type": 45
             }
           }
         ],
@@ -421,7 +473,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 45
+          "type": 47
         },
         "selector": "0x85908b70"
       },
@@ -447,7 +499,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 48
+          "type": 50
         },
         "selector": "0x835051e0"
       },
@@ -475,7 +527,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 49
+          "type": 51
         },
         "selector": "0x2f8bd8ef"
       },
@@ -514,7 +566,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 51
+          "type": 53
         },
         "selector": "0xeef02b02"
       },
@@ -532,7 +584,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 51
+          "type": 53
         },
         "selector": "0x0e200f7d"
       },
@@ -550,7 +602,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 52
+          "type": 54
         },
         "selector": "0x0190e5ac"
       },
@@ -592,7 +644,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 53
+          "type": 55
         },
         "selector": "0x70714744"
       },
@@ -646,7 +698,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 54
+          "type": 56
         },
         "selector": "0x1ce61fac"
       },
@@ -684,7 +736,7 @@
               "displayName": [
                 "Hash"
               ],
-              "type": 56
+              "type": 58
             }
           }
         ],
@@ -698,7 +750,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 57
+          "type": 59
         },
         "selector": "0x1700ae80"
       },
@@ -714,7 +766,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 58
+          "type": 60
         },
         "selector": "0xbaa5b034"
       }
@@ -1183,6 +1235,20 @@
                 }
               },
               "name": "plugins"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "leaf": {
+                      "key": "0x39d21fe0",
+                      "ty": 9
+                    }
+                  },
+                  "root_key": "0x39d21fe0"
+                }
+              },
+              "name": "disabled_plugin_ids"
             },
             {
               "layout": {
@@ -1726,6 +1792,10 @@
               {
                 "index": 6,
                 "name": "MemberNotFound"
+              },
+              {
+                "index": 7,
+                "name": "PluginNotFound"
               }
             ]
           }
@@ -1786,7 +1856,7 @@
               {
                 "fields": [
                   {
-                    "type": 24
+                    "type": 27
                   }
                 ],
                 "index": 0,
@@ -1807,7 +1877,7 @@
         "params": [
           {
             "name": "T",
-            "type": 24
+            "type": 27
           },
           {
             "name": "E",
@@ -1821,6 +1891,47 @@
     },
     {
       "id": 27,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 28
+          }
+        }
+      }
+    },
+    {
+      "id": 28,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "id",
+                "type": 10,
+                "typeName": "PluginId"
+              },
+              {
+                "name": "address",
+                "type": 3,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "disabled",
+                "type": 7,
+                "typeName": "bool"
+              }
+            ]
+          }
+        },
+        "path": [
+          "space",
+          "space",
+          "PluginInfo"
+        ]
+      }
+    },
+    {
+      "id": 29,
       "type": {
         "def": {
           "variant": {
@@ -1862,7 +1973,7 @@
       }
     },
     {
-      "id": 28,
+      "id": 30,
       "type": {
         "def": {
           "variant": {
@@ -1870,7 +1981,7 @@
               {
                 "fields": [
                   {
-                    "type": 29
+                    "type": 31
                   }
                 ],
                 "index": 0,
@@ -1891,7 +2002,7 @@
         "params": [
           {
             "name": "T",
-            "type": 29
+            "type": 31
           },
           {
             "name": "E",
@@ -1904,14 +2015,14 @@
       }
     },
     {
-      "id": 29,
+      "id": 31,
       "type": {
         "def": {
           "composite": {
             "fields": [
               {
                 "name": "items",
-                "type": 33,
+                "type": 35,
                 "typeName": "Vec<Item>"
               },
               {
@@ -1940,7 +2051,7 @@
         "params": [
           {
             "name": "Item",
-            "type": 30
+            "type": 32
           }
         ],
         "path": [
@@ -1951,7 +2062,7 @@
       }
     },
     {
-      "id": 30,
+      "id": 32,
       "type": {
         "def": {
           "composite": {
@@ -1968,7 +2079,7 @@
               },
               {
                 "name": "info",
-                "type": 31,
+                "type": 33,
                 "typeName": "MemberInfo"
               }
             ]
@@ -1982,7 +2093,7 @@
       }
     },
     {
-      "id": 31,
+      "id": 33,
       "type": {
         "def": {
           "composite": {
@@ -1994,7 +2105,7 @@
               },
               {
                 "name": "next_renewal_at",
-                "type": 32,
+                "type": 34,
                 "typeName": "Option<Timestamp>"
               },
               {
@@ -2013,7 +2124,7 @@
       }
     },
     {
-      "id": 32,
+      "id": 34,
       "type": {
         "def": {
           "variant": {
@@ -2046,17 +2157,17 @@
       }
     },
     {
-      "id": 33,
+      "id": 35,
       "type": {
         "def": {
           "sequence": {
-            "type": 30
+            "type": 32
           }
         }
       }
     },
     {
-      "id": 34,
+      "id": 36,
       "type": {
         "def": {
           "variant": {
@@ -2089,7 +2200,7 @@
       }
     },
     {
-      "id": 35,
+      "id": 37,
       "type": {
         "def": {
           "variant": {
@@ -2131,7 +2242,7 @@
       }
     },
     {
-      "id": 36,
+      "id": 38,
       "type": {
         "def": {
           "variant": {
@@ -2139,7 +2250,7 @@
               {
                 "fields": [
                   {
-                    "type": 37
+                    "type": 39
                   }
                 ],
                 "index": 0,
@@ -2160,7 +2271,7 @@
         "params": [
           {
             "name": "T",
-            "type": 37
+            "type": 39
           },
           {
             "name": "E",
@@ -2173,7 +2284,7 @@
       }
     },
     {
-      "id": 37,
+      "id": 39,
       "type": {
         "def": {
           "variant": {
@@ -2185,7 +2296,7 @@
               {
                 "fields": [
                   {
-                    "type": 38
+                    "type": 40
                   }
                 ],
                 "index": 1,
@@ -2197,7 +2308,7 @@
         "params": [
           {
             "name": "T",
-            "type": 38
+            "type": 40
           }
         ],
         "path": [
@@ -2206,7 +2317,7 @@
       }
     },
     {
-      "id": 38,
+      "id": 40,
       "type": {
         "def": {
           "composite": {
@@ -2223,7 +2334,7 @@
               },
               {
                 "name": "approved",
-                "type": 39,
+                "type": 41,
                 "typeName": "Option<bool>"
               }
             ]
@@ -2237,7 +2348,7 @@
       }
     },
     {
-      "id": 39,
+      "id": 41,
       "type": {
         "def": {
           "variant": {
@@ -2270,7 +2381,7 @@
       }
     },
     {
-      "id": 40,
+      "id": 42,
       "type": {
         "def": {
           "variant": {
@@ -2278,7 +2389,7 @@
               {
                 "fields": [
                   {
-                    "type": 41
+                    "type": 43
                   }
                 ],
                 "index": 0,
@@ -2299,7 +2410,7 @@
         "params": [
           {
             "name": "T",
-            "type": 41
+            "type": 43
           },
           {
             "name": "E",
@@ -2312,14 +2423,14 @@
       }
     },
     {
-      "id": 41,
+      "id": 43,
       "type": {
         "def": {
           "composite": {
             "fields": [
               {
                 "name": "items",
-                "type": 42,
+                "type": 44,
                 "typeName": "Vec<Item>"
               },
               {
@@ -2348,7 +2459,7 @@
         "params": [
           {
             "name": "Item",
-            "type": 38
+            "type": 40
           }
         ],
         "path": [
@@ -2359,27 +2470,27 @@
       }
     },
     {
-      "id": 42,
-      "type": {
-        "def": {
-          "sequence": {
-            "type": 38
-          }
-        }
-      }
-    },
-    {
-      "id": 43,
-      "type": {
-        "def": {
-          "sequence": {
-            "type": 44
-          }
-        }
-      }
-    },
-    {
       "id": 44,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 40
+          }
+        }
+      }
+    },
+    {
+      "id": 45,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 46
+          }
+        }
+      }
+    },
+    {
+      "id": 46,
       "type": {
         "def": {
           "tuple": [
@@ -2390,7 +2501,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 47,
       "type": {
         "def": {
           "variant": {
@@ -2398,7 +2509,7 @@
               {
                 "fields": [
                   {
-                    "type": 46
+                    "type": 48
                   }
                 ],
                 "index": 0,
@@ -2419,7 +2530,7 @@
         "params": [
           {
             "name": "T",
-            "type": 46
+            "type": 48
           },
           {
             "name": "E",
@@ -2432,7 +2543,7 @@
       }
     },
     {
-      "id": 46,
+      "id": 48,
       "type": {
         "def": {
           "variant": {
@@ -2440,7 +2551,7 @@
               {
                 "fields": [
                   {
-                    "type": 47
+                    "type": 49
                   }
                 ],
                 "index": 0,
@@ -2461,7 +2572,7 @@
         "params": [
           {
             "name": "T",
-            "type": 47
+            "type": 49
           },
           {
             "name": "E",
@@ -2474,7 +2585,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 49,
       "type": {
         "def": {
           "composite": {
@@ -2505,7 +2616,7 @@
       }
     },
     {
-      "id": 48,
+      "id": 50,
       "type": {
         "def": {
           "variant": {
@@ -2547,7 +2658,7 @@
       }
     },
     {
-      "id": 49,
+      "id": 51,
       "type": {
         "def": {
           "variant": {
@@ -2555,7 +2666,7 @@
               {
                 "fields": [
                   {
-                    "type": 50
+                    "type": 52
                   }
                 ],
                 "index": 0,
@@ -2576,7 +2687,7 @@
         "params": [
           {
             "name": "T",
-            "type": 50
+            "type": 52
           },
           {
             "name": "E",
@@ -2589,7 +2700,7 @@
       }
     },
     {
-      "id": 50,
+      "id": 52,
       "type": {
         "def": {
           "variant": {
@@ -2621,7 +2732,7 @@
       }
     },
     {
-      "id": 51,
+      "id": 53,
       "type": {
         "def": {
           "variant": {
@@ -2663,7 +2774,7 @@
       }
     },
     {
-      "id": 52,
+      "id": 54,
       "type": {
         "def": {
           "variant": {
@@ -2705,7 +2816,7 @@
       }
     },
     {
-      "id": 53,
+      "id": 55,
       "type": {
         "def": {
           "variant": {
@@ -2747,7 +2858,7 @@
       }
     },
     {
-      "id": 54,
+      "id": 56,
       "type": {
         "def": {
           "variant": {
@@ -2755,7 +2866,7 @@
               {
                 "fields": [
                   {
-                    "type": 55
+                    "type": 57
                   }
                 ],
                 "index": 0,
@@ -2776,7 +2887,7 @@
         "params": [
           {
             "name": "T",
-            "type": 55
+            "type": 57
           },
           {
             "name": "E",
@@ -2789,7 +2900,7 @@
       }
     },
     {
-      "id": 55,
+      "id": 57,
       "type": {
         "def": {
           "variant": {
@@ -2801,7 +2912,7 @@
               {
                 "fields": [
                   {
-                    "type": 31
+                    "type": 33
                   }
                 ],
                 "index": 1,
@@ -2813,7 +2924,7 @@
         "params": [
           {
             "name": "T",
-            "type": 31
+            "type": 33
           }
         ],
         "path": [
@@ -2822,7 +2933,7 @@
       }
     },
     {
-      "id": 56,
+      "id": 58,
       "type": {
         "def": {
           "composite": {
@@ -2842,7 +2953,7 @@
       }
     },
     {
-      "id": 57,
+      "id": 59,
       "type": {
         "def": {
           "variant": {
@@ -2884,7 +2995,7 @@
       }
     },
     {
-      "id": 58,
+      "id": 60,
       "type": {
         "def": {
           "variant": {
@@ -2892,7 +3003,7 @@
               {
                 "fields": [
                   {
-                    "type": 56
+                    "type": 58
                   }
                 ],
                 "index": 0,
@@ -2913,7 +3024,7 @@
         "params": [
           {
             "name": "T",
-            "type": 56
+            "type": 58
           },
           {
             "name": "E",
@@ -2926,7 +3037,7 @@
       }
     },
     {
-      "id": 59,
+      "id": 61,
       "type": {
         "def": {
           "variant": {}

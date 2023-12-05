@@ -46,7 +46,7 @@ export default function UpgradeVersion() {
   return (
     <Box mt={3} border='1px' borderColor='gray.200' p={4} borderRadius={4} mb={4}>
       <Text fontWeight='semibold'>Version & Upgrade</Text>
-      <Box ml={2}>
+      <Box>
         <Text mt={3}>
           {hasNewVersion ? 'Current version' : 'The space is currently at latest version'}{' '}
           <Tag variant='solid' colorScheme={hasNewVersion ? 'gray' : 'green'}>

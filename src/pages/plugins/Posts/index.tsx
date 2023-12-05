@@ -59,6 +59,14 @@ export default function Posts() {
     return null;
   }
 
+  if (postPlugin.disabled) {
+    return (
+      <Box>
+        <Text>This feature is disabled</Text>
+      </Box>
+    );
+  }
+
   return (
     <PostsProvider info={postPlugin}>
       <PostsContent />

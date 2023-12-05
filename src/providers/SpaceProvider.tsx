@@ -5,7 +5,16 @@ import useSpaceContract from '@/hooks/contracts/useSpaceContract';
 import useContractState from '@/hooks/useContractState';
 import useSpace from '@/hooks/useSpace';
 import { useWalletContext } from '@/providers/WalletProvider';
-import { MemberInfo, MemberStatus, NetworkInfo, OnChainSpace, Props, SpaceConfig, SpaceInfo } from '@/types';
+import {
+  MemberInfo,
+  MemberStatus,
+  NetworkInfo,
+  OnChainPluginInfo,
+  OnChainSpace,
+  Props,
+  SpaceConfig,
+  SpaceInfo,
+} from '@/types';
 import { PluginInfo } from '@/types';
 import { findNetwork } from '@/utils/networks';
 import { findPlugin } from '@/utils/plugins';
@@ -47,16 +56,17 @@ export default function SpaceProvider({ space, children }: SpaceProviderProps) {
   const contract = useSpaceContract(space);
   const { selectedAccount } = useWalletContext();
 
-  const { state: installedPlugins } = useContractState<[string, string][]>(contract, 'plugins');
+  const { state: installedPlugins } = useContractState<OnChainPluginInfo[]>(contract, 'plugins');
   const { info, membersCount, config, codeHash, ownerId, memberStatus, memberInfo } = useSpace(space);
   const network = findNetwork(space.chainId);
   const { api } = useApi(space.chainId) || {};
 
   const isOwner = selectedAccount?.address === ownerId;
-  const plugins = installedPlugins?.map(([pluginId, address]) => ({
-    ...findPlugin(pluginId)!, // TODO filter-out unsupported plugins
+  const plugins = installedPlugins?.map(({ id, address, disabled }) => ({
+    ...findPlugin(id)!, // TODO filter-out unsupported plugins
     address,
     chainId: space.chainId,
+    disabled,
   }));
 
   return (
@@ -78,6 +88,5 @@ export default function SpaceProvider({ space, children }: SpaceProviderProps) {
       }}>
       {children}
     </SpaceContext.Provider>
-  )
+  );
 }
-
