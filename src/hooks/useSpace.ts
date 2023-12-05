@@ -1,7 +1,7 @@
 import useSpaceContract from '@/hooks/contracts/useSpaceContract';
 import useContractState from '@/hooks/useContractState';
 import { useWalletContext } from '@/providers/WalletProvider';
-import { MemberInfo, MemberStatus, OnChainSpace, SpaceConfig, SpaceInfo } from '@/types';
+import { MemberInfo, MembershipRequest, MemberStatus, OnChainSpace, SpaceConfig, SpaceInfo } from '@/types';
 import { stringToNum } from '@/utils/number';
 
 export default function useSpace(space: OnChainSpace) {
@@ -17,6 +17,10 @@ export default function useSpace(space: OnChainSpace) {
   const { state: codeHash } = useContractState<string>(spaceContract, 'upgradeable::codeHash');
   const { state: ownerId } = useContractState<string>(spaceContract, 'ownerId');
   const { state: memberInfo } = useContractState<MemberInfo>(spaceContract, 'memberInfo', [selectedAccount?.address]);
+  const { state: pendingRequest } = useContractState<MembershipRequest>(spaceContract, 'pendingRequestFor', [
+    selectedAccount?.address,
+  ]);
+  const { state: pendingRequestsCountStr } = useContractState<string>(spaceContract, 'pendingRequestsCount');
 
   return {
     info,
@@ -26,5 +30,7 @@ export default function useSpace(space: OnChainSpace) {
     ownerId,
     memberStatus,
     memberInfo,
+    pendingRequest,
+    pendingRequestsCount: stringToNum(pendingRequestsCountStr),
   };
 }

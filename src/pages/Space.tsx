@@ -11,25 +11,33 @@ import {
   TabIndicator,
   TabList,
   Tabs,
+  Tag,
   Text,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { Link as LinkRouter, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import SpaceAvatar from '@/components/space/SpaceAvatar';
+import CancelRequestButton from '@/pages/space/actions/CancelRequestButton';
+import JoinButton from '@/pages/space/actions/JoinButton';
 import LeaveSpaceButton from '@/pages/space/actions/LeaveSpaceButton';
 import UpdateDisplayNameButton from '@/pages/space/actions/UpdateDisplayNameButton';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
-import { MemberStatus } from '@/types';
+import { MemberStatus, RegistrationType } from '@/types';
 import { PLUGIN_FLIPPER, PLUGIN_POSTS } from '@/utils/plugins';
 import { shortenAddress } from '@/utils/string';
-import { CalendarIcon, ChevronDownIcon, InfoIcon, SettingsIcon, StarIcon } from '@chakra-ui/icons';
+import { CalendarIcon, ChevronDownIcon, HamburgerIcon, InfoIcon, SettingsIcon, StarIcon } from '@chakra-ui/icons';
 import pluralize from 'pluralize';
 import { ChainId } from 'useink/chains';
 
-type MenuItem = { name: string; path: string; icon: React.ReactElement };
+type MenuItem = {
+  name: string;
+  path: string;
+  icon: React.ReactElement;
+};
 
 const MENU_ITEMS: MenuItem[] = [
   { name: 'Members', path: 'members', icon: <InfoIcon /> },
+  { name: 'Pending Members', path: 'pending-members', icon: <HamburgerIcon /> },
   { name: 'Settings', path: 'settings', icon: <SettingsIcon /> },
 ];
 
@@ -42,7 +50,10 @@ function SpaceContent() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>();
   const navigate = useNavigate();
   const location = useLocation();
-  const { info, space, membersCount, memberStatus, plugins, isOwner } = useSpaceContext();
+  const { info, config, space, membersCount, pendingRequestsCount, memberStatus, isOwner, plugins, pendingRequest } =
+    useSpaceContext();
+
+  const showPendingMembers = config?.registration === RegistrationType.RequestToJoin && isOwner;
 
   useEffect(() => {
     if (!plugins) return;
@@ -51,7 +62,10 @@ function SpaceContent() {
       .filter(({ disabled }) => !disabled)
       .map(({ id }) => PLUGIN_MENU_ITEMS[id])
       .filter((x) => x);
-    const menuItems = [...pluginMenuItems, ...MENU_ITEMS];
+    let menuItems = [...pluginMenuItems, ...MENU_ITEMS];
+    if (!showPendingMembers) {
+      menuItems = menuItems.filter((x) => x.path !== 'pending-members');
+    }
 
     if (location.pathname.endsWith(space.address)) {
       navigate(menuItems[0].path);
@@ -64,7 +78,8 @@ function SpaceContent() {
     return null;
   }
 
-  const activeIndex = menuItems.findIndex((one) => location.pathname.endsWith(one.path));
+  const activeIndex = menuItems.findIndex((one) => location.pathname.split('/').at(-1) === one.path);
+  const showJoinBtn = config?.registration !== RegistrationType.InviteOnly;
 
   return (
     <Box mt={2}>
@@ -87,11 +102,9 @@ function SpaceContent() {
             </Text>
           </Box>
           <Box>
-            {(memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) && (
-              <Button colorScheme='primary' size='sm' width={100}>
-                Join
-              </Button>
-            )}
+            {showJoinBtn &&
+              (memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) &&
+              (pendingRequest ? <CancelRequestButton /> : <JoinButton />)}
             {memberStatus === MemberStatus.Inactive && (
               <Button colorScheme='primary' variant='outline' size='sm' width={100}>
                 Reactive
@@ -126,7 +139,7 @@ function SpaceContent() {
       <Flex mt={{ base: 0, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
         <Flex // Navigation bar for large screen
           direction='column'
-          width={200}
+          width={220}
           display={{ base: 'none', md: 'flex' }}>
           <Box position='sticky' top={4}>
             {menuItems.map((one, index) => (
@@ -145,6 +158,11 @@ function SpaceContent() {
                 borderRadius={0}
                 to={one.path}>
                 {one.name}
+                {one.path === 'pending-members' && !!pendingRequestsCount && (
+                  <Tag size='sm' colorScheme='red' variant='solid'>
+                    {pendingRequestsCount}
+                  </Tag>
+                )}
               </Button>
             ))}
           </Box>
@@ -165,8 +183,13 @@ function SpaceContent() {
           }}>
           <TabList>
             {menuItems.map((one) => (
-              <Tab key={one.name} as={LinkRouter} to={one.path} _selected={{ boxShadow: 'none' }}>
+              <Tab key={one.name} as={LinkRouter} to={one.path} _selected={{ boxShadow: 'none' }} whiteSpace='nowrap'>
                 {one.name}
+                {one.path === 'pending-members' && !!pendingRequestsCount && (
+                  <Tag ml={2} size='sm' colorScheme='red' variant='solid'>
+                    {pendingRequestsCount}
+                  </Tag>
+                )}
               </Tab>
             ))}
           </TabList>

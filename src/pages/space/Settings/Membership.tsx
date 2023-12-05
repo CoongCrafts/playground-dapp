@@ -179,7 +179,7 @@ export default function Membership() {
             <InputGroup>
               <Input
                 type='number'
-                placeholder='10'
+                placeholder='e.g: 10'
                 width={200}
                 value={formik.values.price}
                 onChange={formik.handleChange}
@@ -202,7 +202,7 @@ export default function Membership() {
             <InputGroup>
               <Input
                 type='number'
-                placeholder='30'
+                placeholder='e.g: 30'
                 width={200}
                 value={formik.values.duration}
                 onChange={formik.handleChange}

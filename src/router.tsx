@@ -8,6 +8,7 @@ import UploadContracts from '@/pages/UploadContracts';
 import Flipper from '@/pages/plugins/Flipper';
 import Posts from '@/pages/plugins/Posts';
 import Members from '@/pages/space/Members';
+import PendingMembers from '@/pages/space/PendingMembers';
 import Settings from '@/pages/space/Settings';
 
 export default createBrowserRouter(
@@ -20,6 +21,7 @@ export default createBrowserRouter(
         <Route path='flipper' element={<Flipper />} />,
         <Route path='members' element={<Members />} />,
         <Route path='settings' element={<Settings />} />,
+        <Route path='pending-members' element={<PendingMembers />} />,
       </Route>
       ,
       <Route path='/upload' element={<UploadContracts />} />,

@@ -143,9 +143,14 @@ export default function SpaceLauncher() {
 
       let spacePricing: any = pricing;
       if (pricing === Pricing.OneTimePaid) {
-        spacePricing = { [pricing]: { price: parseInt(price) } };
+        spacePricing = { [pricing]: { price: parseInt(price) * Math.pow(10, network!.decimals) } };
       } else if (pricing === Pricing.Subscription) {
-        spacePricing = { [pricing]: { price: parseInt(price), duration: parseInt(duration) } };
+        spacePricing = {
+          [pricing]: {
+            price: parseInt(price) * Math.pow(10, network!.decimals),
+            duration: parseInt(duration),
+          },
+        };
       }
 
       // Reset pricing for invite only
@@ -391,7 +396,7 @@ export default function SpaceLauncher() {
                 <InputGroup>
                   <Input
                     type='number'
-                    placeholder='10'
+                    placeholder='e.g: 10'
                     width={200}
                     value={formikStep2.values.price}
                     onChange={formikStep2.handleChange}
@@ -413,7 +418,7 @@ export default function SpaceLauncher() {
                 <InputGroup>
                   <Input
                     type='number'
-                    placeholder='30'
+                    placeholder='e.g: 30'
                     width={200}
                     value={formikStep2.values.duration}
                     onChange={formikStep2.handleChange}

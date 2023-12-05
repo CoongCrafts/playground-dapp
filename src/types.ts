@@ -117,3 +117,12 @@ export interface Post {
   createdAt: number;
   updatedAt: number | null;
 }
+
+export interface MembershipRequest {
+  who: string;
+  paid: number;
+  requestedAt: number;
+  approved?: boolean;
+}
+
+export type RequestApproval = [string, boolean];
