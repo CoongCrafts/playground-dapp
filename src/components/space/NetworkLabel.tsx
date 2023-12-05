@@ -10,7 +10,7 @@ interface NetworkLabelProps extends Props {
 export default function NetworkLabel({ chainId }: NetworkLabelProps) {
   const network = findNetwork(chainId);
   return (
-    <Tooltip label={network.name} id={network.name} placement='top'>
+    <Tooltip label={`Live on ${network.name}`} id={network.name} placement='top'>
       <Avatar size='xs' src={network.logo} />
     </Tooltip>
   );

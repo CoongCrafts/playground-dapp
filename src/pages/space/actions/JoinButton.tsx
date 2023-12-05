@@ -85,7 +85,7 @@ export default function JoinButton() {
     registerMembershipTx.resetState();
   }, [isOpen]);
 
-  const price = formatBalance(pricingInfo.price, network);
+  const price = formatBalance(pricingInfo?.price || '0', network);
 
   if (!config) {
     return null;

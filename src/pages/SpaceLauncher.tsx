@@ -52,7 +52,7 @@ import { Development } from 'useink/chains';
 import { asContractInstantiatedEvent, isContractInstantiatedEvent } from 'useink/utils';
 import * as yup from 'yup';
 
-const DEFAULT_LOGO = 'https://ipfs.filebase.io/ipfs/QmQXLfTiSakezeLtoAQvgYBXnQ3tbvVfNXk6sUhjZAg1iK';
+// const DEFAULT_LOGO = 'https://ipfs.filebase.io/ipfs/QmQXLfTiSakezeLtoAQvgYBXnQ3tbvVfNXk6sUhjZAg1iK';
 
 enum STEP {
   First,
@@ -158,7 +158,7 @@ export default function SpaceLauncher() {
         spacePricing = Pricing.Free;
       }
 
-      const spaceInfo = { name, desc, logo: { Url: logoUrl || DEFAULT_LOGO } };
+      const spaceInfo = { name, desc, logo: logoUrl ? { Url: logoUrl } : null };
       const spaceConfig = {
         registration: registrationType,
         pricing: spacePricing,
@@ -184,7 +184,7 @@ export default function SpaceLauncher() {
                 isContractInstantiatedEvent(record) &&
                 asContractInstantiatedEvent(record)!.deployer === network?.motherAddress,
             );
-            toast.success('The space has successfully deployed to ...!');
+            toast.success(`The space has successfully deployed to ${network?.name}.`);
             if (deployedEvent) {
               // @ts-ignore
               const contractAddress = asContractInstantiatedEvent(deployedEvent)!.contractAddress;
