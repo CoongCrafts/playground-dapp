@@ -68,11 +68,13 @@ export default function Plugins() {
               <Box>
                 <Flex gap={2}>
                   <Text fontSize='lg'>{one.name}</Text>
-                  <Box>
-                    <Badge size='xs' variant='solid' colorScheme='red'>
-                      Disabled
-                    </Badge>
-                  </Box>
+                  {one.disabled && (
+                    <Box>
+                      <Badge size='xs' variant='solid' colorScheme='red'>
+                        Disabled
+                      </Badge>
+                    </Box>
+                  )}
                 </Flex>
                 <Text fontSize='sm' color='gray.500'>
                   {one.description}
