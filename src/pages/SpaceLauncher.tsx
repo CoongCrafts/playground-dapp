@@ -3,6 +3,7 @@ import {
   AlertDescription,
   AlertIcon,
   Avatar,
+  Badge,
   Box,
   Button,
   Flex,
@@ -31,7 +32,7 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import NetworkSelection from '@/components/shared/NetworkSelection';
@@ -147,6 +148,11 @@ export default function SpaceLauncher() {
         spacePricing = { [pricing]: { price: parseInt(price), duration: parseInt(duration) } };
       }
 
+      // Reset pricing for invite only
+      if (registrationType === RegistrationType.InviteOnly) {
+        spacePricing = Pricing.Free;
+      }
+
       const spaceInfo = { name, desc, logo: { Url: logoUrl || DEFAULT_LOGO } };
       const spaceConfig = {
         registration: registrationType,
@@ -187,7 +193,21 @@ export default function SpaceLauncher() {
     },
   });
 
+  const registrationType = formikStep2.values.registrationType;
+
+  useEffect(() => {
+    if (registrationType == RegistrationType.InviteOnly) {
+      formikStep2.setValues({
+        ...formikStep2.values,
+        pricing: Pricing.Free,
+        price: '',
+        duration: '',
+      });
+    }
+  }, [registrationType]);
+
   const cannotMakeTransaction = !network || freeBalance == '0';
+  const disablePricing = formikStep2.values.registrationType === RegistrationType.InviteOnly;
 
   return (
     <Box maxWidth='container.md' marginX='auto'>
@@ -307,19 +327,37 @@ export default function SpaceLauncher() {
 
             <FormControl mt={4} isRequired>
               <FormLabel>Registration</FormLabel>
-              <RadioGroup colorScheme='primary' name='registrationType' defaultValue={RegistrationType.PayToJoin}>
+              <RadioGroup
+                colorScheme='primary'
+                name='registrationType'
+                value={formikStep2.values.registrationType || RegistrationType.PayToJoin}>
                 <Stack spacing={0}>
                   <Radio value={RegistrationType.PayToJoin} onChange={formikStep2.handleChange}>
                     Pay To Join
                   </Radio>
                   <Text ml={6} mb={2} fontSize='sm' color='gray.500'>
-                    Users pay directly to join the space without admins without admin reviews or approvals.
+                    Users pay directly to join the space without admin reviews or approvals.
                   </Text>
                   <Radio value={RegistrationType.RequestToJoin} onChange={formikStep2.handleChange}>
                     Request To Join
                   </Radio>
                   <Text ml={6} mb={2} fontSize='sm' color='gray.500'>
                     Users pay to make a request, join upon admin approval, and receive a refund if rejected.
+                  </Text>
+                  <Radio value={RegistrationType.InviteOnly} onChange={formikStep2.handleChange}>
+                    Invite Only
+                  </Radio>
+                  <Text ml={6} mb={2} fontSize='sm' color='gray.500'>
+                    Users join by admin invitations only.
+                  </Text>
+                  <Radio value='Claimable' isDisabled={true} onChange={formikStep2.handleChange}>
+                    Claimable with NFT{' '}
+                    <Badge fontSize='0.6em' variant='solid'>
+                      Coming soon
+                    </Badge>
+                  </Radio>
+                  <Text ml={6} mb={2} fontSize='sm' color='gray.500'>
+                    Users claim memberships by proving NFT ownership.
                   </Text>
                 </Stack>
               </RadioGroup>
@@ -330,7 +368,8 @@ export default function SpaceLauncher() {
               <RadioGroup
                 colorScheme='primary'
                 name='pricing'
-                defaultValue={formikStep2.values.pricing || Pricing.Free}>
+                value={formikStep2.values.pricing || Pricing.Free}
+                isDisabled={disablePricing}>
                 <Stack spacing={1}>
                   <Radio value={Pricing.Free} onChange={formikStep2.handleChange}>
                     Free
@@ -410,6 +449,7 @@ export default function SpaceLauncher() {
                   <FormControl key={index} display='flex' alignItems='center'>
                     <FormLabel mb='0'>{pluginInfo.name}</FormLabel>
                     <Switch
+                      colorScheme='primary'
                       onChange={(e) => {
                         const checked = e.target.checked;
                         const plugins = formikStep2.values.plugins.filter((one) => one !== pluginInfo.id);
@@ -425,29 +465,41 @@ export default function SpaceLauncher() {
                 );
               })}
 
-              <FormControl display='flex' alignItems='center'>
+              <FormControl display='flex' alignItems='center' opacity={0.5}>
                 <FormLabel htmlFor='email-alerts' mb='0'>
-                  Discussions
+                  Discussions{' '}
                 </FormLabel>
                 <Switch id='plugin-discussions' disabled />
+                <Badge ml={4} fontSize='0.6em' variant='solid'>
+                  Coming soon
+                </Badge>
               </FormControl>
-              <FormControl display='flex' alignItems='center'>
+              <FormControl display='flex' alignItems='center' opacity={0.5}>
                 <FormLabel htmlFor='email-alerts' mb='0'>
                   Polls
                 </FormLabel>
                 <Switch id='plugin-polls' disabled />
+                <Badge ml={4} fontSize='0.6em' variant='solid'>
+                  Coming soon
+                </Badge>
               </FormControl>
-              <FormControl display='flex' alignItems='center'>
+              <FormControl display='flex' alignItems='center' opacity={0.5}>
                 <FormLabel htmlFor='email-alerts' mb='0'>
                   Auction
                 </FormLabel>
                 <Switch id='plugin-auction' disabled />
+                <Badge ml={4} fontSize='0.6em' variant='solid'>
+                  Coming soon
+                </Badge>
               </FormControl>
-              <FormControl display='flex' alignItems='center'>
+              <FormControl display='flex' alignItems='center' opacity={0.5}>
                 <FormLabel htmlFor='email-alerts' mb='0'>
                   Governance
                 </FormLabel>
                 <Switch id='plugin-governance' disabled />
+                <Badge ml={4} fontSize='0.6em' variant='solid'>
+                  Coming soon
+                </Badge>
               </FormControl>
               <Text fontSize='sm' color='gray'>
                 ...and more to come soon!

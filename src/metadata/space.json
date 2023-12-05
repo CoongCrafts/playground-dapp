@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x77ac9e59e175e117c42a0a8d6d0e80a261325982e8b9514cfced00f99b79c269",
+    "hash": "0x3d767b435799bdc66d754db10f0bd05804f04c622582bef6fdd109c16421bf4f",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.73.0-nightly",
     "build_info": {
@@ -908,6 +908,10 @@
                                 "1": {
                                   "fields": [],
                                   "name": "RequestToJoin"
+                                },
+                                "2": {
+                                  "fields": [],
+                                  "name": "InviteOnly"
                                 }
                               }
                             }
@@ -1587,6 +1591,10 @@
               {
                 "index": 1,
                 "name": "RequestToJoin"
+              },
+              {
+                "index": 2,
+                "name": "InviteOnly"
               }
             ]
           }

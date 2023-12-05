@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   FormControl,
@@ -13,6 +14,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { formatBalance } from '@polkadot/util';
 import useCurrentFreeBalance from '@/hooks/space/useCurrentFreeBalance';
@@ -88,6 +90,21 @@ export default function Membership() {
     },
   });
 
+  const registrationType = formik.values.registrationType;
+
+  useEffect(() => {
+    if (registrationType == RegistrationType.InviteOnly) {
+      formik.setValues({
+        registrationType,
+        pricing: Pricing.Free,
+        price: '',
+        duration: '',
+      });
+    }
+  }, [registrationType]);
+
+  const disablePricing = formik.values.registrationType === RegistrationType.InviteOnly;
+
   if (!config) {
     return null;
   }
@@ -98,19 +115,38 @@ export default function Membership() {
       <Box ml={2} as='form' onSubmit={formik.handleSubmit}>
         <FormControl mt={4} isRequired>
           <FormLabel>Registration</FormLabel>
-          <RadioGroup colorScheme='primary' name='registrationType' defaultValue={RegistrationType.PayToJoin}>
+          <RadioGroup
+            colorScheme='primary'
+            name='registrationType'
+            value={formik.values.registrationType || RegistrationType.PayToJoin}
+            isDisabled={readOnly}>
             <Stack spacing={0}>
-              <Radio value={RegistrationType.PayToJoin} onChange={formik.handleChange} isDisabled={readOnly}>
+              <Radio value={RegistrationType.PayToJoin} onChange={formik.handleChange}>
                 Pay To Join
               </Radio>
               <Text ml={6} mb={2} fontSize='sm' color='gray.500'>
-                Users pay directly to join the space without admins without admin reviews or approvals.
+                Users pay directly to join the space without admin reviews or approvals.
               </Text>
-              <Radio value={RegistrationType.RequestToJoin} onChange={formik.handleChange} isDisabled={readOnly}>
+              <Radio value={RegistrationType.RequestToJoin} onChange={formik.handleChange}>
                 Request To Join
               </Radio>
               <Text ml={6} mb={2} fontSize='sm' color='gray.500'>
                 Users pay to make a request, join upon admin approval, and receive a refund if rejected.
+              </Text>
+              <Radio value={RegistrationType.InviteOnly} onChange={formik.handleChange}>
+                Invite Only
+              </Radio>
+              <Text ml={6} mb={2} fontSize='sm' color='gray.500'>
+                Users join by admin invitations only.
+              </Text>
+              <Radio value='Claimable' isDisabled={true} onChange={formik.handleChange}>
+                Claimable with NFT{' '}
+                <Badge fontSize='0.6em' variant='solid'>
+                  Coming soon
+                </Badge>
+              </Radio>
+              <Text ml={6} mb={2} fontSize='sm' color='gray.500'>
+                Users claim memberships by proving NFT ownership.
               </Text>
             </Stack>
           </RadioGroup>
@@ -118,15 +154,19 @@ export default function Membership() {
 
         <FormControl mt={4} isRequired>
           <FormLabel>Pricing</FormLabel>
-          <RadioGroup colorScheme='primary' name='pricing' value={formik.values.pricing || Pricing.Free}>
+          <RadioGroup
+            colorScheme='primary'
+            name='pricing'
+            value={formik.values.pricing || Pricing.Free}
+            isDisabled={readOnly || disablePricing}>
             <Stack spacing={1}>
-              <Radio value={Pricing.Free} onChange={formik.handleChange} isDisabled={readOnly}>
+              <Radio value={Pricing.Free} onChange={formik.handleChange}>
                 Free
               </Radio>
-              <Radio value={Pricing.OneTimePaid} onChange={formik.handleChange} isDisabled={readOnly}>
+              <Radio value={Pricing.OneTimePaid} onChange={formik.handleChange}>
                 One Time Paid
               </Radio>
-              <Radio value={Pricing.Subscription} onChange={formik.handleChange} isDisabled={readOnly}>
+              <Radio value={Pricing.Subscription} onChange={formik.handleChange}>
                 Subscription
               </Radio>
             </Stack>
