@@ -10,14 +10,14 @@ import Posts from '@/pages/plugins/Posts';
 import Members from '@/pages/space/Members';
 import PendingMembers from '@/pages/space/PendingMembers';
 import Settings from '@/pages/space/Settings';
-import Explore from 'src/pages/space/Explore';
+import Explorer from 'src/pages/space/Explorer';
 
 export default createBrowserRouter(
   createRoutesFromElements([
     <Route path='/' element={<MainLayout />}>
       <Route index element={<Homepage />} />
       <Route path='/spaces' element={<MySpaces />} />,
-      <Route path='/explore' element={<Explore />} />,
+      <Route path='/explore' element={<Explorer />} />,
       <Route path='/:chainId/spaces/:spaceAddress' element={<Space />}>
         <Route path='posts' element={<Posts />} />,
         <Route path='flipper' element={<Flipper />} />,
@@ -25,7 +25,6 @@ export default createBrowserRouter(
         <Route path='settings' element={<Settings />} />,
         <Route path='pending-members' element={<PendingMembers />} />,
       </Route>
-      ,
       <Route path='/upload' element={<UploadContracts />} />,
       <Route path='/launch' element={<SpaceLauncher />} />,
     </Route>,

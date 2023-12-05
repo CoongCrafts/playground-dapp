@@ -2,19 +2,18 @@ import { Button, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import { Spinner } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useToggle, useWindowScroll } from 'react-use';
+import NetworkSelection from '@/components/shared/NetworkSelection';
 import useMotherContract from '@/hooks/contracts/useMotherContract';
 import usePagination from '@/hooks/usePagination';
-import SpaceCard from '@/pages/space/Explore/SpaceCard';
-import { NetworkInfo, Props, SpaceRecord } from '@/types';
+import SpaceCard from '@/pages/space/Explorer/SpaceCard';
+import { NetworkInfo, SpaceRecord } from '@/types';
+import { SUPPORTED_NETWORKS } from '@/utils/networks';
 import pluralize from 'pluralize';
 
 const RECORD_PER_PAGE = 12;
 
-interface ExplorerProps extends Props {
-  network: NetworkInfo;
-}
-
-export default function Explorer({ network }: ExplorerProps) {
+export default function Explorer() {
+  const [network, setNetwork] = useState<NetworkInfo>(SUPPORTED_NETWORKS.Development[0]);
   const contract = useMotherContract(network.id);
   const [loadMore, toggleLoadMore] = useToggle(false);
   const [onLoad, setOnLoad] = useToggle(true);
@@ -46,11 +45,13 @@ export default function Explorer({ network }: ExplorerProps) {
     }
   }, [loadMore, onLoad, y]);
 
-  console.log(document.body.offsetHeight - y);
-
   return (
     <Flex my={4} flexDir='column' gap={8}>
-      <Flex justifyContent='end' alignItems='center' flexGrow={1}>
+      <Flex justifyContent='space-between' alignItems='center' flexGrow={1}>
+        <NetworkSelection
+          onSelect={(network) => setNetwork(network)}
+          defaultNetwork={SUPPORTED_NETWORKS.Development[0]}
+        />
         <Text color='dimgray' fontWeight='semibold' whiteSpace='nowrap'>
           {`${numberOfSpace} ${pluralize('space', numberOfSpace)} `}
         </Text>
