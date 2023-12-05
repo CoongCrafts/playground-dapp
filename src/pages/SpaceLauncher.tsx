@@ -308,13 +308,19 @@ export default function SpaceLauncher() {
             <FormControl mt={4} isRequired>
               <FormLabel>Registration</FormLabel>
               <RadioGroup colorScheme='primary' name='registrationType' defaultValue={RegistrationType.PayToJoin}>
-                <Stack spacing={1}>
+                <Stack spacing={0}>
                   <Radio value={RegistrationType.PayToJoin} onChange={formikStep2.handleChange}>
                     Pay To Join
                   </Radio>
+                  <Text ml={6} mb={2} fontSize='sm' color='gray.500'>
+                    Users pay directly to join the space without admins without admin reviews or approvals.
+                  </Text>
                   <Radio value={RegistrationType.RequestToJoin} onChange={formikStep2.handleChange}>
                     Request To Join
                   </Radio>
+                  <Text ml={6} mb={2} fontSize='sm' color='gray.500'>
+                    Users pay to make a request, join upon admin approval, and receive a refund if rejected.
+                  </Text>
                 </Stack>
               </RadioGroup>
             </FormControl>
