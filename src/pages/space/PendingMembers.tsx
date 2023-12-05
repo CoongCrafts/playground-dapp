@@ -96,6 +96,7 @@ export default function PendingMembers() {
             borderWidth={1}
             borderColor='chakra-border-color'
             justifyContent='space-between'
+            key={one.who}
             flexGrow={1}>
             <Flex alignItems='center' gap={2}>
               <Flex px={2} alignItems='center'>
