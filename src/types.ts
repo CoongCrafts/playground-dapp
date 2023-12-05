@@ -40,6 +40,7 @@ export interface SpaceInfo {
 export enum RegistrationType {
   PayToJoin = 'PayToJoin',
   RequestToJoin = 'RequestToJoin',
+  InviteOnly = 'InviteOnly',
 }
 
 export enum Pricing {
