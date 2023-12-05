@@ -30,7 +30,7 @@ export default function DangerZone() {
           <Text fontSize='lg' fontWeight='semibold'>
             Archive Space
           </Text>
-          <Text fontSize='sm'>Set the space to read-only mode</Text>
+          <Text fontSize='sm'>Put the space to read-only mode</Text>
         </Box>
         <Box>
           <Button colorScheme='red' onClick={() => comingSoon('Archive space coming soon!')}>
