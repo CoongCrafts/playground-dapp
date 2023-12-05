@@ -5,6 +5,7 @@ import MySpaces from '@/pages/MySpaces';
 import Space from '@/pages/Space';
 import SpaceLauncher from '@/pages/SpaceLauncher';
 import UploadContracts from '@/pages/UploadContracts';
+import Flipper from '@/pages/plugins/Flipper';
 import Posts from '@/pages/plugins/Posts';
 import Members from '@/pages/space/Members';
 import PendingMembers from '@/pages/space/PendingMembers';
@@ -17,6 +18,7 @@ export default createBrowserRouter(
       <Route path='/spaces' element={<MySpaces />} />,
       <Route path='/:chainId/spaces/:spaceAddress' element={<Space />}>
         <Route path='posts' element={<Posts />} />,
+        <Route path='flipper' element={<Flipper />} />,
         <Route path='members' element={<Members />} />,
         <Route path='settings' element={<Settings />} />,
         <Route path='pending-members' element={<PendingMembers />} />,

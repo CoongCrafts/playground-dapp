@@ -3,5 +3,5 @@ export const stringToNum = (input: string | undefined): number | undefined => {
     return undefined;
   }
 
-  return parseInt(input.replaceAll(',', ''));
+  return parseFloat(input.replaceAll(',', ''));
 };

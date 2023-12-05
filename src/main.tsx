@@ -31,7 +31,6 @@ root.render(
           theme='colored'
           autoClose={5_000}
           hideProgressBar
-          limit={2}
         />
       </WalletProvider>
     </ChakraProvider>

@@ -65,13 +65,13 @@ const STEPS = [
   { title: 'Last', description: 'Launch space' },
 ];
 
-const step1Schema = yup.object().shape({
+export const step1Schema = yup.object().shape({
   name: yup.string().min(3).max(30).required(),
-  desc: yup.string().optional().max(100),
+  desc: yup.string().optional().max(200),
   logoUrl: yup.string().url().optional().max(500),
 });
 
-const step2Schema = yup.object().shape({
+export const step2Schema = yup.object().shape({
   registrationType: yup.string().oneOf(Object.values(RegistrationType)).required(),
   pricing: yup.string().oneOf(Object.values(Pricing)).required(),
   price: yup.number().when('pricing', {
@@ -254,7 +254,7 @@ export default function SpaceLauncher() {
               <FormLabel>Description</FormLabel>
               <Textarea
                 placeholder='What describes best about your space?'
-                maxLength={100}
+                maxLength={200}
                 value={formikStep1.values.desc}
                 onChange={formikStep1.handleChange}
                 name='desc'
@@ -262,7 +262,7 @@ export default function SpaceLauncher() {
               <FormHelperText>Maximum 200 characters</FormHelperText>
             </FormControl>
             <FormControl mt={4}>
-              <FormLabel>Logo</FormLabel>
+              <FormLabel>Logo Url</FormLabel>
               <Input
                 type='text'
                 placeholder='https://example.com/logo.png'
@@ -271,6 +271,10 @@ export default function SpaceLauncher() {
                 onChange={formikStep1.handleChange}
                 name='logoUrl'
               />
+              <FormHelperText>
+                Logo image should be in .png, .jpg or .gif formats. A square image is recommended. Maximum 500
+                characters.
+              </FormHelperText>
               {formikStep1.values.logoUrl && (
                 <Box mt={4}>
                   <Avatar
@@ -309,13 +313,19 @@ export default function SpaceLauncher() {
             <FormControl mt={4} isRequired>
               <FormLabel>Registration</FormLabel>
               <RadioGroup colorScheme='primary' name='registrationType' defaultValue={RegistrationType.PayToJoin}>
-                <Stack spacing={1}>
+                <Stack spacing={0}>
                   <Radio value={RegistrationType.PayToJoin} onChange={formikStep2.handleChange}>
                     Pay To Join
                   </Radio>
+                  <Text ml={6} mb={2} fontSize='sm' color='gray.500'>
+                    Users pay directly to join the space without admins without admin reviews or approvals.
+                  </Text>
                   <Radio value={RegistrationType.RequestToJoin} onChange={formikStep2.handleChange}>
                     Request To Join
                   </Radio>
+                  <Text ml={6} mb={2} fontSize='sm' color='gray.500'>
+                    Users pay to make a request, join upon admin approval, and receive a refund if rejected.
+                  </Text>
                 </Stack>
               </RadioGroup>
             </FormControl>
@@ -542,7 +552,9 @@ export default function SpaceLauncher() {
                   )}
                   <Box>
                     {formikStep2.values.plugins.map((one) => (
-                      <Tag key={one}>{findPlugin(one)?.name}</Tag>
+                      <Tag key={one} mr={2}>
+                        {findPlugin(one)?.name}
+                      </Tag>
                     ))}
                   </Box>
                 </Box>

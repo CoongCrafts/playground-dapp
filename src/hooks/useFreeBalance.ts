@@ -21,5 +21,6 @@ export default function useFreeBalance(
     decimals: network.decimals,
     withUnit: false,
     forceUnit: network.symbol,
+    withZero: false,
   });
 }

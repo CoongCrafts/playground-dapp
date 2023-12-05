@@ -22,10 +22,10 @@ import JoinButton from '@/pages/space/actions/JoinButton';
 import LeaveSpaceButton from '@/pages/space/actions/LeaveSpaceButton';
 import UpdateDisplayNameButton from '@/pages/space/actions/UpdateDisplayNameButton';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
+import { PLUGIN_FLIPPER, PLUGIN_POSTS } from '@/utils/plugins';
 import { MemberStatus, RegistrationType } from '@/types';
-import { PLUGIN_POSTS } from '@/utils/plugins';
 import { shortenAddress } from '@/utils/string';
-import { CalendarIcon, ChevronDownIcon, HamburgerIcon, InfoIcon, SettingsIcon } from '@chakra-ui/icons';
+import { CalendarIcon, ChevronDownIcon, HamburgerIcon, InfoIcon, SettingsIcon, StarIcon } from '@chakra-ui/icons';
 import clsx from 'clsx';
 import pluralize from 'pluralize';
 import { ChainId } from 'useink/chains';
@@ -40,6 +40,7 @@ const MENU_ITEMS: MenuItem[] = [
 
 const PLUGIN_MENU_ITEMS: Record<string, MenuItem> = {
   [PLUGIN_POSTS]: { name: 'Posts', path: 'posts', icon: <CalendarIcon /> },
+  [PLUGIN_FLIPPER]: { name: 'Flipper', path: 'flipper', icon: <StarIcon /> },
 };
 
 function SpaceContent() {
@@ -52,7 +53,10 @@ function SpaceContent() {
   useEffect(() => {
     if (!plugins) return;
 
-    const pluginMenuItems = plugins.map(({ id }) => PLUGIN_MENU_ITEMS[id]).filter((x) => x);
+    const pluginMenuItems = plugins
+      .filter(({ disabled }) => !disabled)
+      .map(({ id }) => PLUGIN_MENU_ITEMS[id])
+      .filter((x) => x);
     const menuItems = [...pluginMenuItems, ...MENU_ITEMS];
 
     if (location.pathname.endsWith(space.address)) {
@@ -71,58 +75,56 @@ function SpaceContent() {
 
   return (
     <Box mt={2}>
-      <Flex mb={4} justify='space-between'>
-        <Flex gap={{ base: 4, sm: 6 }} flexDir={{ base: 'column', sm: 'row' }}>
-          {info && <SpaceAvatar space={space} info={info} />}
-          <Flex gap={{ base: 4, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
-            <Box>
-              <Heading size='md' mb={1}>
-                {info?.name}
-              </Heading>
-              <Text as='span' fontSize='md' fontWeight='semibold' color='gray'>
-                {shortenAddress(space.address)}
-              </Text>{' '}
-              •{' '}
-              <Text as='span' fontSize='md' color='gray'>
-                {membersCount} {pluralize('member', membersCount)}
-              </Text>
-              <Text fontSize='md' color='gray' mt={2}>
-                {info?.desc}
-              </Text>
-            </Box>
-            <Box>
-              {(memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) &&
-                (!pendingRequest ? <JoinButton /> : <CancelRequestButton />)}
-              {memberStatus === MemberStatus.Inactive && (
-                <Button colorScheme='primary' variant='outline' size='sm' width={100}>
-                  Reactive
-                </Button>
-              )}
-              {memberStatus === MemberStatus.Active && (
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    colorScheme='primary'
-                    variant='outline'
-                    size='sm'
-                    width={100}
-                    rightIcon={<ChevronDownIcon />}>
-                    Joined
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem>
-                      <UpdateDisplayNameButton />
+      <Flex mb={4} gap={{ base: 4, sm: 6 }} flexDir={{ base: 'column', sm: 'row' }}>
+        <Box>{info && <SpaceAvatar space={space} info={info} />}</Box>
+        <Flex flex={1} justify='space-between' gap={{ base: 4, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
+          <Box>
+            <Heading size='md' mb={1}>
+              {info?.name}
+            </Heading>
+            <Text as='span' fontSize='md' fontWeight='semibold' color='gray'>
+              {shortenAddress(space.address)}
+            </Text>{' '}
+            •{' '}
+            <Text as='span' fontSize='md' color='gray'>
+              {membersCount} {pluralize('member', membersCount)}
+            </Text>
+            <Text fontSize='md' color='gray' mt={2}>
+              {info?.desc}
+            </Text>
+          </Box>
+          <Box>
+            {(memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) && (!pendingRequest
+            ? <JoinButton /> : <CancelRequestButton />)}
+            {memberStatus === MemberStatus.Inactive && (
+              <Button colorScheme='primary' variant='outline' size='sm' width={100}>
+                Reactive
+              </Button>
+            )}
+            {memberStatus === MemberStatus.Active && (
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  colorScheme='primary'
+                  variant='outline'
+                  size='sm'
+                  width={100}
+                  rightIcon={<ChevronDownIcon />}>
+                  Joined
+                </MenuButton>
+                <MenuList>
+                  <MenuItem>
+                    <UpdateDisplayNameButton />
+                  </MenuItem>
+                  {!isOwner && (
+                    <MenuItem color='red'>
+                      <LeaveSpaceButton />
                     </MenuItem>
-                    {!isOwner && (
-                      <MenuItem color='red'>
-                        <LeaveSpaceButton />
-                      </MenuItem>
-                    )}
-                  </MenuList>
-                </Menu>
-              )}
-            </Box>
-          </Flex>
+                  )}
+                </MenuList>
+              </Menu>
+            )}
+          </Box>
         </Flex>
       </Flex>
       <Flex mt={{ base: 0, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
