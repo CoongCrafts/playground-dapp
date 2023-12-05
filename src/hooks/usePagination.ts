@@ -15,7 +15,7 @@ export default function usePagination<T>(
     recordPerPage,
   ]);
 
-  const { items = [], total } = page || {};
+  const { items, total } = page || {};
   const numberOfPage = stringToNum(total) ? Math.ceil(parseInt(total!) / recordPerPage) : 1;
 
   return {

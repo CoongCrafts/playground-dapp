@@ -5,18 +5,18 @@ import useSpace from '@/hooks/useSpace';
 import CancelRequestButton from '@/pages/space/actions/CancelRequestButton';
 import JoinButton from '@/pages/space/actions/JoinButton';
 import SpaceProvider from '@/providers/SpaceProvider';
-import { OnChainSpace, Props, RegistrationType, SpaceRecord } from '@/types';
+import { OnChainSpace, Props, RegistrationType, SpaceId } from '@/types';
 import pluralize from 'pluralize';
 import { ChainId } from 'useink/chains';
 
 interface SpaceCardProps extends Props {
-  spaceRecord: SpaceRecord;
+  spaceId: SpaceId;
   chainId: ChainId;
 }
 
-export default function SpaceCard({ spaceRecord, chainId }: SpaceCardProps) {
+export default function SpaceCard({ spaceId, chainId }: SpaceCardProps) {
   const navigate = useNavigate();
-  const space = { address: spaceRecord.spaceId, chainId } as OnChainSpace;
+  const space = { address: spaceId, chainId } as OnChainSpace;
   const { info, config, membersCount, pendingRequest } = useSpace(space);
 
   const showJoinButton = config?.registration !== RegistrationType.InviteOnly;

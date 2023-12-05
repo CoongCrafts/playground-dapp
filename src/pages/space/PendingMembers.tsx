@@ -89,7 +89,7 @@ export default function PendingMembers() {
         />
       </Flex>
       <Flex mt={4} flexDirection='column' gap={2} flexGrow={1}>
-        {items.map((one) => (
+        {items?.map((one) => (
           <Flex
             p={2}
             alignItems='center'

@@ -30,7 +30,7 @@ export default function Members() {
         {isOwner && <InviteMemberButton />}
       </Flex>
       <SimpleGrid flexGrow={1} columns={{ base: 1, lg: 2 }} gap={2}>
-        {items.map((item) => (
+        {items?.map((item) => (
           <MemberCard key={item.index} memberRecord={item} />
         ))}
       </SimpleGrid>

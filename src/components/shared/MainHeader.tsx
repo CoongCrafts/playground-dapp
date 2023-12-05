@@ -32,7 +32,7 @@ export default function MainHeader() {
         </Link>
         <Flex gap={4} fontWeight='semibold'>
           {MENU_ITEM.map((one) => (
-            <Link to={one.path}>
+            <Link key={one.name} to={one.path}>
               <Text fontWeight='semibold' color='primary.200'>
                 {one.name}
               </Text>
