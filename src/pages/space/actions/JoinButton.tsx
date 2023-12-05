@@ -16,7 +16,9 @@ import SpaceAvatar from '@/components/space/SpaceAvatar';
 import useCurrentFreeBalance from '@/hooks/space/useCurrentFreeBalance';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
+import { useWalletContext } from '@/providers/WalletProvider';
 import { Pricing, RegistrationType } from '@/types';
+import { eventEmitter, EventName } from '@/utils/eventemitter';
 import { messages } from '@/utils/messages';
 import { stringToNum } from '@/utils/number';
 import { formatBalance, shortenAddress } from '@/utils/string';
@@ -25,6 +27,7 @@ import { ContractSubmittableResult } from 'useink/core';
 import { shouldDisable } from 'useink/utils';
 
 export default function JoinButton() {
+  const { selectedAccount } = useWalletContext();
   const { config, membersCount, info, space, network, contract } = useSpaceContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const payToJoinTx = useTx(contract, 'payToJoin');
@@ -69,6 +72,14 @@ export default function JoinButton() {
     }
   };
 
+  const doJoin = () => {
+    if (selectedAccount) {
+      onOpen();
+    } else {
+      eventEmitter.emit(EventName.SHOW_LOGIN_POPUP);
+    }
+  };
+
   useEffect(() => {
     payToJoinTx.resetState();
     registerMembershipTx.resetState();
@@ -82,7 +93,7 @@ export default function JoinButton() {
 
   return (
     <>
-      <Button onClick={onOpen} colorScheme='primary' size='sm' width={100}>
+      <Button onClick={doJoin} colorScheme='primary' size='sm' width={100}>
         Join
       </Button>
       <Modal onClose={onClose} isOpen={isOpen} size={{ base: 'full', md: 'sm' }}>

@@ -11,7 +11,9 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useEffectOnce } from 'react-use';
 import { useWalletContext } from '@/providers/WalletProvider';
+import { eventEmitter, EventName } from '@/utils/eventemitter';
 import Wallet from '@/wallets/Wallet';
 import { ThemingProps } from '@chakra-ui/system';
 
@@ -55,6 +57,15 @@ interface WalletSelectionProps {
 export default function WalletSelection({ buttonLabel = 'Sign in', buttonProps }: WalletSelectionProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { availableWallets } = useWalletContext();
+
+  useEffectOnce(() => {
+    const showPopup = () => onOpen();
+    eventEmitter.on(EventName.SHOW_LOGIN_POPUP, showPopup);
+
+    return () => {
+      eventEmitter.off(EventName.SHOW_LOGIN_POPUP, showPopup);
+    };
+  });
 
   return (
     <>
