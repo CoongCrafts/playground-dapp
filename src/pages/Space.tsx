@@ -20,9 +20,9 @@ import LeaveSpaceButton from '@/pages/space/actions/LeaveSpaceButton';
 import UpdateDisplayNameButton from '@/pages/space/actions/UpdateDisplayNameButton';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
 import { MemberStatus } from '@/types';
-import { PLUGIN_POSTS } from '@/utils/plugins';
+import { PLUGIN_FLIPPER, PLUGIN_POSTS } from '@/utils/plugins';
 import { shortenAddress } from '@/utils/string';
-import { CalendarIcon, ChevronDownIcon, InfoIcon, SettingsIcon } from '@chakra-ui/icons';
+import { CalendarIcon, ChevronDownIcon, InfoIcon, SettingsIcon, StarIcon } from '@chakra-ui/icons';
 import pluralize from 'pluralize';
 import { ChainId } from 'useink/chains';
 
@@ -35,6 +35,7 @@ const MENU_ITEMS: MenuItem[] = [
 
 const PLUGIN_MENU_ITEMS: Record<string, MenuItem> = {
   [PLUGIN_POSTS]: { name: 'Posts', path: 'posts', icon: <CalendarIcon /> },
+  [PLUGIN_FLIPPER]: { name: 'Flipper', path: 'flipper', icon: <StarIcon /> },
 };
 
 function SpaceContent() {

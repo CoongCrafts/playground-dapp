@@ -547,7 +547,9 @@ export default function SpaceLauncher() {
                   )}
                   <Box>
                     {formikStep2.values.plugins.map((one) => (
-                      <Tag key={one}>{findPlugin(one)?.name}</Tag>
+                      <Tag key={one} mr={2}>
+                        {findPlugin(one)?.name}
+                      </Tag>
                     ))}
                   </Box>
                 </Box>
