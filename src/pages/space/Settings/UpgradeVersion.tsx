@@ -1,34 +1,39 @@
 import { Box, Button, Tag, Text } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
+import useCurrentFreeBalance from '@/hooks/space/useCurrentFreeBalance';
 import useContractState from '@/hooks/useContractState';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
+import { messages } from '@/utils/messages';
 import { shortenAddress } from '@/utils/string';
 import { shouldDisable } from 'useink/utils';
 
 export default function UpgradeVersion() {
-  const { api, motherContract, codeHash, contract } = useSpaceContext();
+  const { motherContract, codeHash, contract } = useSpaceContext();
   const { state: latestSpaceCode } = useContractState<string>(motherContract, 'latestSpaceCode');
+  const freeBalance = useCurrentFreeBalance();
 
   const setCodeHashTx = useTx(contract, 'upgradeable::setCodeHash');
 
+  const hasNewVersion = codeHash !== latestSpaceCode;
+
   const upgradeToLatestVersion = async () => {
-    if (codeHash === latestSpaceCode) return;
+    if (!hasNewVersion) return;
+
     const confirm = window.confirm('Are you sure to upgrade the space to latest version?');
     if (!confirm) return;
 
-    setCodeHashTx.signAndSend([latestSpaceCode], {}, (result) => {
-      if (!result) return;
+    if (freeBalance == 0) {
+      toast.error(messages.insufficientBalance);
+      return;
+    }
 
-      if (result.isInBlock) {
-        if (result.isError || result.dispatchError) {
-          if (result.dispatchError?.isModule) {
-            console.log(api!.registry.findMetaError(result.dispatchError?.asModule));
-          }
-          console.error(result.toHuman());
-          toast.error('Extrinsic failed!');
+    setCodeHashTx.signAndSend([latestSpaceCode], {}, (result) => {
+      if (result?.isInBlock) {
+        if (result.dispatchError) {
+          toast.error(result.dispatchError.toString());
         } else {
-          toast.success('Space has been upgraded to the latest version!');
+          toast.success('Space version upgraded');
         }
       }
     });
@@ -43,27 +48,28 @@ export default function UpgradeVersion() {
       <Text fontWeight='semibold'>Version & Upgrade</Text>
       <Box ml={2}>
         <Text mt={3}>
-          Current Version:{' '}
-          <Tag variant='solid' colorScheme='gray'>
+          {hasNewVersion ? 'Current version' : 'The space is currently at latest version'}{' '}
+          <Tag variant='solid' colorScheme={hasNewVersion ? 'gray' : 'green'}>
             {shortenAddress(codeHash)}
           </Tag>
         </Text>
 
-        {codeHash !== latestSpaceCode && (
+        {hasNewVersion && (
           <>
             <Text mt={3}>
-              New Version:{' '}
+              New version is available to upgrade:{' '}
               <Tag variant='solid' colorScheme='green'>
                 {shortenAddress(latestSpaceCode)}
               </Tag>
             </Text>
             <Button
+              variant='outline'
               mt={4}
               size='sm'
               colorScheme='red'
               onClick={upgradeToLatestVersion}
               isDisabled={shouldDisable(setCodeHashTx)}>
-              Upgrade
+              Upgrade Now
             </Button>
           </>
         )}

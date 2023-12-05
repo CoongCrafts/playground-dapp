@@ -57,7 +57,7 @@ export default function Membership() {
     enableReinitialize: true,
     onSubmit: (values, formikHelpers) => {
       if (freeBalance == 0) {
-        toast.error(`${messages.insufficientBalance}, current balance: ${freeBalance} ${network.symbol}`);
+        toast.error(messages.insufficientBalance);
         return;
       }
 

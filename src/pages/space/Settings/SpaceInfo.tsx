@@ -20,7 +20,7 @@ import { useFormik } from 'formik';
 import { shouldDisable } from 'useink/utils';
 
 export default function SpaceInfo() {
-  const { network, info, isOwner, contract } = useSpaceContext();
+  const { info, isOwner, contract } = useSpaceContext();
   const freeBalance = useCurrentFreeBalance();
   const updateInfoTx = useTx(contract, 'updateInfo');
 
@@ -34,7 +34,7 @@ export default function SpaceInfo() {
     validationSchema: step1Schema,
     onSubmit: (values, formikHelpers) => {
       if (freeBalance == 0) {
-        toast.error(`${messages.insufficientBalance}, current balance: ${freeBalance} ${network.symbol}`);
+        toast.error(messages.insufficientBalance);
         return;
       }
 
