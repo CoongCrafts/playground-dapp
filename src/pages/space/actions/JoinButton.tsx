@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonProps,
   Flex,
   Modal,
   ModalBody,
@@ -17,7 +18,7 @@ import useCurrentFreeBalance from '@/hooks/space/useCurrentFreeBalance';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { useWalletContext } from '@/providers/WalletProvider';
-import { Pricing, RegistrationType } from '@/types';
+import { MemberStatus, Pricing, Props, RegistrationType } from '@/types';
 import { eventEmitter, EventName } from '@/utils/eventemitter';
 import { messages } from '@/utils/messages';
 import { stringToNum } from '@/utils/number';
@@ -26,9 +27,13 @@ import pluralize from 'pluralize';
 import { ContractSubmittableResult } from 'useink/core';
 import { shouldDisable } from 'useink/utils';
 
-export default function JoinButton() {
+interface JoinButtonProps extends Props {
+  buttonProps?: ButtonProps;
+}
+
+export default function JoinButton({ buttonProps }: JoinButtonProps) {
   const { selectedAccount } = useWalletContext();
-  const { config, membersCount, info, space, network, contract } = useSpaceContext();
+  const { config, membersCount, info, space, network, contract, memberStatus } = useSpaceContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const payToJoinTx = useTx(contract, 'payToJoin');
   const registerMembershipTx = useTx(contract, 'registerMembership');
@@ -72,7 +77,10 @@ export default function JoinButton() {
     }
   };
 
-  const doJoin = () => {
+  const doJoin = (event: any) => {
+    // Prevent navigating into space when clicking on the button.
+    event.stopPropagation();
+
     if (selectedAccount) {
       onOpen();
     } else {
@@ -91,10 +99,12 @@ export default function JoinButton() {
     return null;
   }
 
+  const joined = memberStatus === MemberStatus.Active || memberStatus === MemberStatus.Inactive;
+
   return (
     <>
-      <Button onClick={doJoin} colorScheme='primary' size='sm' width={100}>
-        Join
+      <Button onClick={doJoin} colorScheme='primary' size='sm' width={100} {...buttonProps} isDisabled={joined}>
+        {joined ? 'Joined' : 'Join'}
       </Button>
       <Modal onClose={onClose} isOpen={isOpen} size={{ base: 'full', md: 'sm' }}>
         <ModalOverlay />

@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonProps,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,11 +16,16 @@ import { toast } from 'react-toastify';
 import useCurrentFreeBalance from '@/hooks/space/useCurrentFreeBalance';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
+import { Props } from '@/types';
 import { messages } from '@/utils/messages';
 import { formatBalance } from '@/utils/string';
 import { shouldDisable } from 'useink/utils';
 
-export default function CancelRequestButton() {
+interface CancelRequestButtonProps extends Props {
+  buttonProps?: ButtonProps;
+}
+
+export default function CancelRequestButton({ buttonProps }: CancelRequestButtonProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { contract, pendingRequest, network } = useSpaceContext();
   const cancelRequestTx = useTx(contract, 'cancelRequest');
@@ -44,13 +50,23 @@ export default function CancelRequestButton() {
     });
   };
 
+  const handleOpen = (event: any) => {
+    // Prevent navigating into space when clicking on the button.
+    event.stopPropagation();
+    onOpen();
+  };
+
   useEffect(() => {
     cancelRequestTx.resetState();
   }, [isOpen]);
 
+  if (!pendingRequest) {
+    return null;
+  }
+
   return (
     <>
-      <Button onClick={onOpen} size='sm' variant='outline' width='100%'>
+      <Button onClick={handleOpen} size='sm' variant='outline' width='100%' {...buttonProps}>
         Cancel Request
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size={{ base: 'full', md: 'md' }}>

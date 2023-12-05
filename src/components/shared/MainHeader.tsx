@@ -4,6 +4,13 @@ import AccountSelection from '@/components/AccountSelection';
 import WalletSelection from '@/components/dialog/WalletSelection';
 import { useWalletContext } from '@/providers/WalletProvider';
 
+const MENU_ITEM = [
+  { name: 'My spaces', path: '/' },
+  { name: 'Explore', path: '/explore' },
+  { name: 'Documentation', path: '/' },
+  { name: 'About', path: '/' },
+];
+
 export default function MainHeader() {
   const { injectedApi } = useWalletContext();
 
@@ -19,10 +26,19 @@ export default function MainHeader() {
         gap={4}
         h={16}>
         <Link to='/'>
-          <Text fontSize='3xl' color='primary.300'>
+          <Text fontSize='3xl' fontWeight='bold' color='primary.300'>
             inspace
           </Text>
         </Link>
+        <Flex gap={4} fontWeight='semibold'>
+          {MENU_ITEM.map((one) => (
+            <Link to={one.path}>
+              <Text fontWeight='semibold' color='primary.200'>
+                {one.name}
+              </Text>
+            </Link>
+          ))}
+        </Flex>
         <Flex gap={2} alignItems='center'>
           {!!injectedApi ? <AccountSelection /> : <WalletSelection />}
         </Flex>

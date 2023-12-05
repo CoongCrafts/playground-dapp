@@ -126,3 +126,8 @@ export interface MembershipRequest {
 }
 
 export type RequestApproval = [string, boolean];
+
+export interface SpaceRecord {
+  ownerId: string;
+  spaceId: string;
+}

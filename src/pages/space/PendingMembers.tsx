@@ -20,6 +20,7 @@ export default function PendingMembers() {
   const submitRequestApprovalsTx = useTx(contract, 'submitRequestApprovals');
   const [requestApprovals, setRequestApprovals] = useState<RequestApproval[]>([]);
   const { pageIndex, setPageIndex, numberOfPage, items } = usePagination<MembershipRequest>(
+    contract,
     'pendingRequests',
     RECORD_PER_PAGE,
   );

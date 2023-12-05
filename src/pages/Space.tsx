@@ -68,7 +68,7 @@ function SpaceContent() {
     }
 
     if (location.pathname.endsWith(space.address)) {
-      navigate(menuItems[0].path);
+      navigate(menuItems[0].path, { replace: true });
     }
 
     setMenuItems(menuItems);

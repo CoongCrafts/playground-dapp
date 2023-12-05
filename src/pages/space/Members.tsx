@@ -9,8 +9,12 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 const RECORD_PER_PAGE = 8;
 
 export default function Members() {
-  const { membersCount, isOwner } = useSpaceContext();
-  const { pageIndex, setPageIndex, numberOfPage, items } = usePagination<MemberRecord>('listMembers', RECORD_PER_PAGE);
+  const { membersCount, isOwner, contract } = useSpaceContext();
+  const { pageIndex, setPageIndex, numberOfPage, items } = usePagination<MemberRecord>(
+    contract,
+    'listMembers',
+    RECORD_PER_PAGE,
+  );
 
   return (
     <Flex flexDirection='column'>
