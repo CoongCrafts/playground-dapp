@@ -65,13 +65,13 @@ const STEPS = [
   { title: 'Last', description: 'Launch space' },
 ];
 
-const step1Schema = yup.object().shape({
+export const step1Schema = yup.object().shape({
   name: yup.string().min(3).max(30).required(),
-  desc: yup.string().optional().max(100),
+  desc: yup.string().optional().max(200),
   logoUrl: yup.string().url().optional().max(500),
 });
 
-const step2Schema = yup.object().shape({
+export const step2Schema = yup.object().shape({
   registrationType: yup.string().oneOf(Object.values(RegistrationType)).required(),
   pricing: yup.string().oneOf(Object.values(Pricing)).required(),
   price: yup.number().when('pricing', {
@@ -249,7 +249,7 @@ export default function SpaceLauncher() {
               <FormLabel>Description</FormLabel>
               <Textarea
                 placeholder='What describes best about your space?'
-                maxLength={100}
+                maxLength={200}
                 value={formikStep1.values.desc}
                 onChange={formikStep1.handleChange}
                 name='desc'
@@ -257,7 +257,7 @@ export default function SpaceLauncher() {
               <FormHelperText>Maximum 200 characters</FormHelperText>
             </FormControl>
             <FormControl mt={4}>
-              <FormLabel>Logo</FormLabel>
+              <FormLabel>Logo Url</FormLabel>
               <Input
                 type='text'
                 placeholder='https://example.com/logo.png'
@@ -266,6 +266,10 @@ export default function SpaceLauncher() {
                 onChange={formikStep1.handleChange}
                 name='logoUrl'
               />
+              <FormHelperText>
+                Logo image should be in .png, .jpg or .gif formats. A square image is recommended. Maximum 500
+                characters.
+              </FormHelperText>
               {formikStep1.values.logoUrl && (
                 <Box mt={4}>
                   <Avatar

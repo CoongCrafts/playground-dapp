@@ -15,7 +15,14 @@ function MemberCard({ memberRecord }: MemberCardProps) {
   const memberStatus = toMemberStatus(info.nextRenewalAt);
 
   return (
-    <Flex p={2} gap={2} border={1} borderStyle='solid' borderColor='chakra-border-color' alignItems='center'>
+    <Flex
+      borderRadius={4}
+      p={2}
+      gap={2}
+      border={1}
+      borderStyle='solid'
+      borderColor='chakra-border-color'
+      alignItems='center'>
       <Flex px={2} gap={2} alignItems='center'>
         <Identicon value={memberRecord.accountId} size={30} theme='polkadot' />
       </Flex>
