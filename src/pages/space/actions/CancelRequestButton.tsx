@@ -12,22 +12,20 @@ import {
 } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import useFreeBalance from '@/hooks/useFreeBalance';
+import useCurrentFreeBalance from '@/hooks/space/useCurrentFreeBalance';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
-import { useWalletContext } from '@/providers/WalletProvider';
 import { formatBalance } from '@/utils/string';
 import { shouldDisable } from 'useink/utils';
 
 export default function CancelRequestButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { contract, pendingRequest, network, space } = useSpaceContext();
+  const { contract, pendingRequest, network } = useSpaceContext();
   const cancelRequestTx = useTx(contract, 'cancelRequest');
-  const { selectedAccount } = useWalletContext();
-  const freeBalance = useFreeBalance(selectedAccount, space.chainId);
+  const freeBalance = useCurrentFreeBalance();
 
   const doCancelRequest = async () => {
-    if (freeBalance == '0') {
+    if (freeBalance === 0) {
       toast.error(`Your account balance is not enough to make transaction, current balance: ${freeBalance}`);
       return;
     }
@@ -60,10 +58,10 @@ export default function CancelRequestButton() {
           <ModalHeader>Are you sure to cancel your membership request?</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            The payment of{' '}
+            The payment of
             <Text as={'span'} fontWeight='semibold'>
-              {formatBalance(pendingRequest!.paid.toString(), network, true)}{' '}
-            </Text>{' '}
+              {` ${formatBalance(pendingRequest!.paid.toString(), network)} `}
+            </Text>
             will be refunded to your account
           </ModalBody>
           <ModalFooter gap={2}>

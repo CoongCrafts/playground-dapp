@@ -22,15 +22,19 @@ import JoinButton from '@/pages/space/actions/JoinButton';
 import LeaveSpaceButton from '@/pages/space/actions/LeaveSpaceButton';
 import UpdateDisplayNameButton from '@/pages/space/actions/UpdateDisplayNameButton';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
-import { PLUGIN_FLIPPER, PLUGIN_POSTS } from '@/utils/plugins';
 import { MemberStatus, RegistrationType } from '@/types';
+import { PLUGIN_FLIPPER, PLUGIN_POSTS } from '@/utils/plugins';
 import { shortenAddress } from '@/utils/string';
 import { CalendarIcon, ChevronDownIcon, HamburgerIcon, InfoIcon, SettingsIcon, StarIcon } from '@chakra-ui/icons';
 import clsx from 'clsx';
 import pluralize from 'pluralize';
 import { ChainId } from 'useink/chains';
 
-type MenuItem = { name: string; path: string; icon: React.ReactElement };
+type MenuItem = {
+  name: string;
+  path: string;
+  icon: React.ReactElement;
+};
 
 const MENU_ITEMS: MenuItem[] = [
   { name: 'Members', path: 'members', icon: <InfoIcon /> },
@@ -71,7 +75,7 @@ function SpaceContent() {
   }
 
   const activeIndex = menuItems.findIndex((one) => location.pathname.split('/').at(-1) === one.path);
-  const hasPendingMembersTab = config?.registration === RegistrationType.RequestToJoin;
+  const hasPendingMembersTab = config?.registration === RegistrationType.RequestToJoin && isOwner;
 
   return (
     <Box mt={2}>
@@ -94,8 +98,8 @@ function SpaceContent() {
             </Text>
           </Box>
           <Box>
-            {(memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) && (!pendingRequest
-            ? <JoinButton /> : <CancelRequestButton />)}
+            {(memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) &&
+              (!pendingRequest ? <JoinButton /> : <CancelRequestButton />)}
             {memberStatus === MemberStatus.Inactive && (
               <Button colorScheme='primary' variant='outline' size='sm' width={100}>
                 Reactive
@@ -182,6 +186,7 @@ function SpaceContent() {
                 as={LinkRouter}
                 to={one.path}
                 _selected={{ boxShadow: 'none' }}
+                whiteSpace='nowrap'
                 display={clsx(
                   one.path === 'pending-members'
                     ? {

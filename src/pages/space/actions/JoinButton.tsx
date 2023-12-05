@@ -13,10 +13,9 @@ import {
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import SpaceAvatar from '@/components/space/SpaceAvatar';
-import useFreeBalance from '@/hooks/useFreeBalance';
+import useCurrentFreeBalance from '@/hooks/space/useCurrentFreeBalance';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
-import { useWalletContext } from '@/providers/WalletProvider';
 import { Pricing, RegistrationType } from '@/types';
 import { shortenAddress, formatBalance } from '@/utils/string';
 import pluralize from 'pluralize';
@@ -25,11 +24,10 @@ import { shouldDisable } from 'useink/utils';
 
 export default function JoinButton() {
   const { config, membersCount, info, space, network, contract } = useSpaceContext();
-  const { selectedAccount } = useWalletContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const payToJoinTx = useTx(contract, 'payToJoin');
   const registerMembershipTx = useTx(contract, 'registerMembership');
-  const freeBalance = useFreeBalance(selectedAccount, network);
+  const freeBalance = useCurrentFreeBalance();
 
   const pricing = config
     ? typeof config.pricing === 'object'
@@ -40,6 +38,12 @@ export default function JoinButton() {
   const pricingInfo = pricing && typeof config?.pricing === 'object' ? config.pricing[pricing] : null;
 
   const handleRequest = () => {
+    const priceValue = pricingInfo?.price.replaceAll(',', '');
+    if (freeBalance === 0 || (priceValue && parseInt(formatBalance(priceValue, network, false, true)) > freeBalance)) {
+      toast.error(`Your account balance is not enough to make transaction, current balance: ${freeBalance}`);
+      return;
+    }
+
     const handleResponse = (result: ContractSubmittableResult | undefined, message: string) => {
       if (result?.isInBlock) {
         if (result.dispatchError) {
@@ -51,16 +55,6 @@ export default function JoinButton() {
         onClose();
       }
     };
-
-    const priceValue = pricingInfo?.price.replaceAll(',', '');
-
-    if (
-      freeBalance === '0' ||
-      (priceValue !== undefined && parseInt(formatBalance(priceValue, network, false, true)) > parseInt(freeBalance))
-    ) {
-      toast.error(`Your account balance is not enough to make transaction, current balance: ${freeBalance}`);
-      return;
-    }
 
     if (config?.registration === RegistrationType.PayToJoin) {
       payToJoinTx.signAndSend([null], { value: priceValue }, (result) => handleResponse(result, 'Joined'));
@@ -76,20 +70,20 @@ export default function JoinButton() {
 
   return (
     <>
-      <Button colorScheme='primary' size='sm' width={100} onClick={onOpen}>
+      <Button onClick={onOpen} colorScheme='primary' size='sm' width={100}>
         Join
       </Button>
-      <Modal onClose={onClose} isOpen={isOpen}>
+      <Modal onClose={onClose} isOpen={isOpen} size={{ base: 'full', md: 'sm' }}>
         <ModalOverlay />
         {config && (
           <ModalContent>
             <ModalCloseButton />
-            <ModalBody mt='1rem' display='flex' flexDirection='column' alignItems='center'>
+            <ModalBody mt={4} display='flex' flexDirection='column' alignItems='center'>
               <SpaceAvatar space={space} info={info!} />
-              <Text mt='0.5rem' fontWeight='semibold' fontSize='1.25rem'>
+              <Text mt={2} fontWeight='semibold' fontSize='1.25rem'>
                 {info?.name}
               </Text>
-              <Flex textAlign='center' gap='0.2rem' flexDir='column'>
+              <Flex textAlign='center' gap={1} flexDir='column'>
                 <Text color='dimgray'>{info?.desc}</Text>
                 <Text color='dimgray'>{`${shortenAddress(space.address)} • ${membersCount} ${pluralize(
                   'member',
@@ -105,7 +99,7 @@ export default function JoinButton() {
                 </Text>
               </Flex>
             </ModalBody>
-            <ModalFooter justifyContent='center' py='1rem'>
+            <ModalFooter justifyContent='center' py={4} pb={8}>
               <Button
                 onClick={handleRequest}
                 colorScheme='primary'
