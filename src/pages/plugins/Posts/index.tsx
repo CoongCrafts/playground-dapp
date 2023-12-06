@@ -1,17 +1,46 @@
 import { Box, Flex, Tag, Text } from '@chakra-ui/react';
-import { Identicon } from '@polkadot/react-identicon';
-import NewPostButton from '@/pages/plugins/Posts/NewPostButton';
+import { useEffect, useState } from 'react';
+import { useWindowScroll } from 'react-use';
+import usePagination from '@/hooks/usePagination';
+import PostCard from '@/pages/plugins/Posts/PostCard';
 import PostsProvider, { usePostsContext } from '@/pages/plugins/Posts/PostsProvider';
+import NewPostButton from '@/pages/plugins/Posts/action/NewPostButton';
 import { useSpaceContext } from '@/providers/SpaceProvider';
-import { MemberStatus } from '@/types';
-import { fromNow } from '@/utils/date';
-import { renderMd } from '@/utils/mdrenderer';
+import { MemberStatus, PostRecord } from '@/types';
 import { PLUGIN_POSTS } from '@/utils/plugins';
-import { shortenAddress } from '@/utils/string';
+
+const RECORD_PER_PAGE = 5;
 
 function PostsContent() {
   const { memberStatus } = useSpaceContext();
-  const { postsCount, posts } = usePostsContext();
+  const { contract } = usePostsContext();
+  const [onLoad, setOnLoad] = useState(true);
+  const [storage, setStorage] = useState<PostRecord[]>([]);
+  const {
+    items,
+    pageIndex,
+    setPageIndex,
+    hasNextPage,
+    total: numOfPost,
+  } = usePagination<PostRecord>(contract, 'listPosts', RECORD_PER_PAGE);
+  const { y } = useWindowScroll();
+
+  useEffect(() => {
+    if (items && onLoad) {
+      setOnLoad(false);
+      setStorage((prevState) => [...prevState, ...items]);
+    }
+  }, [items]);
+
+  useEffect(() => {
+    if (onLoad || !hasNextPage) return;
+
+    // When the current view bottom -> the bottom of web <= 50 pixel
+    if (document.body.offsetHeight - y - innerHeight <= 50) {
+      setOnLoad(true);
+      setPageIndex(pageIndex + 1);
+    }
+  }, [onLoad, y]);
 
   return (
     <Box>
@@ -21,31 +50,15 @@ function PostsContent() {
             Posts
           </Text>
           <Box>
-            <Tag>{postsCount}</Tag>
+            <Tag>{numOfPost}</Tag>
           </Box>
         </Flex>
         <Flex gap={2}>{memberStatus === MemberStatus.Active && <NewPostButton />}</Flex>
       </Flex>
-      <Box>
-        {posts.map((post) => (
-          <Box key={post.id} border='1px' borderColor='gray.200' p={4} borderRadius={4} mb={4}>
-            <Flex alignItems='center' gap={2} mb={1}>
-              <Flex gap={2} alignItems='center'>
-                <Identicon value={post.author} size={24} theme='polkadot' />
-                <Text fontWeight='semibold' color='gray.600'>
-                  {shortenAddress(post.author)}
-                </Text>
-              </Flex>
-              <Text fontSize='sm' color='gray.500'>
-                {fromNow(post.createdAt)}
-              </Text>
-            </Flex>
 
-            <Box
-              className='post-content'
-              mt={3}
-              dangerouslySetInnerHTML={{ __html: renderMd(post.content.Raw || '') }}></Box>
-          </Box>
+      <Box>
+        {storage?.map((postRecord) => (
+          <PostCard key={postRecord.postId} postRecord={postRecord} />
         ))}
       </Box>
     </Box>
