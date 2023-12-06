@@ -74,7 +74,7 @@ export default function Explorer() {
         </Text>
       </Flex>
       <Divider my={4} />
-      <SimpleGrid columns={{ base: 1, md: 3, lg: 4 }} spacing={4}>
+      <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={4}>
         {storage.map((spaceId) => (
           <SpaceCard class='space-card' key={spaceId} spaceId={spaceId} chainId={network.id} />
         ))}
