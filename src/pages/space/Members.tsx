@@ -9,8 +9,12 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 const RECORD_PER_PAGE = 8;
 
 export default function Members() {
-  const { membersCount, isOwner } = useSpaceContext();
-  const { pageIndex, setPageIndex, numberOfPage, items } = usePagination<MemberRecord>('listMembers', RECORD_PER_PAGE);
+  const { membersCount, isOwner, contract } = useSpaceContext();
+  const { pageIndex, setPageIndex, numberOfPage, items } = usePagination<MemberRecord>(
+    contract,
+    'listMembers',
+    RECORD_PER_PAGE,
+  );
 
   return (
     <Flex flexDirection='column'>
@@ -26,12 +30,12 @@ export default function Members() {
         {isOwner && <InviteMemberButton />}
       </Flex>
       <SimpleGrid flexGrow={1} columns={{ base: 1, lg: 2 }} gap={2}>
-        {items.map((item) => (
+        {items?.map((item) => (
           <MemberCard key={item.index} memberRecord={item} />
         ))}
       </SimpleGrid>
       <Flex mt={4} justifyContent='space-between' align='center'>
-        <Text fontSize='sm'>{`Page ${pageIndex} / ${numberOfPage}`}</Text>
+        <Text fontSize='sm' fontWeight='semibold' color='dimgray'>{`Page ${pageIndex} / ${numberOfPage}`}</Text>
         <Flex alignItems='center' gap={2}>
           <IconButton
             onClick={() => setPageIndex((pre) => pre - 1)}

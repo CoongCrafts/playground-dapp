@@ -20,6 +20,7 @@ export default function PendingMembers() {
   const submitRequestApprovalsTx = useTx(contract, 'submitRequestApprovals');
   const [requestApprovals, setRequestApprovals] = useState<RequestApproval[]>([]);
   const { pageIndex, setPageIndex, numberOfPage, items } = usePagination<MembershipRequest>(
+    contract,
     'pendingRequests',
     RECORD_PER_PAGE,
   );
@@ -88,7 +89,7 @@ export default function PendingMembers() {
         />
       </Flex>
       <Flex mt={4} flexDirection='column' gap={2} flexGrow={1}>
-        {items.map((one) => (
+        {items?.map((one) => (
           <Flex
             p={2}
             alignItems='center'
@@ -133,7 +134,7 @@ export default function PendingMembers() {
         ))}
       </Flex>
       <Flex mt={4} justifyContent={'space-between'} alignItems='center' gap={2}>
-        <Text fontSize='sm'>{`Page ${pageIndex}/${numberOfPage}`}</Text>
+        <Text fontSize='sm' fontWeight='semibold' color='dimgray'>{`Page ${pageIndex}/${numberOfPage}`}</Text>
         <Flex alignItems='center' gap={2}>
           <IconButton
             onClick={() => setPageIndex((pre) => pre - 1)}

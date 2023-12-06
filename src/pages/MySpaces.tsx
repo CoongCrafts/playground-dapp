@@ -26,7 +26,9 @@ export default function MySpaces() {
         <Text fontSize='xl' fontWeight='semibold'>
           My Spaces
         </Text>
-        <Button onClick={() => navigate('/launch')}>New Space</Button>
+        <Button variant='outline' size='sm' onClick={() => navigate('/launch')}>
+          New Space
+        </Button>
       </Flex>
       <Flex gap={4} flexWrap='wrap'>
         {spaces?.map((space) => (

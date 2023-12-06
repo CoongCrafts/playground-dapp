@@ -1,5 +1,11 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { Chain, ChainId } from 'useink/chains';
+
+export type MenuItemType = {
+  name: string;
+  path: string;
+  icon?: React.ReactElement;
+};
 
 export interface Props {
   className?: string;
@@ -126,3 +132,5 @@ export interface MembershipRequest {
 }
 
 export type RequestApproval = [string, boolean];
+
+export type SpaceId = string;

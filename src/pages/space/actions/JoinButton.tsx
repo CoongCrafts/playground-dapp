@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonProps,
   Flex,
   Modal,
   ModalBody,
@@ -17,7 +18,7 @@ import useCurrentFreeBalance from '@/hooks/space/useCurrentFreeBalance';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { useWalletContext } from '@/providers/WalletProvider';
-import { Pricing, RegistrationType } from '@/types';
+import { MemberStatus, Pricing, Props, RegistrationType } from '@/types';
 import { eventEmitter, EventName } from '@/utils/eventemitter';
 import { messages } from '@/utils/messages';
 import { stringToNum } from '@/utils/number';
@@ -26,9 +27,13 @@ import pluralize from 'pluralize';
 import { ContractSubmittableResult } from 'useink/core';
 import { shouldDisable } from 'useink/utils';
 
-export default function JoinButton() {
+interface JoinButtonProps extends Props {
+  buttonProps?: ButtonProps;
+}
+
+export default function JoinButton({ buttonProps }: JoinButtonProps) {
   const { selectedAccount } = useWalletContext();
-  const { config, membersCount, info, space, network, contract } = useSpaceContext();
+  const { config, membersCount, info, space, network, contract, memberStatus } = useSpaceContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const payToJoinTx = useTx(contract, 'payToJoin');
   const registerMembershipTx = useTx(contract, 'registerMembership');
@@ -72,7 +77,10 @@ export default function JoinButton() {
     }
   };
 
-  const doJoin = () => {
+  const doJoin = (event: any) => {
+    // Prevent navigating into space when clicking on the button.
+    event.stopPropagation();
+
     if (selectedAccount) {
       onOpen();
     } else {
@@ -91,10 +99,12 @@ export default function JoinButton() {
     return null;
   }
 
+  const joined = memberStatus === MemberStatus.Active || memberStatus === MemberStatus.Inactive;
+
   return (
     <>
-      <Button onClick={doJoin} colorScheme='primary' size='sm' width={100}>
-        Join
+      <Button onClick={doJoin} isDisabled={joined} size='sm' variant='outline' width={100} {...buttonProps}>
+        {joined ? 'Joined' : 'Join'}
       </Button>
       <Modal onClose={onClose} isOpen={isOpen} size={{ base: 'full', md: 'sm' }}>
         <ModalOverlay />
@@ -103,7 +113,7 @@ export default function JoinButton() {
             <ModalCloseButton />
             <ModalBody mt={4} display='flex' flexDirection='column' textAlign='center' alignItems='center'>
               <SpaceAvatar space={space} info={info!} />
-              <Text mt={2} fontWeight='semibold' fontSize='1.25rem'>
+              <Text mt={4} fontWeight='semibold' fontSize='1.25rem'>
                 {info?.name}
               </Text>
               <Flex gap={1} flexDir='column' mt={2}>
@@ -115,8 +125,8 @@ export default function JoinButton() {
                   membersCount,
                 )}`}</Text>
                 <Text mt={2}>
-                  Membership price:{' '}
-                  <Text as='span' color='primary.500' fontWeight='semibold'>
+                  Membership Price:{' '}
+                  <Text as='span' color={pricing === Pricing.Free ? 'green' : 'primary.500'} fontWeight='semibold'>
                     {pricing === Pricing.Free ? 'Free' : `${price}`}
                     {pricing === Pricing.Subscription &&
                       ` / ${pricingInfo.duration} ${pluralize('day', pricingInfo.duration)}`}
