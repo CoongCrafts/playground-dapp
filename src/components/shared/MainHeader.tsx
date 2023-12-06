@@ -1,18 +1,20 @@
 import { Box, Container, Flex, Text } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import AccountSelection from '@/components/AccountSelection';
 import WalletSelection from '@/components/dialog/WalletSelection';
 import { useWalletContext } from '@/providers/WalletProvider';
 
-const MENU_ITEM = [
-  { name: 'My spaces', path: '/' },
+const MENU_ITEMS = [
+  { name: 'Home', path: '/' },
   { name: 'Explore', path: '/explore' },
-  { name: 'Documentation', path: '/' },
-  { name: 'About', path: '/' },
+  { name: 'About', path: '#' },
 ];
 
 export default function MainHeader() {
+  const { pathname } = useLocation();
   const { injectedApi } = useWalletContext();
+  const activeIndex = MENU_ITEMS.findIndex((one) => pathname == one.path || pathname.split('/').at(-1) === one.path);
+  console.log(activeIndex);
 
   return (
     <Box borderBottom={1} borderStyle='solid' borderColor='chakra-border-color'>
@@ -31,9 +33,11 @@ export default function MainHeader() {
           </Text>
         </Link>
         <Flex gap={4} fontWeight='semibold'>
-          {MENU_ITEM.map((one) => (
+          {MENU_ITEMS.map((one, index) => (
             <Link key={one.name} to={one.path}>
-              <Text fontWeight='semibold' color='primary.200'>
+              <Text
+                color={activeIndex === index ? 'primary.600' : 'gray.600'}
+                textDecoration={activeIndex === index ? 'underline' : 'none'}>
                 {one.name}
               </Text>
             </Link>
