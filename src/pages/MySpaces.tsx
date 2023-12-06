@@ -1,18 +1,20 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Tag, Text } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLocalStorage } from 'react-use';
+import NetworkSelection from '@/components/shared/NetworkSelection';
 import SpaceCard from '@/components/space/SpaceCard';
 import useSpaces from '@/hooks/useSpaces';
 import { useWalletContext } from '@/providers/WalletProvider';
-import { Development, RococoContractsTestnet } from 'useink/chains';
+import { findNetwork } from '@/utils/networks';
+import { ChainId, Development } from 'useink/chains';
 
 export default function MySpaces() {
   const navigate = useNavigate();
+  const [chainId, setChainId] = useLocalStorage<ChainId>('myspace/selected_network', Development.id);
   const { selectedAccount } = useWalletContext();
-  const devSpaces = useSpaces(Development.id);
-  const rococoSpaces = useSpaces(RococoContractsTestnet.id);
-
-  const spaces = [...devSpaces, ...rococoSpaces];
+  const network = findNetwork(chainId!);
+  const spaces = useSpaces(chainId!);
 
   useEffect(() => {
     if (!selectedAccount) {
@@ -23,12 +25,22 @@ export default function MySpaces() {
   return (
     <Box>
       <Flex flex={1} justify='space-between' alignItems='center' mb={4}>
-        <Text fontSize='xl' fontWeight='semibold'>
-          My Spaces
-        </Text>
-        <Button variant='outline' size='sm' onClick={() => navigate('/launch')}>
-          New Space
-        </Button>
+        <Flex align='center' gap={2}>
+          <Text fontSize='xl' fontWeight='semibold'>
+            My Spaces
+          </Text>
+          {spaces.length > 0 && (
+            <Box>
+              <Tag colorScheme='gray'>{spaces.length}</Tag>
+            </Box>
+          )}
+        </Flex>
+        <Flex gap={2}>
+          <NetworkSelection size='sm' responsive onSelect={(one) => setChainId(one.id)} defaultNetwork={network} />
+          <Button variant='outline' size='sm' onClick={() => navigate('/launch')}>
+            New Space
+          </Button>
+        </Flex>
       </Flex>
       <Flex gap={4} flexWrap='wrap'>
         {spaces?.map((space) => (

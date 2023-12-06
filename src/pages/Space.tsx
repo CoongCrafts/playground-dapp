@@ -107,13 +107,7 @@ function SpaceContent() {
             )}
             {memberStatus === MemberStatus.Active && (
               <Menu>
-                <MenuButton
-                  as={Button}
-                  colorScheme='primary'
-                  variant='outline'
-                  size='sm'
-                  width={100}
-                  rightIcon={<ChevronDownIcon />}>
+                <MenuButton as={Button} variant='outline' size='sm' width={100} rightIcon={<ChevronDownIcon />}>
                   Joined
                 </MenuButton>
                 <MenuList>

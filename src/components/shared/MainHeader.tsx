@@ -9,7 +9,7 @@ import { MenuItemType } from '@/types';
 export const MAIN_MENU_ITEM: MenuItemType[] = [
   { name: 'Home', path: '/' },
   { name: 'Explore', path: '/explore' },
-  { name: 'About', path: '#' },
+  { name: 'Github', path: 'https://github.com/CoongCrafts/inspaciness' },
 ];
 
 export default function MainHeader() {
@@ -39,7 +39,7 @@ export default function MainHeader() {
         {!smallScreen && (
           <Flex gap={6} fontWeight='semibold'>
             {MAIN_MENU_ITEM.map((one, index) => (
-              <Link key={one.name} to={one.path}>
+              <Link key={one.name} to={one.path} target={one.path.startsWith('http') ? '_blank' : '_self'}>
                 <Text
                   color={activeIndex === index ? 'primary.600' : 'gray.600'}
                   textDecoration={activeIndex === index ? 'underline' : 'none'}>

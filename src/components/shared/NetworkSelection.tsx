@@ -52,7 +52,7 @@ export default function NetworkSelection({
         <Flex direction='row' align='center' gap={2}>
           {selectedNetwork ? (
             <>
-              <Avatar size='xs' src={selectedNetwork.logo} mr={1} />
+              <Avatar size={size == 'sm' ? '2xs' : 'xs'} src={selectedNetwork.logo} mr={1} />
               {shouldShowNetworkName && <span>{selectedNetwork.name}</span>}
             </>
           ) : (

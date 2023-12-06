@@ -92,12 +92,19 @@ function InviteMemberButton() {
 
   return (
     <>
-      <Button size='sm' onClick={onOpen} display={{ base: 'none', md: 'block' }}>
+      <Button
+        variant='outline'
+        colorScheme='primary'
+        size='sm'
+        onClick={onOpen}
+        display={{ base: 'none', md: 'block' }}>
         Invite
       </Button>
       <IconButton
         aria-label={'Invite'}
         size='sm'
+        variant='outline'
+        colorScheme='primary'
         onClick={onOpen}
         icon={<AddIcon />}
         display={{ base: 'block', md: 'none' }}

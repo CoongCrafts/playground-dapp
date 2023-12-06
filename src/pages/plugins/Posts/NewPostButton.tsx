@@ -68,11 +68,18 @@ export default function NewPostButton() {
 
   return (
     <>
-      <Button size='sm' onClick={onOpen} display={{ base: 'none', md: 'block' }}>
+      <Button
+        variant='outline'
+        colorScheme='primary'
+        size='sm'
+        onClick={onOpen}
+        display={{ base: 'none', md: 'block' }}>
         New
       </Button>
       <IconButton
         aria-label={'New post'}
+        colorScheme='primary'
+        variant='outline'
         size='sm'
         onClick={onOpen}
         icon={<AddIcon />}

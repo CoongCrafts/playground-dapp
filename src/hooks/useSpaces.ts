@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
 import useMotherContract from '@/hooks/contracts/useMotherContract';
 import { useCall } from '@/hooks/useink/useCall';
@@ -13,6 +13,10 @@ export default function useSpaces(chainId: ChainId): OnChainSpace[] {
   const motherContract = useMotherContract(chainId);
   const memberSpacesCall = useCall<string[]>(motherContract, 'memberSpaces');
   const memberAddress = selectedAccount?.address;
+
+  useEffect(() => {
+    setSpaces([]);
+  }, [chainId]);
 
   useAsync(async () => {
     if (memberAddress && motherContract) {
