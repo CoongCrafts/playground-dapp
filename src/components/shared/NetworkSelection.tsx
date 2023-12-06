@@ -22,7 +22,7 @@ interface NetworkSelectionProps extends Props {
 
 export default function NetworkSelection({ onSelect, defaultNetwork }: NetworkSelectionProps) {
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkInfo>();
-  const [smallest] = useMediaQuery('(max-width: 325px)');
+  const [smallest] = useMediaQuery('(max-width: 400px)');
 
   useEffect(() => {
     setSelectedNetwork(defaultNetwork);
@@ -35,7 +35,7 @@ export default function NetworkSelection({ onSelect, defaultNetwork }: NetworkSe
 
   return (
     <Menu autoSelect={false}>
-      <MenuButton as={Button} minWidth={250} rightIcon={<ChevronDownIcon />}>
+      <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
         <Flex direction='row' align='center' gap={2}>
           {selectedNetwork ? (
             <>

@@ -1,10 +1,12 @@
-import { Box, Container, Flex, Text } from '@chakra-ui/react';
+import { Box, Container, Flex, Text, useMediaQuery } from '@chakra-ui/react';
 import { Link, useLocation } from 'react-router-dom';
 import AccountSelection from '@/components/AccountSelection';
 import WalletSelection from '@/components/dialog/WalletSelection';
+import MainMenuButton from '@/components/shared/MainMenuButton';
 import { useWalletContext } from '@/providers/WalletProvider';
+import { MenuItemType } from '@/types';
 
-const MENU_ITEMS = [
+export const MAIN_MENU_ITEM: MenuItemType[] = [
   { name: 'Home', path: '/' },
   { name: 'Explore', path: '/explore' },
   { name: 'About', path: '#' },
@@ -13,8 +15,10 @@ const MENU_ITEMS = [
 export default function MainHeader() {
   const { pathname } = useLocation();
   const { injectedApi } = useWalletContext();
-  const activeIndex = MENU_ITEMS.findIndex((one) => pathname == one.path || pathname.split('/').at(-1) === one.path);
-  console.log(activeIndex);
+  const activeIndex = MAIN_MENU_ITEM.findIndex(
+    (one) => pathname == one.path || pathname.split('/').at(-1) === one.path,
+  );
+  const [smallScreen] = useMediaQuery('(max-width: 700px)');
 
   return (
     <Box borderBottom={1} borderStyle='solid' borderColor='chakra-border-color'>
@@ -32,19 +36,22 @@ export default function MainHeader() {
             inspace
           </Text>
         </Link>
-        <Flex gap={4} fontWeight='semibold'>
-          {MENU_ITEMS.map((one, index) => (
-            <Link key={one.name} to={one.path}>
-              <Text
-                color={activeIndex === index ? 'primary.600' : 'gray.600'}
-                textDecoration={activeIndex === index ? 'underline' : 'none'}>
-                {one.name}
-              </Text>
-            </Link>
-          ))}
-        </Flex>
+        {!smallScreen && (
+          <Flex gap={4} fontWeight='semibold'>
+            {MAIN_MENU_ITEM.map((one, index) => (
+              <Link key={one.name} to={one.path}>
+                <Text
+                  color={activeIndex === index ? 'primary.600' : 'gray.600'}
+                  textDecoration={activeIndex === index ? 'underline' : 'none'}>
+                  {one.name}
+                </Text>
+              </Link>
+            ))}
+          </Flex>
+        )}
         <Flex gap={2} alignItems='center'>
           {!!injectedApi ? <AccountSelection /> : <WalletSelection />}
+          {smallScreen && <MainMenuButton />}
         </Flex>
       </Container>
     </Box>

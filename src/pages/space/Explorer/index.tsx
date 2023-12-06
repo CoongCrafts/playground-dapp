@@ -10,7 +10,7 @@ import { NetworkInfo, SpaceId } from '@/types';
 import { SUPPORTED_NETWORKS } from '@/utils/networks';
 import pluralize from 'pluralize';
 
-const RECORD_PER_PAGE = 12;
+const RECORD_PER_PAGE = 3 * 4;
 
 export default function Explorer() {
   const [network, setNetwork] = useState<NetworkInfo>(SUPPORTED_NETWORKS.Development[0]);

@@ -14,7 +14,7 @@ import {
   Tag,
   Text,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link as LinkRouter, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import SpaceAvatar from '@/components/space/SpaceAvatar';
 import CancelRequestButton from '@/pages/space/actions/CancelRequestButton';
@@ -22,32 +22,26 @@ import JoinButton from '@/pages/space/actions/JoinButton';
 import LeaveSpaceButton from '@/pages/space/actions/LeaveSpaceButton';
 import UpdateDisplayNameButton from '@/pages/space/actions/UpdateDisplayNameButton';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
-import { MemberStatus, RegistrationType } from '@/types';
+import { MemberStatus, RegistrationType, MenuItemType } from '@/types';
 import { PLUGIN_FLIPPER, PLUGIN_POSTS } from '@/utils/plugins';
 import { shortenAddress } from '@/utils/string';
 import { CalendarIcon, ChevronDownIcon, HamburgerIcon, InfoIcon, SettingsIcon, StarIcon } from '@chakra-ui/icons';
 import pluralize from 'pluralize';
 import { ChainId } from 'useink/chains';
 
-type MenuItem = {
-  name: string;
-  path: string;
-  icon: React.ReactElement;
-};
-
-const MENU_ITEMS: MenuItem[] = [
+const MENU_ITEMS: MenuItemType[] = [
   { name: 'Members', path: 'members', icon: <InfoIcon /> },
   { name: 'Pending Members', path: 'pending-members', icon: <HamburgerIcon /> },
   { name: 'Settings', path: 'settings', icon: <SettingsIcon /> },
 ];
 
-const PLUGIN_MENU_ITEMS: Record<string, MenuItem> = {
+const PLUGIN_MENU_ITEMS: Record<string, MenuItemType> = {
   [PLUGIN_POSTS]: { name: 'Posts', path: 'posts', icon: <CalendarIcon /> },
   [PLUGIN_FLIPPER]: { name: 'Flipper', path: 'flipper', icon: <StarIcon /> },
 };
 
 function SpaceContent() {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>();
+  const [menuItems, setMenuItems] = useState<MenuItemType[]>();
   const navigate = useNavigate();
   const location = useLocation();
   const { info, config, space, membersCount, pendingRequestsCount, memberStatus, isOwner, plugins, pendingRequest } =
