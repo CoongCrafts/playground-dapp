@@ -5,7 +5,7 @@ import { useToggle, useWindowScroll } from 'react-use';
 import NetworkSelection from '@/components/shared/NetworkSelection';
 import useMotherContract from '@/hooks/contracts/useMotherContract';
 import usePagination from '@/hooks/usePagination';
-import SpaceCard from '@/pages/space/Explorer/SpaceCard';
+import SpaceCard from '@/pages/Explorer/SpaceCard';
 import { NetworkInfo, SpaceId } from '@/types';
 import { SUPPORTED_NETWORKS } from '@/utils/networks';
 import pluralize from 'pluralize';

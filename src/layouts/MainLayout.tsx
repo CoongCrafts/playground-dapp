@@ -7,7 +7,7 @@ export default function MainLayout() {
   return (
     <Flex direction='column' minHeight='100vh'>
       <MainHeader />
-      <Box maxWidth='container.lg' mx='auto' my={4} px={4} flex={1} w='full'>
+      <Box maxWidth='container.lg' mx='auto' mt={4} mb={10} px={4} flex={1} w='full'>
         <Outlet />
       </Box>
       <MainFooter />

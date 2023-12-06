@@ -111,7 +111,7 @@ function SpaceContent() {
               />
             )}
           </Box>
-          <Box>
+          <Box _empty={{ display: 'none' }}>
             {showJoinBtn &&
               (memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) &&
               (pendingRequest ? <CancelRequestButton /> : <JoinButton colorScheme='primary' />)}

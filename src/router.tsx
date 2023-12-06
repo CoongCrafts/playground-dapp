@@ -10,7 +10,7 @@ import Posts from '@/pages/plugins/Posts';
 import Members from '@/pages/space/Members';
 import PendingMembers from '@/pages/space/PendingMembers';
 import Settings from '@/pages/space/Settings';
-import Explorer from 'src/pages/space/Explorer';
+import Explorer from 'src/pages/Explorer';
 
 export default createBrowserRouter(
   createRoutesFromElements([
