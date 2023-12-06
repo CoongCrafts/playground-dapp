@@ -14,7 +14,7 @@ export default function SpaceAvatar({ info, space }: SpaceAvatarProps) {
     if (Url) {
       return (
         <Avatar src={Url} size='xl' borderWidth={1} borderColor='primary.100' p={3}>
-          <AvatarBadge borderColor='primary.200' borderWidth='2px' bg='white' bottom={2}>
+          <AvatarBadge borderColor='primary.200' borderWidth='1px' bg='white' bottom={2}>
             <NetworkLabel chainId={space.chainId} />
           </AvatarBadge>
         </Avatar>
@@ -24,7 +24,7 @@ export default function SpaceAvatar({ info, space }: SpaceAvatarProps) {
 
   return (
     <Avatar name={info.name} size='xl'>
-      <AvatarBadge borderColor='primary.200' borderWidth='3px'>
+      <AvatarBadge borderColor='primary.200' borderWidth='1px'>
         <NetworkLabel chainId={space.chainId} />
       </AvatarBadge>
     </Avatar>

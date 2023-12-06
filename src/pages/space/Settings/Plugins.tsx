@@ -76,14 +76,15 @@ export default function Plugins() {
                 </Text>
               </Box>
               <Box>
-                <Button
-                  variant='outline'
-                  size='xs'
-                  isDisabled={!isOwner}
-                  colorScheme={one.disabled ? 'green' : 'red'}
-                  onClick={one.disabled ? () => enable(one.id) : () => disable(one.id)}>
-                  {one.disabled ? 'Enable' : 'Disable'}
-                </Button>
+                {isOwner && (
+                  <Button
+                    variant='outline'
+                    size='xs'
+                    colorScheme={one.disabled ? 'green' : 'red'}
+                    onClick={one.disabled ? () => enable(one.id) : () => disable(one.id)}>
+                    {one.disabled ? 'Enable' : 'Disable'}
+                  </Button>
+                )}
               </Box>
             </Flex>
             {index < plugins.length - 1 && <Divider />}

@@ -4,8 +4,11 @@ import Membership from '@/pages/space/Settings/Membership';
 import Plugins from '@/pages/space/Settings/Plugins';
 import SpaceInfo from '@/pages/space/Settings/SpaceInfo';
 import UpgradeVersion from '@/pages/space/Settings/UpgradeVersion';
+import { useSpaceContext } from '@/providers/SpaceProvider';
 
 export default function Settings() {
+  const { isOwner } = useSpaceContext();
+
   return (
     <Box>
       <Flex gap={2}>
@@ -17,7 +20,7 @@ export default function Settings() {
       <Membership />
       <Plugins />
       <UpgradeVersion />
-      <DangerZone />
+      {isOwner && <DangerZone />}
     </Box>
   );
 }

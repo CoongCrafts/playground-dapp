@@ -1,8 +1,10 @@
 import {
   Box,
   Button,
+  Divider,
   Flex,
   Heading,
+  Icon,
   Menu,
   MenuButton,
   MenuItem,
@@ -15,6 +17,8 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import { MdFlip } from 'react-icons/md';
+import { RiFileTextLine, RiSettings4Line, RiTeamLine, RiUserFollowLine } from 'react-icons/ri';
 import { Link as LinkRouter, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import SpaceAvatar from '@/components/space/SpaceAvatar';
@@ -23,22 +27,23 @@ import JoinButton from '@/pages/space/actions/JoinButton';
 import LeaveSpaceButton from '@/pages/space/actions/LeaveSpaceButton';
 import UpdateDisplayNameButton from '@/pages/space/actions/UpdateDisplayNameButton';
 import SpaceProvider, { useSpaceContext } from '@/providers/SpaceProvider';
-import { MemberStatus, RegistrationType, MenuItemType } from '@/types';
+import { MemberStatus, MenuItemType, RegistrationType } from '@/types';
+import { renderMd } from '@/utils/mdrenderer';
 import { PLUGIN_FLIPPER, PLUGIN_POSTS } from '@/utils/plugins';
 import { shortenAddress } from '@/utils/string';
-import { CalendarIcon, ChevronDownIcon, HamburgerIcon, InfoIcon, SettingsIcon, StarIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 import pluralize from 'pluralize';
 import { ChainId } from 'useink/chains';
 
 const MENU_ITEMS: MenuItemType[] = [
-  { name: 'Members', path: 'members', icon: <InfoIcon /> },
-  { name: 'Pending Members', path: 'pending-members', icon: <HamburgerIcon /> },
-  { name: 'Settings', path: 'settings', icon: <SettingsIcon /> },
+  { name: 'Members', path: 'members', icon: RiTeamLine },
+  { name: 'Pending Members', path: 'pending-members', icon: RiUserFollowLine },
+  { name: 'Settings', path: 'settings', icon: RiSettings4Line },
 ];
 
 const PLUGIN_MENU_ITEMS: Record<string, MenuItemType> = {
-  [PLUGIN_POSTS]: { name: 'Posts', path: 'posts', icon: <CalendarIcon /> },
-  [PLUGIN_FLIPPER]: { name: 'Flipper', path: 'flipper', icon: <StarIcon /> },
+  [PLUGIN_POSTS]: { name: 'Posts', path: 'posts', icon: RiFileTextLine },
+  [PLUGIN_FLIPPER]: { name: 'Flipper', path: 'flipper', icon: MdFlip },
 };
 
 function SpaceContent() {
@@ -78,28 +83,38 @@ function SpaceContent() {
 
   return (
     <Box mt={2}>
-      <Flex mb={4} gap={{ base: 4, sm: 6 }} flexDir={{ base: 'column', sm: 'row' }}>
+      <Flex
+        mb={6}
+        align={{ base: 'start', sm: 'center' }}
+        gap={{ base: 4, sm: 6 }}
+        flexDir={{ base: 'column', sm: 'row' }}>
         <Box>{info && <SpaceAvatar space={space} info={info} />}</Box>
         <Flex flex={1} justify='space-between' gap={{ base: 4, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
           <Box>
-            <Heading size='md' mb={1}>
+            <Heading size={{ base: 'lg', sm: 'md' }} mb={1}>
               {info?.name}
             </Heading>
-            <Text as='span' fontSize='md' fontWeight='semibold' color='gray'>
+            <Text as='span' fontSize='md' fontWeight='semibold' color='dimgray'>
               {shortenAddress(space.address)}
             </Text>{' '}
             •{' '}
-            <Text as='span' fontSize='md' color='gray'>
+            <Text as='span' fontSize='md' fontWeight='semibold' color='dimgray'>
               {membersCount} {pluralize('member', membersCount)}
             </Text>
-            <Text fontSize='md' color='gray' mt={2}>
-              {info?.desc}
-            </Text>
+            {info?.desc && (
+              <Box
+                className='post-content'
+                color='gray.800'
+                fontSize='16px'
+                mt={1}
+                dangerouslySetInnerHTML={{ __html: renderMd(info?.desc) }}
+              />
+            )}
           </Box>
           <Box>
             {showJoinBtn &&
               (memberStatus === MemberStatus.None || memberStatus === MemberStatus.Left) &&
-              (pendingRequest ? <CancelRequestButton /> : <JoinButton />)}
+              (pendingRequest ? <CancelRequestButton /> : <JoinButton colorScheme='primary' />)}
             {memberStatus === MemberStatus.Inactive && (
               <Button colorScheme='primary' variant='outline' size='sm' onClick={() => toast.info('Coming soon!')}>
                 Renew membership
@@ -125,7 +140,8 @@ function SpaceContent() {
           </Box>
         </Flex>
       </Flex>
-      <Flex mt={{ base: 0, md: 8 }} flexDir={{ base: 'column', md: 'row' }}>
+      <Divider display={{ base: 'none', md: 'flex' }} />
+      <Flex flexDir={{ base: 'column', md: 'row' }}>
         <Flex // Navigation bar for large screen
           direction='column'
           width={220}
@@ -134,16 +150,19 @@ function SpaceContent() {
             {menuItems.map((one, index) => (
               <Button
                 key={one.name}
-                leftIcon={one.icon}
+                leftIcon={<Icon boxSize='5' as={one.icon} />}
                 justifyContent={'start'}
                 fontSize='sm'
                 width='100%'
                 gap={2}
                 as={LinkRouter}
-                variant='outline'
-                colorScheme={activeIndex == index ? 'primary' : 'gray'}
-                _active={{ background: 'transparent' }}
-                _hover={{ background: 'transparent' }}
+                variant='link'
+                p={2}
+                borderRightWidth={activeIndex == index ? 2 : 1}
+                borderRightColor={activeIndex == index ? 'primary.500' : 'dark'}
+                color={activeIndex == index ? 'primary.500' : 'dark'}
+                background={activeIndex == index ? 'primary.50' : 'dark'}
+                _hover={{ textDecoration: 'none' }}
                 borderRadius={0}
                 to={one.path}>
                 {one.name}
@@ -189,9 +208,9 @@ function SpaceContent() {
           borderLeftWidth={{ base: 0, md: 1 }}
           borderTopWidth={{ base: 1, md: 0 }}
           borderColor='chakra-border-color'
-          ml={{ base: 0, md: 3 }}
+          ml={{ base: 0, md: '-1px' }}
           pl={{ base: 0, md: 3 }}
-          pt={{ base: 4, md: 1 }}>
+          pt={{ base: 4, md: 2 }}>
           <Outlet />
         </Box>
       </Flex>

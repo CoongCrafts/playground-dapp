@@ -11,6 +11,7 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
+import NetworkSelection from '@/components/shared/NetworkSelection';
 import useCurrentFreeBalance from '@/hooks/space/useCurrentFreeBalance';
 import { useTx } from '@/hooks/useink/useTx';
 import { step1Schema } from '@/pages/SpaceLauncher';
@@ -20,7 +21,7 @@ import { useFormik } from 'formik';
 import { shouldDisable } from 'useink/utils';
 
 export default function SpaceInfo() {
-  const { info, isOwner, contract } = useSpaceContext();
+  const { network, info, isOwner, contract } = useSpaceContext();
   const freeBalance = useCurrentFreeBalance();
   const updateInfoTx = useTx(contract, 'updateInfo');
 
@@ -65,6 +66,10 @@ export default function SpaceInfo() {
     <Box mt={3} border='1px' borderColor='gray.200' p={4} borderRadius={4} mb={4}>
       <Text fontWeight='semibold'>Basic Information</Text>
       <Box as='form' width={{ base: 'auto', md: 400 }} onSubmit={formik.handleSubmit}>
+        <FormControl mt={4}>
+          <FormLabel>Network</FormLabel>
+          <NetworkSelection defaultNetwork={network} disabled />
+        </FormControl>
         <FormControl mt={4} isRequired isInvalid={formik.touched.name && !!formik.errors.name}>
           <FormLabel>Name</FormLabel>
           <Input

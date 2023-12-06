@@ -4,7 +4,7 @@ import { Chain, ChainId } from 'useink/chains';
 export type MenuItemType = {
   name: string;
   path: string;
-  icon?: React.ReactElement;
+  icon?: React.ElementType;
 };
 
 export interface Props {

@@ -4531,6 +4531,7 @@ __metadata:
     prettier-plugin-organize-imports: ^3.2.2
     react: ^18.2.0
     react-dom: ^18.2.0
+    react-icons: ^4.12.0
     react-router-dom: ^6.16.0
     react-toastify: ^9.1.1
     react-use: ^17.4.0
@@ -5438,6 +5439,15 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 3ee2b32dfe479839548baf097d53ddab0b9a8df71cd51763edc9dd900eb85ac98e0255130a9152de9a424a038bae6e1782fca6fde0d89ae1f37c2ca802d94351
+  languageName: node
+  linkType: hard
+
+"react-icons@npm:^4.12.0":
+  version: 4.12.0
+  resolution: "react-icons@npm:4.12.0"
+  peerDependencies:
+    react: "*"
+  checksum: db82a141117edcd884ade4229f0294b2ce15d82f68e0533294db07765d6dce00b129cf504338ec7081ce364fe899b296cb7752554ea08665b1d6bad811134e79
   languageName: node
   linkType: hard
 

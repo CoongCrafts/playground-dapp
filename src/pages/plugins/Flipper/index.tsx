@@ -41,9 +41,14 @@ function FlipperContent({ info }: FlipperContentProps) {
   return (
     <Box>
       <Flex gap={2}>
-        <Text fontSize='xl' fontWeight='semibold'>
-          Flipper
-        </Text>
+        <Box>
+          <Text fontSize='xl' fontWeight='semibold'>
+            Flipper
+          </Text>
+          <Text mt={1} color='gray'>
+            {info.description}
+          </Text>
+        </Box>
       </Flex>
       <Box mt={4}>
         <Text>

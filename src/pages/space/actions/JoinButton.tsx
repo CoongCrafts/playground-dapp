@@ -18,7 +18,7 @@ import useCurrentFreeBalance from '@/hooks/space/useCurrentFreeBalance';
 import { useTx } from '@/hooks/useink/useTx';
 import { useSpaceContext } from '@/providers/SpaceProvider';
 import { useWalletContext } from '@/providers/WalletProvider';
-import { MemberStatus, Pricing, Props, RegistrationType } from '@/types';
+import { MemberStatus, Pricing, RegistrationType } from '@/types';
 import { eventEmitter, EventName } from '@/utils/eventemitter';
 import { messages } from '@/utils/messages';
 import { stringToNum } from '@/utils/number';
@@ -27,11 +27,9 @@ import pluralize from 'pluralize';
 import { ContractSubmittableResult } from 'useink/core';
 import { shouldDisable } from 'useink/utils';
 
-interface JoinButtonProps extends Props {
-  buttonProps?: ButtonProps;
-}
+interface JoinButtonProps extends ButtonProps {}
 
-export default function JoinButton({ buttonProps }: JoinButtonProps) {
+export default function JoinButton(props: JoinButtonProps) {
   const { selectedAccount } = useWalletContext();
   const { config, membersCount, info, space, network, contract, memberStatus } = useSpaceContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -103,7 +101,7 @@ export default function JoinButton({ buttonProps }: JoinButtonProps) {
 
   return (
     <>
-      <Button onClick={doJoin} isDisabled={joined} size='sm' variant='outline' width={100} {...buttonProps}>
+      <Button onClick={doJoin} isDisabled={joined} size='sm' variant='outline' width={100} {...props}>
         {joined ? 'Joined' : 'Join'}
       </Button>
       <Modal onClose={onClose} isOpen={isOpen} size={{ base: 'full', md: 'sm' }}>

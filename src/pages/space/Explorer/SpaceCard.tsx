@@ -50,7 +50,7 @@ export default function SpaceCard({ spaceId, chainId }: SpaceCardProps) {
             pendingRequest ? (
               <CancelRequestButton buttonProps={{ width: 'fit-content' }} />
             ) : (
-              <JoinButton buttonProps={{ variant: 'outline' }} />
+              <JoinButton />
             )
           ) : (
             <Button size='sm' isDisabled>

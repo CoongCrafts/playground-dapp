@@ -16,10 +16,11 @@ import { SUPPORTED_NETWORKS } from '@/utils/networks';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 
 interface NetworkSelectionProps extends Props {
-  onSelect: (network: NetworkInfo) => void;
+  onSelect?: (network: NetworkInfo) => void;
   defaultNetwork?: NetworkInfo;
   size?: string;
   responsive?: boolean;
+  disabled?: boolean;
 }
 
 export default function NetworkSelection({
@@ -27,6 +28,7 @@ export default function NetworkSelection({
   defaultNetwork,
   size,
   responsive = false,
+  disabled = false,
 }: NetworkSelectionProps) {
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkInfo>();
   const [smallest] = useMediaQuery('(max-width: 600px)');
@@ -37,7 +39,7 @@ export default function NetworkSelection({
 
   const doSelect = (network: NetworkInfo) => {
     setSelectedNetwork(network);
-    onSelect(network);
+    onSelect && onSelect(network);
   };
   const shouldShowNetworkName = !responsive || (responsive && !smallest);
 
@@ -48,6 +50,7 @@ export default function NetworkSelection({
         minWidth={responsive ? 'auto' : { base: '100%', sm: 300 }}
         size={size}
         variant='outline'
+        isDisabled={disabled}
         rightIcon={<ChevronDownIcon />}>
         <Flex direction='row' align='center' gap={2}>
           {selectedNetwork ? (
