@@ -76,13 +76,15 @@ export default function CancelRequestButton({ buttonProps }: CancelRequestButton
           <ModalCloseButton />
           <ModalBody>
             <Text>Are you sure to cancel your membership request?</Text>
-            <Text mt={2}>
-              The payment of
-              <Text as={'span'} fontWeight='semibold'>
-                {` ${formatBalance(pendingRequest!.paid.toString(), network)} `}
+            {pendingRequest!.paid != 0 && (
+              <Text mt={2}>
+                The payment of
+                <Text as={'span'} fontWeight='semibold'>
+                  {` ${formatBalance(pendingRequest!.paid.toString(), network)} `}
+                </Text>
+                will be refunded to your account on canceling.
               </Text>
-              will be refunded to your account on canceling.
-            </Text>
+            )}
           </ModalBody>
           <ModalFooter gap={2}>
             <Button variant='outline' onClick={onClose}>

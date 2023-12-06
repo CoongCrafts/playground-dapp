@@ -133,7 +133,7 @@ export default function PendingMembers() {
         ))}
       </Flex>
       <Flex mt={4} justifyContent={'space-between'} alignItems='center' gap={2}>
-        <Text fontSize='sm'>{`Page ${pageIndex}/${numberOfPage}`}</Text>
+        <Text fontSize='sm' fontWeight='semibold' color='dimgray'>{`Page ${pageIndex}/${numberOfPage}`}</Text>
         <Flex alignItems='center' gap={2}>
           <IconButton
             onClick={() => setPageIndex((pre) => pre - 1)}

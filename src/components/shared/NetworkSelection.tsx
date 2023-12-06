@@ -18,11 +18,18 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 interface NetworkSelectionProps extends Props {
   onSelect: (network: NetworkInfo) => void;
   defaultNetwork?: NetworkInfo;
+  size?: string;
+  responsive?: boolean;
 }
 
-export default function NetworkSelection({ onSelect, defaultNetwork }: NetworkSelectionProps) {
+export default function NetworkSelection({
+  onSelect,
+  defaultNetwork,
+  size,
+  responsive = false,
+}: NetworkSelectionProps) {
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkInfo>();
-  const [smallest] = useMediaQuery('(max-width: 325px)');
+  const [smallest] = useMediaQuery('(max-width: 600px)');
 
   useEffect(() => {
     setSelectedNetwork(defaultNetwork);
@@ -32,18 +39,24 @@ export default function NetworkSelection({ onSelect, defaultNetwork }: NetworkSe
     setSelectedNetwork(network);
     onSelect(network);
   };
+  const shouldShowNetworkName = !responsive || (responsive && !smallest);
 
   return (
     <Menu autoSelect={false}>
-      <MenuButton as={Button} minWidth={250} rightIcon={<ChevronDownIcon />}>
+      <MenuButton
+        as={Button}
+        minWidth={responsive ? 'auto' : { base: '100%', sm: 300 }}
+        size={size}
+        variant='outline'
+        rightIcon={<ChevronDownIcon />}>
         <Flex direction='row' align='center' gap={2}>
           {selectedNetwork ? (
             <>
-              <Avatar size='xs' src={selectedNetwork.logo} />
-              {!smallest && <span>{selectedNetwork.name}</span>}
+              <Avatar size='xs' src={selectedNetwork.logo} mr={1} />
+              {shouldShowNetworkName && <span>{selectedNetwork.name}</span>}
             </>
           ) : (
-            <Text>Select a network</Text>
+            <Text fontWeight='normal'>Select a network</Text>
           )}
         </Flex>
       </MenuButton>

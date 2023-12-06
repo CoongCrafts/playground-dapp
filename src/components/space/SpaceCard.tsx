@@ -31,7 +31,7 @@ export default function SpaceCard({ space, ...props }: SpaceCardProps) {
       </Heading>
       {info && <SpaceAvatar info={info} space={space} />}
 
-      <Text fontSize='sm' mt={4}>
+      <Text fontSize='sm' fontWeight='semibold' mt={4}>
         {membersCount} {pluralize('member', membersCount)}
       </Text>
     </Box>

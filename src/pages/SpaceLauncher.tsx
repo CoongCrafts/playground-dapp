@@ -31,6 +31,8 @@ import {
   Tag,
   Text,
   Textarea,
+  useMediaQuery,
+  useSteps,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -86,7 +88,10 @@ export const step2Schema = yup.object().shape({
 });
 
 export default function SpaceLauncher() {
-  const [step, setStep] = useState<STEP>(0);
+  const { activeStep: step, setActiveStep: setStep } = useSteps({
+    index: 0,
+    count: STEPS.length,
+  });
   const [network, setNetwork] = useState<NetworkInfo>();
   const contract = useMotherlandContract(network?.id || Development.id);
   const { state: pluginLaunchers } = useContractState<[string, string][]>(contract, 'pluginLaunchers');
@@ -94,8 +99,10 @@ export default function SpaceLauncher() {
   const navigate = useNavigate();
   const { selectedAccount, connectedWallet } = useWalletContext();
   const { api } = useApi(network?.id) || {};
+  const [smallest] = useMediaQuery('(max-width: 700px)');
 
   const freeBalance = useFreeBalance(selectedAccount, network);
+  const currentStep = STEPS[step];
 
   const back = () => {
     if (step === STEP.First) {
@@ -232,16 +239,24 @@ export default function SpaceLauncher() {
             <StepIndicator>
               <StepStatus complete={<StepIcon />} incomplete={<StepNumber />} active={<StepNumber />} />
             </StepIndicator>
-
-            <Box flexShrink='0'>
-              <StepTitle>{step.title}</StepTitle>
-              <StepDescription>{step.description}</StepDescription>
-            </Box>
-
+            {!smallest && (
+              <Box flexShrink='0'>
+                <StepTitle>{step.title}</StepTitle>
+                <StepDescription>{step.description}</StepDescription>
+              </Box>
+            )}
             <StepSeparator />
           </Step>
         ))}
       </Stepper>
+      {smallest && (
+        <Text color='gray.500' fontSize='sm'>
+          {currentStep.title}:{' '}
+          <Text as='span' fontWeight='semibold'>
+            {currentStep.description}
+          </Text>
+        </Text>
+      )}
 
       <Box mb={8}>
         {step === STEP.First && (

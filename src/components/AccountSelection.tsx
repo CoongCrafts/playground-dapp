@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Flex,
+  Link,
   Menu,
   MenuButton,
   MenuDivider,
@@ -15,6 +16,7 @@ import { useEffect, useMemo } from 'react';
 import useDisplayAddress from '@/hooks/useDisplayAddress';
 import { useWalletContext } from '@/providers/WalletProvider';
 import { shortenAddress } from '@/utils/string';
+import WebsiteWallet from '@/wallets/WebsiteWallet';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 
 export default function AccountSelection() {
@@ -60,9 +62,17 @@ export default function AccountSelection() {
         <MenuList>
           <Flex align='center' gap={3} flex={1} justify='center' pb={2}>
             <img src={connectedWallet?.logo} alt={connectedWallet?.name} width={24} />
-            <Text fontWeight='600' fontSize='14'>
-              {connectedWallet?.name} - v{connectedWallet?.version}
-            </Text>
+            {connectedWallet instanceof WebsiteWallet ? (
+              <Link href={connectedWallet.walletUrl} target='_blank'>
+                <Text fontWeight='600' fontSize='14'>
+                  {connectedWallet?.name} - v{connectedWallet?.version}
+                </Text>
+              </Link>
+            ) : (
+              <Text fontWeight='600' fontSize='14'>
+                {connectedWallet?.name} - v{connectedWallet?.version}
+              </Text>
+            )}
           </Flex>
           <MenuGroup>
             {accounts.map((one) => (

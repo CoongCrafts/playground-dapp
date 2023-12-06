@@ -103,7 +103,7 @@ export default function JoinButton({ buttonProps }: JoinButtonProps) {
 
   return (
     <>
-      <Button onClick={doJoin} colorScheme='primary' size='sm' width={100} {...buttonProps} isDisabled={joined}>
+      <Button onClick={doJoin} isDisabled={joined} size='sm' variant='outline' width={100} {...buttonProps}>
         {joined ? 'Joined' : 'Join'}
       </Button>
       <Modal onClose={onClose} isOpen={isOpen} size={{ base: 'full', md: 'sm' }}>
@@ -113,7 +113,7 @@ export default function JoinButton({ buttonProps }: JoinButtonProps) {
             <ModalCloseButton />
             <ModalBody mt={4} display='flex' flexDirection='column' textAlign='center' alignItems='center'>
               <SpaceAvatar space={space} info={info!} />
-              <Text mt={2} fontWeight='semibold' fontSize='1.25rem'>
+              <Text mt={4} fontWeight='semibold' fontSize='1.25rem'>
                 {info?.name}
               </Text>
               <Flex gap={1} flexDir='column' mt={2}>
@@ -125,8 +125,8 @@ export default function JoinButton({ buttonProps }: JoinButtonProps) {
                   membersCount,
                 )}`}</Text>
                 <Text mt={2}>
-                  Membership price:{' '}
-                  <Text as='span' color='primary.500' fontWeight='semibold'>
+                  Membership Price:{' '}
+                  <Text as='span' color={pricing === Pricing.Free ? 'green' : 'primary.500'} fontWeight='semibold'>
                     {pricing === Pricing.Free ? 'Free' : `${price}`}
                     {pricing === Pricing.Subscription &&
                       ` / ${pricingInfo.duration} ${pluralize('day', pricingInfo.duration)}`}

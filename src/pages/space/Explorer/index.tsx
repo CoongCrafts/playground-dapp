@@ -1,4 +1,4 @@
-import { Button, Flex, SimpleGrid, Text } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import { Spinner } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useToggle, useWindowScroll } from 'react-use';
@@ -10,7 +10,7 @@ import { NetworkInfo, SpaceId } from '@/types';
 import { SUPPORTED_NETWORKS } from '@/utils/networks';
 import pluralize from 'pluralize';
 
-const RECORD_PER_PAGE = 12;
+const RECORD_PER_PAGE = 3 * 4;
 
 export default function Explorer() {
   const [network, setNetwork] = useState<NetworkInfo>(SUPPORTED_NETWORKS.Development[0]);
@@ -23,7 +23,7 @@ export default function Explorer() {
     setPageIndex,
     pageIndex,
     total: numberOfSpace,
-    hasNextPage,
+    hasNextPage = false,
   } = usePagination<SpaceId>(contract, 'listSpaces', RECORD_PER_PAGE);
   const { y } = useWindowScroll();
 
@@ -46,29 +46,51 @@ export default function Explorer() {
 
   const handleSetNetwork = (network: NetworkInfo) => {
     setStorage([]);
+    setPageIndex(1);
+    toggleLoadMore(false);
     setOnLoad(true);
     setNetwork(network);
   };
 
   return (
-    <Flex my={4} flexDir='column' gap={8}>
+    <Box mb={8}>
+      <Flex flex={1} justify='center' alignItems='center' mb={4}>
+        <Text fontSize={{ base: 'xl', md: '3xl' }} fontWeight='semibold' textAlign='center'>
+          Find your communities on InSpace 🥳
+        </Text>
+      </Flex>
       <Flex justifyContent='space-between' alignItems='center' flexGrow={1}>
-        <NetworkSelection onSelect={handleSetNetwork} defaultNetwork={SUPPORTED_NETWORKS.Development[0]} />
+        <Flex align='center' gap={1}>
+          <Text fontWeight='semibold'>Network: </Text>
+          <NetworkSelection
+            responsive
+            size='sm'
+            onSelect={handleSetNetwork}
+            defaultNetwork={SUPPORTED_NETWORKS.Development[0]}
+          />
+        </Flex>
         <Text color='dimgray' fontWeight='semibold' whiteSpace='nowrap'>
           {`${numberOfSpace} ${pluralize('space', numberOfSpace)} `}
         </Text>
       </Flex>
-      <SimpleGrid columns={{ base: 1, md: 3, lg: 4 }} spacing={8}>
+      <Divider my={4} />
+      <SimpleGrid columns={{ base: 1, md: 3, lg: 4 }} spacing={4}>
         {storage.map((spaceId) => (
           <SpaceCard class='space-card' key={spaceId} spaceId={spaceId} chainId={network.id} />
         ))}
       </SimpleGrid>
-      {onLoad && <Spinner alignSelf='center' />}
-      {hasNextPage && !loadMore && (
-        <Button onClick={toggleLoadMore} variant='outline'>
-          Load more
-        </Button>
+      {onLoad && (
+        <Box mt={4} textAlign='center'>
+          <Spinner />
+        </Box>
       )}
-    </Flex>
+      {hasNextPage && !loadMore && (
+        <Box mt={4} textAlign='center'>
+          <Button onClick={toggleLoadMore} variant='outline' width={200}>
+            Load more
+          </Button>
+        </Box>
+      )}
+    </Box>
   );
 }

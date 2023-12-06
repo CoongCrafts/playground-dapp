@@ -31,31 +31,33 @@ export default function SpaceCard({ spaceId, chainId }: SpaceCardProps) {
         textAlign='center'
         border='1px'
         borderColor='chakra-border-color'
-        gap={3}
-        py={6}
+        p={4}
         borderRadius={4}
         transitionDuration='200ms'
         _hover={{ borderColor: 'gray.400' }}
         cursor='pointer'
         onClick={() => navigate(`/${space.chainId}/spaces/${space.address}`)}>
-        <SpaceAvatar info={info!} space={space} />
-        <Box>
-          <Heading size='md' mb={1}>
-            {info?.name}
-          </Heading>
-          <Text fontWeight='semibold' fontSize='md' color='gray'>
-            {membersCount} {pluralize('member', membersCount)}
-          </Text>
-        </Box>
-        {showJoinButton ? (
-          pendingRequest ? (
-            <CancelRequestButton buttonProps={{ size: 'md', width: 'fit-content' }} />
+        <Heading mb={4} size='md' noOfLines={1}>
+          {info?.name}
+        </Heading>
+        {info && <SpaceAvatar info={info} space={space} />}
+
+        <Text fontSize='sm' fontWeight='semibold' mt={4}>
+          {membersCount} {pluralize('member', membersCount)}
+        </Text>
+        <Box mt={3}>
+          {showJoinButton ? (
+            pendingRequest ? (
+              <CancelRequestButton buttonProps={{ width: 'fit-content' }} />
+            ) : (
+              <JoinButton buttonProps={{ variant: 'outline' }} />
+            )
           ) : (
-            <JoinButton buttonProps={{ variant: 'outline', colorScheme: 'gray', size: 'md', _disabled: {} }} />
-          )
-        ) : (
-          <Button isDisabled>Invite only</Button>
-        )}
+            <Button size='sm' isDisabled>
+              Invite Only
+            </Button>
+          )}
+        </Box>
       </Flex>
     </SpaceProvider>
   );
